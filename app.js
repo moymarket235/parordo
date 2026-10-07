@@ -16,7 +16,7 @@ const DEFAULT_PRODUCTS=[
 {id:5,name:'Трусы мужские',cat:'Трусы',price:null,stock:null,img:'./assets/products/briefs-card.jpg',detailImg:'./assets/products/briefs.png'},
 {id:6,name:'Носки мужские',cat:'Носки',price:null,stock:null,img:'./assets/products/socks-card.jpg',detailImg:'./assets/products/socks.png'},
 {id:7,name:'Веник для пара',cat:'Веник',price:null,stock:null,img:'./assets/products/broom-card.jpg',detailImg:'./assets/products/broom.png'},
-{id:8,name:'Чёрный чай',cat:'Чай',price:null,stock:null,img:'./assets/products/tea-black-card.jpg',detailImg:'./assets/products/tea-banner.png'},
+{id:8,name:'Чёрный чай',cat:'Чай',price:null,stock:null,img:'./assets/products/tea-black-card.png',detailImg:'./assets/products/tea-black.png'},
 {id:9,name:'Зелёный чай',cat:'Чай',price:null,stock:null,img:'./assets/products/tea-green-card.jpg',detailImg:'./assets/products/tea-banner.png'},
 {id:10,name:'Чай с лимоном',cat:'Чай',price:null,stock:null,img:'./assets/products/tea-lemon-card.jpg',detailImg:'./assets/products/tea-banner.png'},
 {id:11,name:'Минеральная вода — Tien-Shan Legend',cat:'Минеральная вода',price:null,stock:null,img:'./assets/products/water-card.jpg',detailImg:'./assets/products/water-banner.png'},
