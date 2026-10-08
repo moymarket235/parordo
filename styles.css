@@ -78,3 +78,272 @@
 .product-img img,.detail-img img{display:block;}
 .product-card h3,.product-card .body{contain:layout paint;}
 @media(max-width:699px){.product-card{box-shadow:0 5px 16px #0007}}
+
+/* V20 — Premium order status */
+.order-card-v20{
+  margin:0 12px 12px;
+  padding:15px;
+  border:1px solid #4f341c;
+  border-radius:20px;
+  background:
+    linear-gradient(160deg,#1b1009,#0d0805);
+  box-shadow:0 8px 22px #0008;
+  overflow:hidden;
+}
+
+.order-card-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:12px;
+}
+
+.order-number{
+  display:block;
+  font-size:14px;
+  font-weight:800;
+  line-height:1.25;
+  word-break:break-all;
+}
+
+.order-meta{
+  margin-top:5px;
+  color:var(--muted);
+  font-size:10px;
+}
+
+.order-total-v20{
+  flex:0 0 auto;
+  color:#ffd76b;
+  font-size:20px;
+  font-weight:900;
+  white-space:nowrap;
+}
+
+.order-products{
+  display:grid;
+  gap:8px;
+  margin-top:13px;
+}
+
+.order-product{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:8px;
+  border:1px solid #3b2918;
+  border-radius:14px;
+  background:#100904;
+}
+
+.order-product img{
+  width:52px;
+  height:52px;
+  flex:0 0 52px;
+  object-fit:cover;
+  border-radius:11px;
+  background:#1b0f08;
+}
+
+.order-product-info{
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+  gap:3px;
+}
+
+.order-product-info b{
+  font-size:12px;
+  line-height:1.25;
+}
+
+.order-product-info span{
+  color:var(--muted);
+  font-size:10px;
+}
+
+.order-status-area{
+  margin-top:13px;
+  display:flex;
+  justify-content:flex-end;
+}
+
+.order-status-wrap{
+  position:relative;
+  width:min(100%,390px);
+  padding:1px;
+  border-radius:19px;
+  overflow:hidden;
+  isolation:isolate;
+}
+
+.order-status-wrap::before{
+  content:"";
+  position:absolute;
+  inset:-120%;
+  background:conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    transparent 65deg,
+    #ffb52b 105deg,
+    #fff0a4 145deg,
+    #ff8d19 185deg,
+    transparent 235deg,
+    transparent 360deg
+  );
+  animation:orderRingV20 2.8s linear infinite;
+  will-change:transform;
+}
+
+.order-status-card{
+  position:relative;
+  z-index:1;
+  min-height:62px;
+  padding:10px 13px;
+  border-radius:18px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  background:
+    linear-gradient(145deg,#241508,#100904);
+}
+
+.order-status-icon{
+  width:37px;
+  height:37px;
+  flex:0 0 37px;
+  display:grid;
+  place-items:center;
+  border-radius:50%;
+  font-size:20px;
+  font-weight:900;
+}
+
+.order-status-card strong{
+  display:block;
+  font-size:11px;
+  letter-spacing:.06em;
+}
+
+.order-status-card span{
+  display:block;
+  margin-top:3px;
+  font-size:9px;
+  color:#cdbca5;
+  line-height:1.3;
+}
+
+/* Pending */
+.order-status-wrap.pending{
+  box-shadow:0 0 20px #f5a62318;
+  animation:statusPulseV20 2.8s ease-in-out infinite;
+}
+
+.order-status-wrap.pending .order-status-icon{
+  color:#ffd66d;
+  border:1px solid #e4a82e;
+  background:#3a230b;
+}
+
+.order-status-wrap.pending .order-status-card strong{
+  color:#ffd66d;
+}
+
+/* Paid */
+.order-status-wrap.paid{
+  background:#20c86d;
+  box-shadow:0 0 18px #20c86d22;
+}
+
+.order-status-wrap.paid .order-status-icon{
+  background:#18bd65;
+  color:#fff;
+}
+
+.order-status-wrap.paid .order-status-card strong{
+  color:#62ed9d;
+}
+
+/* Cancelled */
+.order-status-wrap.cancelled{
+  background:#d34234;
+}
+
+.order-status-wrap.cancelled .order-status-icon{
+  background:#8e241b;
+  color:#fff;
+}
+
+.order-status-wrap.cancelled .order-status-card strong{
+  color:#ff8d83;
+}
+
+/* Expired */
+.order-status-wrap.expired{
+  background:#9d6b28;
+}
+
+.order-status-wrap.expired .order-status-icon{
+  background:#5a3a10;
+  color:#ffe19b;
+}
+
+.order-status-wrap.expired .order-status-card strong{
+  color:#ffd17a;
+}
+
+@keyframes orderRingV20{
+  to{
+    transform:rotate(360deg);
+  }
+}
+
+@keyframes statusPulseV20{
+  0%,100%{
+    transform:scale(1);
+  }
+  50%{
+    transform:scale(1.012);
+  }
+}
+
+@media(max-width:699px){
+  .order-card-v20{
+    margin-left:8px;
+    margin-right:8px;
+    padding:13px;
+    border-radius:18px;
+  }
+
+  .order-total-v20{
+    font-size:18px;
+  }
+
+  .order-status-area{
+    justify-content:stretch;
+  }
+
+  .order-status-wrap{
+    width:100%;
+  }
+
+  .order-status-card{
+    min-height:58px;
+    padding:9px 11px;
+  }
+
+  .order-status-card strong{
+    font-size:10px;
+  }
+
+  .order-status-card span{
+    font-size:8.5px;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  .order-status-wrap.pending,
+  .order-status-wrap::before{
+    animation:none!important;
+  }
+}
