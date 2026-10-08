@@ -1,1 +1,114 @@
-<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#090604"><link rel="stylesheet" href="./styles.css?v=10"><title>ПАР ОРДО — Админ-панель</title><style>.admin-product{padding:14px;border:1px solid #4c3017;border-radius:16px;background:linear-gradient(160deg,#1a100a,#0d0805);margin:10px 0}.admin-product-title{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.admin-product-title small{display:block;color:#9f8d77;margin-top:3px}.admin-fields{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin:10px 0}.admin-fields label{font-size:10px;color:#cbbba7}.admin-fields input{width:100%;margin-top:4px;padding:11px;border:1px solid #4b331d;border-radius:10px;background:#fff;color:#111}.save-product{width:100%}@media(max-width:700px){.admin-fields{grid-template-columns:1fr}}</style></head><body><main class="section-pad" style="max-width:1100px"><div class="brand-mini" style="justify-content:center;margin-bottom:18px"><img src="./assets/par-ordo-logo.png"><span><b>ПАР ОРДО</b><small>АДМИН-ПАНЕЛЬ</small></span></div><div class="list-card" style="padding:16px"><div class="section-head"><div><span class="eyebrow">СКЛАД · ЗАКАЗЫ · СТАТИСТИКА</span><h2>Панель администратора</h2></div></div><div class="feature-grid" id="kpi"></div><h3>Последние заказы</h3><div id="orders"></div><h3>Товары · цены и остатки</h3><div id="products"></div><p class="muted" style="font-size:11px">Демо-режим: данные хранятся в localStorage этого устройства. Для реальной работы нескольких администраторов и разных телефонов нужен backend.</p></div></main><script src="./admin.js?v=8"></script></body></html>
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#090604">
+<link rel="stylesheet" href="./styles.css?v=10">
+<title>ПАР ОРДО — Админ-панель</title>
+<style>
+:root{--gold:#c88a28;--gold2:#f4c56a;--bg:#0a0705;--panel:#150d08;--line:#4a301a}
+body{background:var(--bg)}
+.admin-wrap{max-width:1100px;margin:0 auto;padding:18px 14px 90px}
+.admin-brand{display:flex;align-items:center;justify-content:center;gap:12px;margin:6px 0 18px}
+.admin-brand img{width:58px;height:58px;border-radius:50%;object-fit:contain}
+.admin-brand b{display:block;font-size:21px;letter-spacing:.08em}
+.admin-brand small{display:block;color:#b59e82;font-size:11px;margin-top:3px}
+.admin-card{background:linear-gradient(160deg,#1b1009,#0c0805);border:1px solid var(--line);border-radius:20px;box-shadow:0 8px 28px rgba(0,0,0,.22);padding:16px}
+.admin-head{display:flex;gap:12px;justify-content:space-between;align-items:flex-start;flex-wrap:wrap}
+.eyebrow{color:#d9ad63;letter-spacing:.14em;font-size:10px;font-weight:800}
+.admin-head h1{margin:.25rem 0 0;font-size:24px}
+.admin-actions{display:flex;gap:8px}
+.admin-actions button{border:1px solid #5b3b1e;background:#120a06;color:#f5eadb;border-radius:12px;padding:10px 12px}
+.login-shell{min-height:72vh;display:grid;place-items:center}
+.login-card{max-width:430px;width:100%}
+.login-card h1{margin:0 0 6px;font-size:28px}
+.login-card p{margin:0 0 18px;color:#a9947c}
+.field{display:grid;gap:6px;margin:10px 0}
+.field label{font-size:11px;color:#cdbca6}
+.field input{width:100%;box-sizing:border-box;padding:13px 14px;border-radius:12px;border:1px solid #4d321b;background:#fff;color:#111;font-size:15px}
+.login-status{min-height:20px;color:#ff7f7f;font-size:12px;margin:8px 0}
+.btn-gold{width:100%}
+.kpi-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:16px 0}
+.kpi{padding:14px;border:1px solid var(--line);border-radius:16px;background:#100904}
+.kpi span{font-size:20px}.kpi b{display:block;margin:6px 0 2px}.kpi strong{font-size:18px;color:#f1ce91}
+.section-title{margin:22px 0 10px}
+.section-title h2{margin:0;font-size:18px}
+.range-tabs{display:flex;gap:7px;margin:10px 0 0;flex-wrap:wrap}
+.range-tabs button{border:1px solid #5b3b1e;background:#120a06;color:#d9c6af;border-radius:12px;padding:9px 12px}
+.range-tabs button.active{background:#7a4e13;color:#fff1d0;border-color:#b8802e}
+.orders{display:grid;gap:10px}
+.order{border:1px solid var(--line);border-radius:16px;padding:12px;background:#100904}
+.order-top{display:flex;justify-content:space-between;gap:10px}
+.order-top b{font-size:15px}
+.muted{color:#9f8d77;font-size:11px}
+.order-items{margin:8px 0;display:grid;gap:4px}
+.order-item-line{font-size:12px;color:#d9c8b5}
+.order-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
+.order-actions button{padding:9px 12px;border-radius:11px;border:1px solid #5c3a1b;background:#231207;color:#f8ead6}
+.order-actions .pay{background:#7c5517}.order-actions .cancel{background:#451616}
+.badge{display:inline-flex;align-items:center;padding:5px 8px;border-radius:999px;font-size:10px}
+.badge.ok{background:#9bf3c1;color:#12452f}.badge.wait{background:#f1dc9f;color:#533c0a}.badge.no{background:#613030;color:#ffd7d7}
+.products{display:grid;gap:10px}
+.product{border:1px solid var(--line);border-radius:16px;padding:12px;background:#100904}
+.product-head{display:flex;justify-content:space-between;gap:10px}
+.product-head b{font-size:14px}.product-head small{display:block;color:#9f8d77;margin-top:3px}
+.product-fields{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:10px 0}
+.product-fields label{font-size:10px;color:#cdbca6}
+.product-fields input{width:100%;box-sizing:border-box;margin-top:4px;padding:10px;border:1px solid #4b321c;border-radius:10px;background:#fff;color:#111}
+.product-buttons{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.message{padding:12px;border:1px solid var(--line);border-radius:12px;background:#100904;color:#ddceb9;font-size:12px}
+.hidden{display:none!important}
+@media(max-width:780px){.kpi-grid{grid-template-columns:1fr 1fr}.product-fields{grid-template-columns:1fr 1fr}.product-fields label:last-child{grid-column:1/-1}}
+@media(max-width:470px){.kpi-grid{grid-template-columns:1fr}.product-fields{grid-template-columns:1fr 1fr}.product-buttons{grid-template-columns:1fr}.admin-head h1{font-size:21px}}
+</style>
+</head>
+<body>
+<div class="admin-wrap">
+  <div id="loginView" class="login-shell">
+    <div class="admin-card login-card">
+      <div class="admin-brand">
+        <img src="./assets/par-ordo-logo.png" alt="ПАР ОРДО">
+        <div><b>ПАР ОРДО</b><small>АДМИН-ПАНЕЛЬ</small></div>
+      </div>
+      <span class="eyebrow">ЗАКРЫТЫЙ ДОСТУП</span>
+      <h1>Вход администратора</h1>
+      <p>5 администраторов · полный доступ к заказам, складу и статистике</p>
+      <div class="field"><label>Логин</label><input id="loginUser" autocomplete="username" placeholder="admin1"></div>
+      <div class="field"><label>Пароль</label><input id="loginPass" type="password" autocomplete="current-password" placeholder="••••••••"></div>
+      <div id="loginStatus" class="login-status"></div>
+      <button class="btn btn-gold" id="loginBtn">Войти →</button>
+    </div>
+  </div>
+
+  <div id="dashView" class="hidden">
+    <div class="admin-brand">
+      <img src="./assets/par-ordo-logo.png" alt="ПАР ОРДО">
+      <div><b>ПАР ОРДО</b><small>АДМИН-ПАНЕЛЬ</small></div>
+    </div>
+
+    <div class="admin-card">
+      <div class="admin-head">
+        <div><span class="eyebrow">СКЛАД · ЗАКАЗЫ · СТАТИСТИКА</span><h1>Панель управления</h1><div class="muted" id="whoami"></div></div>
+        <div class="admin-actions"><button id="reloadBtn">↻ Обновить</button><button id="logoutBtn">Выйти</button></div>
+      </div>
+
+      <div class="range-tabs" id="rangeTabs">
+        <button data-range="today" class="active">Сегодня</button>
+        <button data-range="week">Неделя</button>
+        <button data-range="month">Месяц</button>
+      </div>
+
+      <div class="kpi-grid" id="kpi"></div>
+
+      <div class="section-title"><span class="eyebrow">ЗАКАЗЫ</span><h2>Последние заказы</h2></div>
+      <div id="orders" class="orders"></div>
+
+      <div class="section-title"><span class="eyebrow">СКЛАД</span><h2>Товары · цены · остатки</h2></div>
+      <div id="products" class="products"></div>
+    </div>
+  </div>
+</div>
+<script src="./admin.js?v=19"></script>
+</body>
+</html>
