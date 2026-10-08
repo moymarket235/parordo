@@ -26,6 +26,11 @@ const DEFAULT_PRODUCTS=[
 {id:14,name:'Fanta',cat:'Напитки',price:null,stock:null,img:'./assets/products/fanta.png',detailImg:'./assets/products/fanta.png'},
 {id:15,name:'Sprite',cat:'Напитки',price:null,stock:null,img:'./assets/products/sprite.png',detailImg:'./assets/products/sprite.png'},
 {id:16,name:'Sprite Mojito',cat:'Напитки',price:null,stock:null,img:'./assets/products/sprite-mojito.png',detailImg:'./assets/products/sprite-mojito.png'}
+{id:17,name:'Шоро Аралаш',cat:'Шоро',price:null,stock:null,img:'./assets/products/shoro-aralash.webp',detailImg:'./assets/products/shoro-aralash.webp'},
+{id:18,name:'Шоро Чалап',cat:'Шоро',price:null,stock:null,img:'./assets/products/shoro-chalap.webp',detailImg:'./assets/products/shoro-chalap.webp'},
+{id:19,name:'Шоро Тан',cat:'Шоро',price:null,stock:null,img:'./assets/products/shoro-tan.webp',detailImg:'./assets/products/shoro-tan.webp'},
+{id:20,name:'Шоро Максым',cat:'Шоро',price:null,stock:null,img:'./assets/products/shoro-maksym.webp',detailImg:'./assets/products/shoro-maksym.webp'}
+
 ];
 
 const loadProducts=()=>{
@@ -50,7 +55,7 @@ const knownPrice=p=>!!p&&p.price!==null&&p.price!==''&&Number.isFinite(Number(p.
 function setView(view){state.view=view;$$('.view').forEach(x=>x.classList.toggle('active',x.id===view));$$('.nav-item').forEach(x=>x.classList.toggle('active',x.dataset.view===view));if(view==='catalog')renderCatalog();if(view==='cart')renderCart();if(view==='checkout')renderCheckout();if(view==='orders')renderOrders();if(view==='notifications')renderNotifications();if(view==='profile')renderProfile();window.scrollTo(0,0)}
 function cartCount(){return state.cart.reduce((s,x)=>s+x.qty,0)}
 function updateBadges(){const n=cartCount();$('#cartBadge').textContent=n;$('#navBadge').textContent=n;$('#cartBadge').style.display=n?'block':'none';$('#navBadge').style.display=n?'block':'none'}
-function cats(){return ['Все','Шорты','Полотенца','Мыло','Трусы','Носки','Веник','Чай','Минеральная вода','Напитки']}
+function cats(){return ['Все','Шорты','Полотенца','Мыло','Трусы','Носки','Веник','Чай','Минеральная вода','Напитки','Шоро']}
 function renderCats(){const bar=$('#categoryBar');bar.innerHTML=cats().map(c=>`<button class="chip ${state.cat===c?'active':''}" data-cat="${c}">${c}</button>`).join('');$$('[data-cat]').forEach(b=>b.onclick=()=>{state.cat=b.dataset.cat;renderCats();renderCatalog()})}
 function visibleProducts(){return products.filter(p=>(state.cat==='Все'||p.cat===state.cat)&&(!state.search||p.name.toLowerCase().includes(state.search.toLowerCase())))}
 function renderCatalog(){renderCats();const grid=$('#productGrid');const list=visibleProducts();grid.innerHTML=list.map((p,i)=>`<article class="product-card" data-product="${p.id}"><div class="product-img"><img ${i<2?'fetchpriority="high"':''} loading="${i<2?'eager':'lazy'}" decoding="async" src="${p.img}" alt="${p.name}" onerror="this.onerror=null;this.style.display='none'"></div><div class="body"><h3>${p.name}</h3><div class="price"><small class="price-caption">Цена</small>${knownPrice(p)?money(p.price):'—'}</div><span class="stock">${stockLabel(p.stock)}</span><div class="product-actions"><button class="btn btn-small btn-cart" data-add="${p.id}">🛒 В корзину</button><button class="btn btn-small btn-buy" data-buy="${p.id}">Купить</button></div></div></article>`).join('')||`<div class="muted">Товары не найдены.</div>`;$$('[data-add]').forEach(b=>b.onclick=()=>addCart(+b.dataset.add));$$('[data-buy]').forEach(b=>b.onclick=()=>buyNow(+b.dataset.buy))}

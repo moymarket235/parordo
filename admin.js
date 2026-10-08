@@ -11,6 +11,8 @@ const DEFAULT=()=>[
 {id:8,name:'Чёрный чай',cat:'Чай',price:null,stock:null},{id:9,name:'Зелёный чай',cat:'Чай',price:null,stock:null},{id:10,name:'Чай с лимоном',cat:'Чай',price:null,stock:null},
 {id:11,name:'Минеральная вода — Tien-Shan Legend',cat:'Минеральная вода',price:null,stock:null},
 {id:12,name:'Coca-Cola',cat:'Напитки',price:null,stock:null},{id:13,name:'Pepsi',cat:'Напитки',price:null,stock:null},{id:14,name:'Fanta',cat:'Напитки',price:null,stock:null},{id:15,name:'Sprite',cat:'Напитки',price:null,stock:null},{id:16,name:'Sprite Mojito',cat:'Напитки',price:null,stock:null}
+,
+{id:17,name:'Шоро Аралаш',cat:'Шоро',price:null,stock:null},{id:18,name:'Шоро Чалап',cat:'Шоро',price:null,stock:null},{id:19,name:'Шоро Тан',cat:'Шоро',price:null,stock:null},{id:20,name:'Шоро Максым',cat:'Шоро',price:null,stock:null}
 ];
 let products=JSON.parse(localStorage.getItem('po_products_v3')||localStorage.getItem('po_products_v2')||'null');if(!Array.isArray(products)||!products.length){products=DEFAULT();localStorage.setItem('po_products_v3',JSON.stringify(products))}
 let orders=JSON.parse(localStorage.getItem('po_orders_v3')||localStorage.getItem('po_orders_v2')||'[]');
