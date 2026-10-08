@@ -290,46 +290,114 @@ async function renderOrders(){
   const rows=arr.map(o=>{
     const s=orderStatusLabel(o.status);
 
-    const items=Array.isArray(o.items) && o.items.length
+    const itemsHtml=Array.isArray(o.items)&&o.items.length
       ? `
-        <div class="order-items-mini">
-          ${o.items.map(i=>`
-            <div>
-              ${i.name||'Товар'} · ${i.qty||1} шт.
-            </div>
-          `).join('')}
+        <div class="order-products">
+          ${o.items.map(i=>{
+            const p=products.find(x=>Number(x.id)===Number(i.id));
+
+            return `
+              <div class="order-product">
+                <img
+                  src="${p?.img||'./assets/par-ordo-logo.png'}"
+                  alt="${i.name||p?.name||'Товар'}"
+                  loading="lazy"
+                  decoding="async"
+                >
+
+                <div class="order-product-info">
+                  <b>${i.name||p?.name||'Товар'}</b>
+                  <span>${i.qty||1} шт. × ${money(i.unit_price||i.price||p?.price||0)}</span>
+                </div>
+              </div>
+            `;
+          }).join('')}
         </div>
       `
       : '';
 
+    const statusBox=o.status==='paid'
+      ? `
+        <div class="order-status-wrap paid">
+          <div class="order-status-card">
+            <div class="order-status-icon">✓</div>
+            <div>
+              <strong>ОПЛАЧЕНО</strong>
+              <span>Спасибо за заказ!</span>
+            </div>
+          </div>
+        </div>
+      `
+      : o.status==='cancelled'
+      ? `
+        <div class="order-status-wrap cancelled">
+          <div class="order-status-card">
+            <div class="order-status-icon">×</div>
+            <div>
+              <strong>ОТМЕНЁН</strong>
+              <span>Заказ отменён</span>
+            </div>
+          </div>
+        </div>
+      `
+      : o.status==='expired'
+      ? `
+        <div class="order-status-wrap expired">
+          <div class="order-status-card">
+            <div class="order-status-icon">!</div>
+            <div>
+              <strong>ИСТЁК</strong>
+              <span>Срок оплаты закончился</span>
+            </div>
+          </div>
+        </div>
+      `
+      : `
+        <div class="order-status-wrap pending">
+          <div class="order-status-card">
+            <div class="order-status-icon">⌛</div>
+            <div>
+              <strong>ОЖИДАЕТ ОПЛАТЫ</strong>
+              <span>Проверьте оплату у администратора</span>
+            </div>
+          </div>
+        </div>
+      `;
+
     return `
-      <div class="order-item">
-        <div>
-          <b>№${o.id}</b>
+      <article class="order-card-v20">
 
-          <div class="muted order-time">
-            ${new Date(o.createdAt).toLocaleString('ru-RU')}
-            · ${o.method}
-          </div>
+        <div class="order-card-top">
 
-          ${items}
-        </div>
-
-        <div style="text-align:right">
-          <b>${money(o.total)}</b>
-
-          <div>
-            <span class="badge ${s.cls}">
-              ${s.text}
+          <div class="order-card-info">
+            <span class="order-number">
+              №${o.id}
             </span>
+
+            <div class="order-meta">
+              ${new Date(o.createdAt).toLocaleString('ru-RU')}
+              · ${o.method}
+            </div>
           </div>
+
+          <div class="order-total-v20">
+            ${money(o.total)}
+          </div>
+
         </div>
-      </div>
+
+        ${itemsHtml}
+
+        <div class="order-status-area">
+          ${statusBox}
+        </div>
+
+      </article>
     `;
   }).join('');
 
   el.innerHTML=`
-    <div class="list-card">
+    <div class="list-card orders-v20">
 
       <div class="cart-head">
         <span class="eyebrow">ПАР ОРДО</span>
