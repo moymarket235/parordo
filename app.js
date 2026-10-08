@@ -4,6 +4,7 @@ const LOGO='./assets/par-ordo-logo.png';
 const CONFIG={
   instagramUrl:'https://www.instagram.com/',
   whatsappGroupUrl:'https://chat.whatsapp.com/',
+  apiUrl:'https://par-ordo-api.moimarketjibekjolu.workers.dev',
   currency:'сом',
   hours:'10:00 — 23:00',
   address:'Бишкек, Торокул Айтматова 677'
@@ -45,6 +46,33 @@ const loadProducts=()=>{
   return fresh;
 };
 let products=loadProducts();
+
+async function syncProductsFromApi(){
+  try{
+    const res=await fetch(`${CONFIG.apiUrl}/api/products`,{
+      headers:{'Accept':'application/json'},
+      cache:'no-store'
+    });
+    if(!res.ok)throw new Error(`API ${res.status}`);
+    const data=await res.json();
+    if(!Array.isArray(data.products))throw new Error('Invalid products response');
+    products=data.products.map(p=>({
+      id:Number(p.id),
+      name:p.name,
+      cat:p.cat,
+      price:p.price===null?null:Number(p.price),
+      stock:Number(p.stock||0),
+      reserved:Number(p.reserved||0),
+      available:Number(p.available??(Number(p.stock||0)-Number(p.reserved||0))),
+      img:p.img,
+      detailImg:p.detailImg||p.img
+    }));
+    localStorage.setItem('po_products_v3',JSON.stringify(products));
+    if(state.view==='catalog')renderCatalog();
+  }catch(err){
+    console.warn('PAR ORDO API unavailable; using cached products',err);
+  }
+}
 const state={view:'home',cat:'Все',search:'',cart:JSON.parse(localStorage.getItem('po_cart_v3')||localStorage.getItem('po_cart_v2')||'[]'),orders:JSON.parse(localStorage.getItem('po_orders_v3')||localStorage.getItem('po_orders_v2')||'[]'),customer:JSON.parse(localStorage.getItem('po_customer_v3')||localStorage.getItem('po_customer_v2')||'{}')};
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 const saveCart=()=>localStorage.setItem('po_cart_v3',JSON.stringify(state.cart));
@@ -59,18 +87,119 @@ function cats(){return ['Все','Шорты','Полотенца','Мыло','�
 function renderCats(){const bar=$('#categoryBar');bar.innerHTML=cats().map(c=>`<button class="chip ${state.cat===c?'active':''}" data-cat="${c}">${c}</button>`).join('');$$('[data-cat]').forEach(b=>b.onclick=()=>{state.cat=b.dataset.cat;renderCats();renderCatalog()})}
 function visibleProducts(){return products.filter(p=>(state.cat==='Все'||p.cat===state.cat)&&(!state.search||p.name.toLowerCase().includes(state.search.toLowerCase())))}
 function renderCatalog(){renderCats();const grid=$('#productGrid');const list=visibleProducts();grid.innerHTML=list.map((p,i)=>`<article class="product-card" data-product="${p.id}"><div class="product-img"><img ${i<2?'fetchpriority="high"':''} loading="${i<2?'eager':'lazy'}" decoding="async" src="${p.img}" alt="${p.name}" onerror="this.onerror=null;this.style.display='none'"></div><div class="body"><h3>${p.name}</h3><div class="price"><small class="price-caption">Цена</small>${knownPrice(p)?money(p.price):'—'}</div><span class="stock">${stockLabel(p.stock)}</span><div class="product-actions"><button class="btn btn-small btn-cart" data-add="${p.id}">🛒 В корзину</button><button class="btn btn-small btn-buy" data-buy="${p.id}">Купить</button></div></div></article>`).join('')||`<div class="muted">Товары не найдены.</div>`;$$('[data-add]').forEach(b=>b.onclick=()=>addCart(+b.dataset.add));$$('[data-buy]').forEach(b=>b.onclick=()=>buyNow(+b.dataset.buy))}
-function addCart(id,qty=1){const p=products.find(x=>x.id===id);if(!p)return;if(Number.isFinite(Number(p.stock))&&Number(p.stock)<=0)return toast('Товар сейчас отсутствует');const item=state.cart.find(x=>x.id===id);const max=Number.isFinite(Number(p.stock))?Number(p.stock):999;if(item)item.qty=Math.min(max,item.qty+qty);else state.cart.push({id,qty:Math.min(max,qty)});saveCart();updateBadges();toast(`${p.name} добавлен в корзину`)}
+function addCart(id,qty=1){
+  const p=products.find(x=>x.id===id);
+  if(!p)return;
+  const available=Number.isFinite(Number(p.available))
+    ?Number(p.available)
+    :(Number.isFinite(Number(p.stock))?Number(p.stock):999);
+  if(available<=0)return toast('Товар сейчас отсутствует');
+  const item=state.cart.find(x=>x.id===id);
+  const current=item?item.qty:0;
+  const next=Math.min(available,current+qty);
+  if(item)item.qty=next;
+  else state.cart.push({id,qty:Math.min(available,qty)});
+  saveCart();updateBadges();toast(`${p.name} добавлен в корзину`);
+}
 function buyNow(id){const p=products.find(x=>x.id===id);if(!knownPrice(p))return toast('Цена этого товара ещё не указана');addCart(id);setView('checkout')}
 function total(){const vals=state.cart.map(x=>products.find(p=>p.id===x.id));if(vals.some(p=>!p||!knownPrice(p)))return null;return state.cart.reduce((s,x)=>s+Number(products.find(p=>p.id===x.id).price)*x.qty,0)}
-function renderProduct(id){const p=products.find(x=>x.id===id);if(!p)return;const detailSrc=p.detailImg||p.img;$('#product').innerHTML=`<div class="detail-card"><div class="detail-img"><img fetchpriority="high" decoding="async" src="${detailSrc}" alt="${p.name}" onerror="this.onerror=null;this.src='${p.img}'"></div><div class="detail-body"><span class="eyebrow">${p.cat}</span><h2>${p.name}</h2><div class="price"><small class="price-caption">Цена</small>${knownPrice(p)?money(p.price):'—'}</div><div class="detail-row"><span class="stock">${stockLabel(p.stock)}</span><div class="qty"><button id="dqMinus">−</button><b id="dq">1</b><button id="dqPlus">+</button></div></div><div class="product-actions"><button class="btn btn-cart" id="detailCart">В корзину</button><button class="btn btn-buy" id="detailBuy">Купить сейчас</button></div><div class="product-checks">✅ Подходит для бани и отдыха<br>✅ Удобно и быстро<br>✅ Качество и чистота</div><button class="btn back-btn" data-view="catalog">← Назад в каталог</button></div></div>`;let q=1;$('#dqMinus').onclick=()=>{q=Math.max(1,q-1);$('#dq').textContent=q};$('#dqPlus').onclick=()=>{const max=Number.isFinite(Number(p.stock))?Number(p.stock):999;q=Math.min(max,q+1);$('#dq').textContent=q};$('#detailCart').onclick=()=>addCart(id,q);$('#detailBuy').onclick=()=>{if(!knownPrice(p))return toast('Цена этого товара ещё не указана');addCart(id,q);setView('checkout')};bindViewButtons()}
+function renderProduct(id){const p=products.find(x=>x.id===id);if(!p)return;const detailSrc=p.detailImg||p.img;$('#product').innerHTML=`<div class="detail-card"><div class="detail-img"><img fetchpriority="high" decoding="async" src="${detailSrc}" alt="${p.name}" onerror="this.onerror=null;this.src='${p.img}'"></div><div class="detail-body"><span class="eyebrow">${p.cat}</span><h2>${p.name}</h2><div class="price"><small class="price-caption">Цена</small>${knownPrice(p)?money(p.price):'—'}</div><div class="detail-row"><span class="stock">${stockLabel(p.stock)}</span><div class="qty"><button id="dqMinus">−</button><b id="dq">1</b><button id="dqPlus">+</button></div></div><div class="product-actions"><button class="btn btn-cart" id="detailCart">В корзину</button><button class="btn btn-buy" id="detailBuy">Купить сейчас</button></div><div class="product-checks">✅ Подходит для бани и отдыха<br>✅ Удобно и быстро<br>✅ Качество и чистота</div><button class="btn back-btn" data-view="catalog">← Назад в каталог</button></div></div>`;let q=1;$('#dqMinus').onclick=()=>{q=Math.max(1,q-1);$('#dq').textContent=q};$('#dqPlus').onclick=()=>{const max=Number.isFinite(Number(p.available))?Number(p.available):(Number.isFinite(Number(p.stock))?Number(p.stock):999);q=Math.min(max,q+1);$('#dq').textContent=q};$('#detailCart').onclick=()=>addCart(id,q);$('#detailBuy').onclick=()=>{if(!knownPrice(p))return toast('Цена этого товара ещё не указана');addCart(id,q);setView('checkout')};bindViewButtons()}
 function renderCart(){const el=$('#cart');if(!state.cart.length){el.innerHTML=`<div class="cart-card empty-card"><div class="empty-icon">🛒</div><h2>Корзина пуста</h2><p class="muted">Добавьте товары для заказа.</p><button class="btn btn-gold" data-view="catalog">Перейти в каталог</button></div>`;bindViewButtons();return}const rows=state.cart.map(x=>{const p=products.find(y=>y.id===x.id);return `<div class="cart-row"><img src="${p.img}" alt="${p.name}"><div><h3>${p.name}</h3><small>${knownPrice(p)?money(p.price):'Цена: —'} · ${x.qty} шт.</small><div class="qty"><button data-dec="${p.id}">−</button><b>${x.qty}</b><button data-inc="${p.id}">+</button></div></div><strong>${knownPrice(p)?money(p.price*x.qty):'—'}</strong></div>`}).join('');const t=total();el.innerHTML=`<div class="cart-card"><div class="cart-head"><span class="eyebrow">ПАР ОРДО</span><h2>Корзина (${cartCount()})</h2></div>${rows}<div class="total-row"><span>Итого</span><b>${t===null?'Цена не указана':money(t)}</b></div><div class="cart-note">${t===null?'Для оформления заказа сначала укажите цены товаров в админ-панели.':''}</div><div class="cart-actions"><button class="btn btn-gold ${t===null?'disabled-btn':''}" id="goCheckout">Оформить заказ →</button><button class="btn back-btn" data-view="catalog">Продолжить покупки</button></div></div>`;$$('[data-dec]').forEach(b=>b.onclick=()=>changeQty(+b.dataset.dec,-1));$$('[data-inc]').forEach(b=>b.onclick=()=>changeQty(+b.dataset.inc,1));$('#goCheckout').onclick=()=>{if(t===null)return toast('У некоторых товаров пока нет цены');setView('checkout')};bindViewButtons()}
-function changeQty(id,d){const item=state.cart.find(x=>x.id===id);const p=products.find(x=>x.id===id);if(!item||!p)return;item.qty+=d;if(item.qty<=0)state.cart=state.cart.filter(x=>x.id!==id);else if(Number.isFinite(Number(p.stock)))item.qty=Math.min(Number(p.stock),item.qty);saveCart();updateBadges();renderCart()}
+function changeQty(id,d){
+  const item=state.cart.find(x=>x.id===id);
+  const p=products.find(x=>x.id===id);
+  if(!item||!p)return;
+  const available=Number.isFinite(Number(p.available))
+    ?Number(p.available)
+    :(Number.isFinite(Number(p.stock))?Number(p.stock):999);
+  item.qty+=d;
+  if(item.qty<=0)state.cart=state.cart.filter(x=>x.id!==id);
+  else item.qty=Math.min(available,item.qty);
+  saveCart();updateBadges();renderCart();
+}
 function renderCheckout(){const el=$('#checkout');if(!state.cart.length){setView('cart');return}const t=total();if(t===null){el.innerHTML=`<div class="checkout-card" style="padding:18px"><h2>Оформление заказа</h2><div class="status">Некоторым товарам ещё не назначена цена.</div><button class="btn btn-gold" data-view="catalog" style="margin-top:12px">Вернуться в каталог</button></div>`;bindViewButtons();return}el.innerHTML=`<div class="checkout-card" style="padding:16px"><span class="eyebrow">ШАГ 1 / 2</span><h2>Оформление заказа</h2><div class="checkout-fields"><input id="name" placeholder="Ваше имя" value="${state.customer.name||''}"><input id="phone" placeholder="Номер телефона" value="${state.customer.phone||''}"><div class="status">📍 Получение товара: <b>в ПАР ОРДО</b><br><span class="muted">Доставка отсутствует.</span></div><div class="total-row"><span>К оплате</span><b>${money(t)}</b></div><div class="payment-grid"><button class="pay-btn" id="qrPay">▣<br>QR ОПЛАТА<br><small>Быстро и удобно</small></button><button class="pay-btn cash" id="cashPay">▤<br>НАЛИЧНЫМИ<br><small>Оплата администратору</small></button></div></div></div>`;$('#qrPay').onclick=()=>createOrder('QR');$('#cashPay').onclick=()=>createOrder('Наличные')}
-function createOrder(method){const name=$('#name').value.trim();const phone=$('#phone').value.trim();if(!name||!phone)return toast('Укажите имя и телефон');state.customer={name,phone};localStorage.setItem('po_customer_v3',JSON.stringify(state.customer));const order={id:1025+state.orders.length,total:total(),method,status:'Ожидает оплаты',createdAt:new Date().toISOString(),items:state.cart.map(x=>({...x}))};if(method==='QR')openQr(order);else openCash(order)}
-function openQr(order){$('#modalCard').innerHTML=`<div class="modal-head"><h2>Оплата через QR</h2><button class="icon-btn" id="closeModal">×</button></div><p>Заказ №${order.id} · К оплате <b>${money(order.total)}</b></p><div class="qr-box"><canvas id="qrCanvas" width="320" height="320"></canvas><b>Сумма: ${money(order.total)}</b></div><div class="status" style="margin-top:10px">После успешной оплаты реальный платёжный backend сможет подтвердить заказ автоматически.</div><button class="btn btn-gold" style="margin-top:10px" id="markDemoPaid">Я оплатил · проверить</button>`;openModal();fakeQr('PARORDO|ORDER:'+order.id+'|SUM:'+order.total);$('#markDemoPaid').onclick=()=>finalizeOrder(order,'Оплачено')}
-function openCash(order){$('#modalCard').innerHTML=`<div class="modal-head"><h2>Оплата наличными</h2><button class="icon-btn" id="closeModal">×</button></div><div class="success"><div style="font-size:58px">💵</div><h3>К оплате: ${money(order.total)}</h3><p class="muted">Покажите эту сумму администратору и оплатите наличными.</p><button class="btn btn-gold" id="cashPaid">Я оплатил наличными</button><div class="status">Статус меняет только администратор после проверки.</div></div>`;openModal();$('#cashPaid').onclick=()=>{order.status='Ожидает оплаты';state.orders.unshift(order);localStorage.setItem('po_orders_v3',JSON.stringify(state.orders));closeModal();state.cart=[];saveCart();updateBadges();renderSuccess(order)}}
-function finalizeOrder(order,status){order.status=status;state.orders.unshift(order);localStorage.setItem('po_orders_v3',JSON.stringify(state.orders));state.cart=[];saveCart();updateBadges();closeModal();renderSuccess(order)}
-function renderSuccess(order){$('#checkout').innerHTML=`<div class="success cart-card"><div class="mark">✓</div><h2>Заказ оформлен!</h2><p>Заказ №${order.id}</p><h3>${money(order.total)}</h3><p>Способ оплаты: ${order.method}</p><span class="badge ${order.status==='Оплачено'?'ok':'wait'}">${order.status}</span><p class="muted">Спасибо! Ждём вас в ПАР ОРДО 🔥</p><button class="btn btn-gold" data-view="home">Вернуться на главную</button><button class="btn back-btn" data-view="orders">Мои заказы</button></div>`;bindViewButtons()}
+async function createOrder(method){
+  const name=$('#name').value.trim();
+  const phone=$('#phone').value.trim();
+  if(!name||!phone)return toast('Укажите имя и телефон');
+
+  const items=state.cart.map(x=>({id:x.id,qty:x.qty}));
+  if(!items.length)return toast('Корзина пуста');
+
+  state.customer={name,phone};
+  localStorage.setItem('po_customer_v3',JSON.stringify(state.customer));
+
+  try{
+    const res=await fetch(`${CONFIG.apiUrl}/api/orders`,{
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'Accept':'application/json'
+      },
+      body:JSON.stringify({name,phone,method,items})
+    });
+
+    const data=await res.json();
+    if(!res.ok||!data.order)throw new Error(data.error||`API ${res.status}`);
+
+    if(method==='QR')openQr(data.order);
+    else openCash(data.order);
+
+    await syncProductsFromApi();
+  }catch(err){
+    console.error('PAR ORDO order error',err);
+    toast(err.message||'Не удалось оформить заказ');
+  }
+}
+
+function openQr(order){
+  $('#modalCard').innerHTML=`<div class="modal-head"><h2>Оплата через QR</h2><button class="icon-btn" id="closeModal">×</button></div><p>Заказ №${order.id} · К оплате <b>${money(order.total)}</b></p><div class="qr-box"><canvas id="qrCanvas" width="320" height="320"></canvas><b>Сумма: ${money(order.total)}</b></div><div class="status" style="margin-top:10px">QR пока демонстрационный. Реальный платёжный QR подключим после выбора провайдера.</div><button class="btn btn-gold" style="margin-top:10px" id="qrPending">Ожидать подтверждение оплаты</button>`;
+  openModal();
+  fakeQr(`PARORDO|ORDER:${order.id}|SUM:${order.total}`);
+  $('#qrPending').onclick=()=>{
+    state.orders.unshift({
+      id:order.id,
+      total:order.total,
+      method:'QR',
+      status:'Ожидает оплаты',
+      createdAt:new Date().toISOString(),
+      items:order.items||[]
+    });
+    localStorage.setItem('po_orders_v3',JSON.stringify(state.orders));
+    state.cart=[];saveCart();updateBadges();closeModal();
+    renderSuccess({
+      id:order.id,
+      total:order.total,
+      method:'QR',
+      status:'Ожидает оплаты'
+    });
+  };
+}
+
+function openCash(order){
+  $('#modalCard').innerHTML=`<div class="modal-head"><h2>Оплата наличными</h2><button class="icon-btn" id="closeModal">×</button></div><div class="success"><div style="font-size:58px">💵</div><h3>К оплате: ${money(order.total)}</h3><p class="muted">Покажите эту сумму администратору и оплатите наличными.</p><button class="btn btn-gold" id="cashPaid">Я оплатил наличными</button><div class="status">Статус подтверждает только администратор после проверки.</div></div>`;
+  openModal();
+  $('#cashPaid').onclick=()=>{
+    state.orders.unshift({
+      id:order.id,
+      total:order.total,
+      method:'Наличные',
+      status:'Ожидает оплаты',
+      createdAt:new Date().toISOString(),
+      items:order.items||[]
+    });
+    localStorage.setItem('po_orders_v3',JSON.stringify(state.orders));
+    state.cart=[];saveCart();updateBadges();closeModal();
+    renderSuccess({
+      id:order.id,
+      total:order.total,
+      method:'Наличные',
+      status:'Ожидает оплаты'
+    });
+  };
+}
+
+
 function renderOrders(){const el=$('#orders');const arr=state.orders;el.innerHTML=`<div class="list-card"><div class="cart-head"><span class="eyebrow">ПАР ОРДО</span><h2>Мои заказы</h2></div>${arr.length?arr.map(o=>`<div class="order-item"><div><b>№${o.id}</b><div class="muted order-time">${new Date(o.createdAt).toLocaleString('ru-RU')} · ${o.method}</div></div><div style="text-align:right"><b>${money(o.total)}</b><div><span class="badge ${o.status==='Оплачено'?'ok':'wait'}">${o.status}</span></div></div></div>`).join(''):`<div class="empty-line">Пока заказов нет.</div>`}</div>`}
 function renderNotifications(){const items=[['Добрый день!','Сегодня свежий веник для пара 🌿'],['Акция!','Специальное предложение 🔥'],['Новое поступление','Товары снова в наличии'],['Вечерний отдых','Ждём вас в ПАР ОРДО — 10:00–23:00']];$('#notifications').innerHTML=`<div class="list-card"><div class="cart-head"><span class="eyebrow">PUSH</span><h2>Уведомления</h2><p class="muted">Только после согласия пользователя.</p></div>${items.map(x=>`<div class="notification"><img src="./assets/par-ordo-logo.png"><div><b>${x[0]}</b><p>${x[1]}</p></div></div>`).join('')}<div style="padding:16px"><button class="btn btn-gold" id="enablePush">🔔 Разрешить уведомления</button></div></div>`;$('#enablePush').onclick=subscribePush}
 function renderProfile(){const c=state.customer;$('#profile').innerHTML=`<div class="profile-card"><img src="./assets/par-ordo-logo.png"><h2>${c.name||'Гость'}</h2><p class="muted">${c.phone||'Добавьте номер при первом заказе'}</p><div class="profile-menu"><button data-view="orders">▤ Мои заказы</button><button data-view="notifications">🔔 Уведомления</button><button id="socialIg">◎ Instagram</button><button id="socialWa">◉ WhatsApp группа</button><button id="showInfo">ℹ О бане</button></div></div>`;bindViewButtons();$('#socialIg').onclick=()=>window.open(CONFIG.instagramUrl,'_blank','noopener');$('#socialWa').onclick=()=>window.open(CONFIG.whatsappGroupUrl,'_blank','noopener');$('#showInfo').onclick=()=>toast(`${CONFIG.hours} · ${CONFIG.address}`)}
@@ -80,4 +209,4 @@ function closeModal(){$('#modal').classList.remove('open')}
 function fakeQr(text){const c=$('#qrCanvas');const ctx=c.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,320,320);ctx.fillStyle='#111';let seed=[...text].reduce((a,ch)=>((a*31+ch.charCodeAt(0))>>>0),1);for(let y=0;y<29;y++)for(let x=0;x<29;x++){seed=(seed*1664525+1013904223)>>>0;if(seed%3===0)ctx.fillRect(20+x*10,20+y*10,10,10)}[['0','0'],['22','0'],['0','22']].forEach(([xx,yy])=>{ctx.fillStyle='#fff';ctx.fillRect(20+xx*10,20+yy*10,70,70);ctx.fillStyle='#111';ctx.fillRect(30+xx*10,30+yy*10,50,50);ctx.fillStyle='#fff';ctx.fillRect(40+xx*10,40+yy*10,30,30)})}
 function toast(msg){const t=document.createElement('div');t.className='toast';t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2200)}
 async function subscribePush(){if(!('Notification'in window))return toast('Браузер не поддерживает уведомления');const p=await Notification.requestPermission();toast(p==='granted'?'Уведомления разрешены ✅':'Уведомления отключены')}
-$('#menuBtn').onclick=()=>$('#drawer').classList.add('open');$('#drawerClose').onclick=()=>$('#drawer').classList.remove('open');$('#searchBtn').onclick=()=>{$('#searchRow').classList.toggle('hidden');if(!$('#searchRow').classList.contains('hidden'))$('#searchInput').focus()};$('#searchClose').onclick=()=>{$('#searchRow').classList.add('hidden');state.search='';renderCatalog()};$('#searchInput').oninput=e=>{state.search=e.target.value;renderCatalog()};document.addEventListener('click',e=>{const v=e.target.closest('[data-view]');if(v){e.preventDefault();if(v.closest('#product'))return;setView(v.dataset.view)}});document.addEventListener('click',e=>{const p=e.target.closest('.product-card');if(p&&!e.target.closest('button')){const id=Number(p.dataset.product);if(id){setView('product');renderProduct(id)}}});$$('[data-external]').forEach(a=>a.onclick=e=>{e.preventDefault();window.open(a.dataset.external==='instagram'?CONFIG.instagramUrl:CONFIG.whatsappGroupUrl,'_blank','noopener')});updateBadges();setView('home');
+$('#menuBtn').onclick=()=>$('#drawer').classList.add('open');$('#drawerClose').onclick=()=>$('#drawer').classList.remove('open');$('#searchBtn').onclick=()=>{$('#searchRow').classList.toggle('hidden');if(!$('#searchRow').classList.contains('hidden'))$('#searchInput').focus()};$('#searchClose').onclick=()=>{$('#searchRow').classList.add('hidden');state.search='';renderCatalog()};$('#searchInput').oninput=e=>{state.search=e.target.value;renderCatalog()};document.addEventListener('click',e=>{const v=e.target.closest('[data-view]');if(v){e.preventDefault();if(v.closest('#product'))return;setView(v.dataset.view)}});document.addEventListener('click',e=>{const p=e.target.closest('.product-card');if(p&&!e.target.closest('button')){const id=Number(p.dataset.product);if(id){setView('product');renderProduct(id)}}});$$('[data-external]').forEach(a=>a.onclick=e=>{e.preventDefault();window.open(a.dataset.external==='instagram'?CONFIG.instagramUrl:CONFIG.whatsappGroupUrl,'_blank','noopener')});updateBadges();setView('home');syncProductsFromApi();
