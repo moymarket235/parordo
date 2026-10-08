@@ -14,7 +14,18 @@ const DEFAULT=()=>[
 ,
 {id:17,name:'Шоро Аралаш',cat:'Шоро',price:null,stock:null},{id:18,name:'Шоро Чалап',cat:'Шоро',price:null,stock:null},{id:19,name:'Шоро Тан',cat:'Шоро',price:null,stock:null},{id:20,name:'Шоро Максым',cat:'Шоро',price:null,stock:null}
 ];
-let products=JSON.parse(localStorage.getItem('po_products_v3')||localStorage.getItem('po_products_v2')||'null');if(!Array.isArray(products)||!products.length){products=DEFAULT();localStorage.setItem('po_products_v3',JSON.stringify(products))}
+let products=JSON.parse(localStorage.getItem('po_products_v3')||localStorage.getItem('po_products_v2')||'null');
+const defaults=DEFAULT();
+if(!Array.isArray(products)||!products.length){
+  products=defaults;
+}else{
+  const byId=new Map(products.map(p=>[Number(p.id),p]));
+  defaults.forEach(d=>{
+    const old=byId.get(Number(d.id));
+    if(!old) products.push(d);
+  });
+}
+localStorage.setItem('po_products_v3',JSON.stringify(products));
 let orders=JSON.parse(localStorage.getItem('po_orders_v3')||localStorage.getItem('po_orders_v2')||'[]');
 const money=n=>Number.isFinite(Number(n))?`${Number(n).toLocaleString('ru-RU')} ${CURRENCY}`:'Цена: —';
 const $=s=>document.querySelector(s);

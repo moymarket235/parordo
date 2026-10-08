@@ -25,7 +25,7 @@ const DEFAULT_PRODUCTS=[
 {id:13,name:'Pepsi',cat:'Напитки',price:null,stock:null,img:'./assets/products/pepsi.png',detailImg:'./assets/products/pepsi.png'},
 {id:14,name:'Fanta',cat:'Напитки',price:null,stock:null,img:'./assets/products/fanta.png',detailImg:'./assets/products/fanta.png'},
 {id:15,name:'Sprite',cat:'Напитки',price:null,stock:null,img:'./assets/products/sprite.png',detailImg:'./assets/products/sprite.png'},
-{id:16,name:'Sprite Mojito',cat:'Напитки',price:null,stock:null,img:'./assets/products/sprite-mojito.png',detailImg:'./assets/products/sprite-mojito.png'}
+{id:16,name:'Sprite Mojito',cat:'Напитки',price:null,stock:null,img:'./assets/products/sprite-mojito.png',detailImg:'./assets/products/sprite-mojito.png'},
 {id:17,name:'Шоро Аралаш',cat:'Шоро',price:null,stock:null,img:'./assets/products/shoro-aralash.webp',detailImg:'./assets/products/shoro-aralash.webp'},
 {id:18,name:'Шоро Чалап',cat:'Шоро',price:null,stock:null,img:'./assets/products/shoro-chalap.webp',detailImg:'./assets/products/shoro-chalap.webp'},
 {id:19,name:'Шоро Тан',cat:'Шоро',price:null,stock:null,img:'./assets/products/shoro-tan.webp',detailImg:'./assets/products/shoro-tan.webp'},
