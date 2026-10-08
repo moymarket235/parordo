@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#0b0805">
+  <meta name="description" content="ПАР ОРДО — мужская баня. Товары для бани, заказ, QR/наличные и новости.">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./assets/par-ordo-logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css?v=7">
+  <title>ПАР ОРДО — Мужская баня</title>
+</head>
+<body>
+  <div class="ambient"></div>
+  <header class="topbar">
+    <button class="icon-btn" id="menuBtn" aria-label="Открыть меню">☰</button>
+    <a class="brand-mini" href="#home" data-view="home">
+      <img src="./assets/par-ordo-logo.png" alt="ПАР ОРДО">
+      <span><b>ПАР ОРДО</b><small>МУЖСКАЯ БАНЯ</small></span>
+    </a>
+    <div class="top-actions">
+      <button class="icon-btn" id="searchBtn" aria-label="Поиск">⌕</button>
+      <button class="cart-top" data-view="cart" aria-label="Корзина"><span>🛒</span><i id="cartBadge">0</i></button>
+    </div>
+  </header>
+
+  <main>
+    <section id="home" class="view active">
+      <div class="hero section-pad">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+          <img class="hero-logo" src="./assets/par-ordo-logo.png" alt="ПАР ОРДО — Мужская баня">
+          <p class="eyebrow">НАСТОЯЩАЯ МУЖСКАЯ БАНЯ</p>
+          <h1>Мощный пар · Комфорт · Отдых</h1>
+          <div class="hero-pills">
+            <span>🔥 Мощный пар</span><span>✨ Чистота</span><span>💰 Доступные цены</span>
+          </div>
+          <div class="hours"><strong>10:00 — 23:00</strong><span>Без выходных</span></div>
+          <div class="hero-actions">
+            <button class="btn btn-gold" data-view="catalog">Каталог товаров →</button>
+            <a class="btn btn-ig" data-external="instagram" href="#">Instagram</a>
+            <a class="btn btn-wa" data-external="whatsapp" href="#">WhatsApp</a>
+          </div>
+        </div>
+      </div>
+      <div class="feature-grid section-pad">
+        <article><span>🧼</span><b>Всё для бани</b><small>Шорты, полотенца, мыло, носки, веник</small></article>
+        <article><span>📦</span><b>Всегда в наличии</b><small>Остаток товара виден в каталоге</small></article>
+        <article><span>⚡</span><b>Быстрая покупка</b><small>Корзина → заказ → QR или наличные</small></article>
+        <article><span>🔔</span><b>Новости</b><small>Акции и новые поступления</small></article>
+      </div>
+      <div class="story-card section-pad">
+        <div><small>ПАР ОРДО</small><h2>Всё необходимое для комфортного отдыха</h2><p>Товары для бани — в одном месте.</p></div>
+        <button class="btn btn-gold" data-view="catalog">Смотреть каталог</button>
+      </div>
+    </section>
+
+    <section id="catalog" class="view section-pad">
+      <div class="section-head"><div><span class="eyebrow">ПАР ОРДО</span><h2>Каталог товаров</h2></div><button class="filter-btn" id="sortBtn">В наличии ↕</button></div>
+      <div id="searchRow" class="search-row hidden"><input id="searchInput" placeholder="Поиск товара..."><button id="searchClose">×</button></div>
+      <div id="categoryBar" class="chips"></div>
+      <div id="productGrid" class="product-grid"></div>
+    </section>
+
+    <section id="product" class="view section-pad"></section>
+    <section id="cart" class="view section-pad"></section>
+    <section id="checkout" class="view section-pad"></section>
+    <section id="orders" class="view section-pad"></section>
+    <section id="notifications" class="view section-pad"></section>
+    <section id="profile" class="view section-pad"></section>
+  </main>
+
+  <nav class="bottom-nav">
+    <button class="nav-item active" data-view="home"><span>⌂</span><small>Главная</small></button>
+    <button class="nav-item" data-view="catalog"><span>▦</span><small>Каталог</small></button>
+    <button class="nav-item" data-view="notifications"><span>♨</span><small>Новости</small></button>
+    <button class="nav-item" data-view="cart"><span>🛒</span><i id="navBadge">0</i><small>Корзина</small></button>
+    <button class="nav-item" data-view="profile"><span>◉</span><small>Профиль</small></button>
+  </nav>
+
+  <div class="drawer" id="drawer">
+    <div class="drawer-card">
+      <button class="drawer-close" id="drawerClose">×</button>
+      <img src="./assets/par-ordo-logo.png" class="drawer-logo" alt="ПАР ОРДО">
+      <h3>ПАР ОРДО</h3><small>МУЖСКАЯ БАНЯ</small>
+      <div class="drawer-links">
+        <button data-view="home">⌂ Главная</button>
+        <button data-view="catalog">▦ Каталог товаров</button>
+        <button data-view="cart">🛒 Моя корзина</button>
+        <button data-view="orders">▤ Мои заказы</button>
+        <button data-view="notifications">♨ Уведомления</button>
+        <button data-view="profile">◉ Профиль</button>
+      </div>
+      <div class="drawer-social">
+        <a class="btn btn-ig" data-external="instagram" href="#">Instagram</a>
+        <a class="btn btn-wa" data-external="whatsapp" href="#">WhatsApp группа</a>
+      </div>
+      <div class="drawer-info"><b>10:00 — 23:00</b><span>Без выходных</span><span>📍 Бишкек, Торокул Айтматова 677</span></div>
+    </div>
+  </div>
+
+  <div class="modal" id="modal"><div class="modal-card" id="modalCard"></div></div>
+  <script src="./app.js?v=7"></script>
+</body>
+</html>
