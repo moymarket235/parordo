@@ -23,3 +23,56 @@
 
 /* V10 clean logo animation polish: static premium glow, no pulse/scale artifact */
 .hero-logo{will-change:auto;backface-visibility:hidden}
+
+
+/* V11 — premium catalog atmosphere + unified profile branding */
+#catalog{
+  position:relative;
+  isolation:isolate;
+  overflow:hidden;
+  background:#0a0603;
+}
+#catalog::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:-2;
+  background:
+    linear-gradient(180deg,#130a05d9 0%,#0b0603ec 28%,#080504f5 72%,#050302ff 100%),
+    url("./assets/products/broom.png");
+  background-size:cover;
+  background-position:center top;
+  filter:saturate(.92) brightness(.48);
+  transform:scale(1.04);
+  animation:catalogBgMove 22s ease-in-out infinite alternate;
+}
+#catalog::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:-1;
+  pointer-events:none;
+  background:
+    radial-gradient(circle at 18% 12%,#f3b4311a,transparent 24%),
+    radial-gradient(circle at 84% 48%,#f3b43110,transparent 25%),
+    linear-gradient(90deg,#09050355,transparent 46%,#09050355);
+  animation:catalogGlow 8s ease-in-out infinite;
+}
+#catalog > *{position:relative;z-index:1}
+#catalog .product-card{
+  backdrop-filter:blur(2px);
+  background:linear-gradient(160deg,#1a100ae8,#0d0805e8);
+}
+#catalog .section-head h2{text-shadow:0 4px 18px #000}
+@keyframes catalogBgMove{
+  from{transform:scale(1.04) translate3d(-.6%,0,0);background-position:center 0}
+  to{transform:scale(1.09) translate3d(.6%,-1%,0);background-position:52% 2%}
+}
+@keyframes catalogGlow{
+  0%,100%{opacity:.72}
+  50%{opacity:1}
+}
+.profile-card img{
+  background:#050302;
+  box-shadow:0 0 26px #f3b43132;
+}
