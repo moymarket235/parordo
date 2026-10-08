@@ -200,7 +200,153 @@ function openCash(order){
 }
 
 
-function renderOrders(){const el=$('#orders');const arr=state.orders;el.innerHTML=`<div class="list-card"><div class="cart-head"><span class="eyebrow">ПАР ОРДО</span><h2>Мои заказы</h2></div>${arr.length?arr.map(o=>`<div class="order-item"><div><b>№${o.id}</b><div class="muted order-time">${new Date(o.createdAt).toLocaleString('ru-RU')} · ${o.method}</div></div><div style="text-align:right"><b>${money(o.total)}</b><div><span class="badge ${o.status==='Оплачено'?'ok':'wait'}">${o.status}</span></div></div></div>`).join(''):`<div class="empty-line">Пока заказов нет.</div>`}</div>`}
+function orderStatusLabel(status){
+  if(status==='paid'||status==='Оплачено'){
+    return {text:'Оплачено',cls:'ok'};
+  }
+  if(status==='cancelled'||status==='Отменён'){
+    return {text:'Отменён',cls:'no'};
+  }
+  if(status==='expired'||status==='Истёк'){
+    return {text:'Истёк',cls:'no'};
+  }
+  return {text:'Ожидает оплаты',cls:'wait'};
+}
+
+async function syncOrderStatuses(){
+  const phone=(state.customer.phone||'').trim();
+
+  if(!phone || !Array.isArray(state.orders) || !state.orders.length){
+    return;
+  }
+
+  let changed=false;
+
+  await Promise.all(
+    state.orders.map(async o=>{
+      try{
+        const res=await fetch(
+          `${CONFIG.apiUrl}/api/orders/${encodeURIComponent(o.id)}?phone=${encodeURIComponent(phone)}`,
+          {
+            headers:{'Accept':'application/json'},
+            cache:'no-store'
+          }
+        );
+
+        if(!res.ok)return;
+
+        const data=await res.json();
+        const server=data.order||data;
+
+        if(!server)return;
+
+        if(server.status && server.status!==o.status){
+          o.status=server.status;
+          changed=true;
+        }
+
+        if(
+          server.total!=null &&
+          Number(server.total)!==Number(o.total)
+        ){
+          o.total=Number(server.total);
+          changed=true;
+        }
+
+        if(
+          server.created_at &&
+          server.created_at!==o.createdAt
+        ){
+          o.createdAt=server.created_at;
+          changed=true;
+        }
+
+        if(Array.isArray(server.items)){
+          o.items=server.items;
+          changed=true;
+        }
+
+      }catch(e){
+        console.warn('Order status sync error',e);
+      }
+    })
+  );
+
+  if(changed){
+    localStorage.setItem(
+      'po_orders_v3',
+      JSON.stringify(state.orders)
+    );
+  }
+}
+
+async function renderOrders(){
+  const el=$('#orders');
+
+  await syncOrderStatuses();
+
+  const arr=state.orders;
+
+  const rows=arr.map(o=>{
+    const s=orderStatusLabel(o.status);
+
+    const items=Array.isArray(o.items) && o.items.length
+      ? `
+        <div class="order-items-mini">
+          ${o.items.map(i=>`
+            <div>
+              ${i.name||'Товар'} · ${i.qty||1} шт.
+            </div>
+          `).join('')}
+        </div>
+      `
+      : '';
+
+    return `
+      <div class="order-item">
+        <div>
+          <b>№${o.id}</b>
+
+          <div class="muted order-time">
+            ${new Date(o.createdAt).toLocaleString('ru-RU')}
+            · ${o.method}
+          </div>
+
+          ${items}
+        </div>
+
+        <div style="text-align:right">
+          <b>${money(o.total)}</b>
+
+          <div>
+            <span class="badge ${s.cls}">
+              ${s.text}
+            </span>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  el.innerHTML=`
+    <div class="list-card">
+
+      <div class="cart-head">
+        <span class="eyebrow">ПАР ОРДО</span>
+        <h2>Мои заказы</h2>
+        <p class="muted">
+          Статус обновляется автоматически.
+        </p>
+      </div>
+
+      ${
+        rows ||
+        '<div class="empty-line">Пока заказов нет.</div>'
+      }
+
+    </div>
+  `;
+}
 function renderNotifications(){const items=[['Добрый день!','Сегодня свежий веник для пара 🌿'],['Акция!','Специальное предложение 🔥'],['Новое поступление','Товары снова в наличии'],['Вечерний отдых','Ждём вас в ПАР ОРДО — 10:00–23:00']];$('#notifications').innerHTML=`<div class="list-card"><div class="cart-head"><span class="eyebrow">PUSH</span><h2>Уведомления</h2><p class="muted">Только после согласия пользователя.</p></div>${items.map(x=>`<div class="notification"><img src="./assets/par-ordo-logo.png"><div><b>${x[0]}</b><p>${x[1]}</p></div></div>`).join('')}<div style="padding:16px"><button class="btn btn-gold" id="enablePush">🔔 Разрешить уведомления</button></div></div>`;$('#enablePush').onclick=subscribePush}
 function renderProfile(){const c=state.customer;$('#profile').innerHTML=`<div class="profile-card"><img src="./assets/par-ordo-logo.png"><h2>${c.name||'Гость'}</h2><p class="muted">${c.phone||'Добавьте номер при первом заказе'}</p><div class="profile-menu"><button data-view="orders">▤ Мои заказы</button><button data-view="notifications">🔔 Уведомления</button><button id="socialIg">◎ Instagram</button><button id="socialWa">◉ WhatsApp группа</button><button id="showInfo">ℹ О бане</button></div></div>`;bindViewButtons();$('#socialIg').onclick=()=>window.open(CONFIG.instagramUrl,'_blank','noopener');$('#socialWa').onclick=()=>window.open(CONFIG.whatsappGroupUrl,'_blank','noopener');$('#showInfo').onclick=()=>toast(`${CONFIG.hours} · ${CONFIG.address}`)}
 function bindViewButtons(){$$('[data-view]').forEach(b=>b.onclick=e=>{e.preventDefault();setView(b.dataset.view);$('#drawer').classList.remove('open')})}
