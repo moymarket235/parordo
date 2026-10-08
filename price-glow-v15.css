@@ -1,0 +1,110 @@
+
+/* PAR ORDO V15 — Premium animated price plaque
+   Lightweight CSS-only animation: no JavaScript, no filters/blur on the moving border. */
+
+/* The existing .price element becomes a luxury gold plaque. */
+.price{
+  position:relative;
+  isolation:isolate;
+  overflow:hidden;
+  min-height:58px;
+  padding:9px 12px 10px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  gap:2px;
+  border:0;
+  border-radius:14px;
+  background:transparent;
+  color:#ffd76a;
+  box-shadow:
+    inset 0 0 0 1px #5d3b18,
+    0 7px 18px #0008;
+}
+
+/* Rotating gold light that traces the frame. */
+.price::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:-2;
+  border-radius:14px;
+  background:conic-gradient(
+    from 0deg,
+    #6b431900 0deg 72deg,
+    #9c641b 78deg,
+    #ffe79a 85deg,
+    #ffb52e 90deg,
+    #9c641b 96deg,
+    #6b431900 103deg 360deg
+  );
+  animation:parOrdoPriceSpin 5.4s linear infinite;
+  transform-origin:50% 50%;
+  will-change:transform;
+}
+
+/* Inner dark glass keeps the content crisp while leaving the glowing border visible. */
+.price::after{
+  content:"";
+  position:absolute;
+  inset:2px;
+  z-index:-1;
+  border-radius:12px;
+  background:
+    linear-gradient(145deg,#24170dF7 0%,#0c0704F9 62%,#1b1008F7 100%);
+  box-shadow:
+    inset 0 0 16px #f3b43114,
+    inset 0 -1px 0 #3f2914;
+  pointer-events:none;
+}
+
+.price > *{
+  position:relative;
+  z-index:1;
+}
+
+.price-caption{
+  font-size:10px;
+  line-height:1;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  color:#d6b477;
+  font-weight:800;
+}
+
+.price{
+  font-size:22px;
+  line-height:1.05;
+  font-weight:900;
+  text-shadow:0 1px 10px #f3b43124;
+}
+
+@keyframes parOrdoPriceSpin{
+  to{transform:rotate(360deg)}
+}
+
+/* Slightly more premium on the large product-detail price. */
+.detail-body .price{
+  min-height:66px;
+  margin:12px 0;
+  border-radius:16px;
+}
+.detail-body .price::before{border-radius:16px}
+.detail-body .price::after{border-radius:14px}
+.detail-body .price-caption{font-size:11px}
+.detail-body .price{font-size:28px}
+
+/* Keep the animation calm and battery-friendly. */
+@media(prefers-reduced-motion:reduce){
+  .price::before{animation:none}
+}
+
+/* Tiny screens: preserve the two-column catalog without making cards too tall. */
+@media(max-width:390px){
+  .price{
+    min-height:54px;
+    padding:8px 10px;
+    font-size:19px;
+  }
+  .price-caption{font-size:9px}
+}
