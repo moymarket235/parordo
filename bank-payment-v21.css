@@ -1,0 +1,98 @@
+/* PAR ORDO — V21 Premium bank QR selector */
+.po-qr-modal,.po-qr-payment{padding:2px 1px 4px}
+.po-qr-modal h2,.po-qr-payment h2{margin:0;font-family:Cinzel,serif;font-size:24px}
+.po-order-total{
+  margin-top:12px;padding:13px 14px;display:flex;justify-content:space-between;align-items:center;gap:10px;
+  border:1px solid #5a3a1d;border-radius:16px;background:linear-gradient(145deg,#211208,#0d0805)
+}
+.po-order-total span{font-size:11px;color:#cbb99f}
+.po-order-total b{font-size:21px;color:#ffd66a}
+.po-lead{margin:13px 2px 11px;font-size:11px;line-height:1.45}
+.po-bank-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.po-bank-card{
+  position:relative;min-height:137px;padding:10px 8px;border:0;border-radius:18px;overflow:hidden;
+  isolation:isolate;background:transparent;color:#fff;cursor:pointer;display:flex;
+  flex-direction:column;align-items:center;justify-content:center;text-align:center
+}
+.po-bank-card::before{
+  content:"";position:absolute;inset:-120%;
+  background:conic-gradient(from 0deg,transparent 0deg,transparent 50deg,#ffb52b 92deg,#fff2ad 128deg,#ff8b17 165deg,transparent 220deg,transparent 360deg);
+  animation:poBankRingV21 2.7s linear infinite;z-index:-2
+}
+.po-bank-card::after{
+  content:"";position:absolute;inset:1px;border-radius:17px;
+  background:radial-gradient(circle at 50% 8%,#f4ad2b18,transparent 34%),linear-gradient(160deg,#1d1109,#0d0805);
+  z-index:-1
+}
+.po-bank-card:active{transform:scale(.985)}
+.po-bank-card b{display:block;font-size:12px;font-weight:900;margin-top:1px}
+.po-bank-card small{display:block;margin-top:4px;font-size:8px;color:#c9b69b}
+.po-bank-logo{
+  width:58px;height:58px;padding:3px;display:grid;place-items:center;margin:0 0 8px;
+  border-radius:18px;border:1px solid #6b4924;background:#090604;
+  box-shadow:0 8px 24px #0008,0 0 18px #f4ad2b12
+}
+.po-bank-logo-large{width:62px;height:62px;flex:0 0 62px;margin:0}
+.po-bank-logo img{width:100%;height:100%;object-fit:cover;display:block;border-radius:15px;background:#fff}
+.po-qr-hint{
+  margin-top:11px;display:flex;align-items:center;gap:10px;padding:11px;
+  border:1px solid #513719;border-radius:15px;background:#110a06
+}
+.po-hint-icon{
+  width:36px;height:36px;display:grid;place-items:center;flex:0 0 36px;
+  border-radius:11px;background:#2a1a0a;color:#ffd66d;font-size:19px;border:1px solid #825a28
+}
+.po-qr-hint b,.po-qr-hint span{display:block}
+.po-qr-hint b{font-size:11px}
+.po-qr-hint span{margin-top:3px;color:#bfae97;font-size:9px;line-height:1.35}
+.po-mini-tags{display:flex;justify-content:center;flex-wrap:wrap;gap:6px;margin-top:10px}
+.po-mini-tags span{
+  padding:6px 8px;border:1px solid #3c2a18;border-radius:999px;color:#bba990;background:#100904;font-size:8px
+}
+.po-selected-bank{
+  margin-top:12px;padding:11px;display:flex;align-items:center;gap:10px;
+  border:1px solid #5b3a1d;border-radius:17px;background:linear-gradient(145deg,#211208,#0c0704)
+}
+.po-selected-bank>div{min-width:0;flex:1}
+.po-selected-bank b,.po-selected-bank span{display:block}
+.po-selected-bank b{font-size:12px}
+.po-selected-bank span{margin-top:3px;color:#bfae97;font-size:9px;line-height:1.25}
+.po-selected-bank strong{color:#ffd66a;font-size:15px;white-space:nowrap}
+.po-steps{margin-top:11px;display:grid;gap:6px}
+.po-steps>div{
+  display:flex;align-items:center;gap:8px;padding:7px 9px;border-radius:12px;
+  background:#110a06;border:1px solid #332316
+}
+.po-steps i{
+  width:22px;height:22px;display:grid;place-items:center;flex:0 0 22px;border-radius:50%;
+  background:#e3a42e;color:#211304;font-style:normal;font-size:10px;font-weight:900
+}
+.po-steps span{font-size:9px;color:#d1c0aa}
+.po-real-qr{
+  margin-top:11px;padding:12px;border-radius:19px;background:#f7f5ef;color:#111;
+  display:grid;place-items:center;gap:8px;border:1px solid #c88e2d;box-shadow:0 10px 34px #0008
+}
+.po-real-qr-frame{
+  width:min(100%,300px);min-height:250px;display:grid;place-items:center;padding:8px;border-radius:16px;background:#fff
+}
+.po-real-qr-frame img{width:100%;height:auto;max-height:300px;object-fit:contain;display:block}
+.po-qr-missing{
+  min-height:220px;display:grid;place-items:center;text-align:center;gap:6px;padding:25px;color:#4c3922
+}
+.po-qr-missing strong{font-size:14px}
+.po-qr-missing span{font-size:10px;line-height:1.4}
+.po-qr-actions{margin-top:9px;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.po-qr-actions .btn{min-height:42px;font-size:11px}
+.po-paid-btn{width:100%;margin-top:9px;min-height:48px}
+.po-return-note{margin:8px 3px 1px;text-align:center;color:#9f917e;font-size:8.5px;line-height:1.45}
+@keyframes poBankRingV21{to{transform:rotate(360deg)}}
+@media(max-width:390px){
+  .po-bank-grid{gap:7px}
+  .po-bank-card{min-height:128px}
+  .po-bank-logo{width:52px;height:52px;border-radius:16px}
+  .po-bank-logo img{border-radius:13px}
+  .po-bank-card b{font-size:11px}
+  .po-bank-card small{font-size:7.5px}
+}
+@media(min-width:700px){.po-bank-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(prefers-reduced-motion:reduce){.po-bank-card::before{animation:none!important}}
