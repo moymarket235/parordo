@@ -851,58 +851,66 @@ main{width:min(1180px,100%);padding:13px;margin:auto}.view{display:none}.view.ac
 }
 
 
-/* V61 — slow rotating color outlines for the three payment states */
-@property --pay-ring-angle-v61 {
+/* V61 — status-coloured animated outlines for all three payment controls */
+@property --payment-border-angle-v61 {
   syntax: "<angle>";
   inherits: false;
   initial-value: 0deg;
 }
-@keyframes payRingRotateV61 {
-  from { --pay-ring-angle-v61: 0deg; }
-  to   { --pay-ring-angle-v61: 360deg; }
+@keyframes paymentBorderTurnV61 {
+  from { --payment-border-angle-v61: 0deg; }
+  to   { --payment-border-angle-v61: 360deg; }
 }
-#clientModal .pay-methods button {
+#clientModal .pay-methods button{
   position:relative;
   isolation:isolate;
+  border:1px solid transparent;
   overflow:visible;
-  border-width:1px;
+  background-clip:padding-box;
+  transition:transform .18s ease,filter .18s ease;
 }
-#clientModal .pay-methods button::before {
+#clientModal .pay-methods button::after{
   content:"";
   position:absolute;
   inset:-1.5px;
-  padding:1.5px;
   border-radius:inherit;
+  padding:1.6px;
   pointer-events:none;
   z-index:2;
   background:conic-gradient(
-    from var(--pay-ring-angle-v61, 0deg),
+    from var(--payment-border-angle-v61),
     transparent 0deg,
-    transparent 278deg,
-    var(--pay-ring-main-v61, #ff514b) 308deg,
-    var(--pay-ring-light-v61, #ffaaa4) 320deg,
-    transparent 344deg,
+    transparent 260deg,
+    var(--payment-border-main,#ff514b) 300deg,
+    var(--payment-border-light,#ffb4ad) 318deg,
+    transparent 345deg,
     transparent 360deg
   );
   -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
   -webkit-mask-composite:xor;
   mask-composite:exclude;
-  animation:payRingRotateV61 5.8s linear infinite;
+  animation:paymentBorderTurnV61 5.8s linear infinite;
+  opacity:.98;
 }
-#clientModal .pay-methods button.is-pending {
-  --pay-ring-main-v61:#ff4545;
-  --pay-ring-light-v61:#ffc0b7;
+/* Target the payment method, not only the currently selected state. */
+#clientModal .pay-methods button[data-payment$="|pending"]{
+  --payment-border-main:#ff4d4d;
+  --payment-border-light:#ffd0c9;
 }
-#clientModal .pay-methods button.is-cash {
-  --pay-ring-main-v61:#20e879;
-  --pay-ring-light-v61:#b7ffd4;
+#clientModal .pay-methods button[data-payment$="|cash"]{
+  --payment-border-main:#22e878;
+  --payment-border-light:#bcffcf;
 }
-#clientModal .pay-methods button.is-transfer {
-  --pay-ring-main-v61:#398bff;
-  --pay-ring-light-v61:#b6d7ff;
+#clientModal .pay-methods button[data-payment$="|transfer"]{
+  --payment-border-main:#398bff;
+  --payment-border-light:#bfdeff;
 }
-@media(prefers-reduced-motion:reduce) {
-  #clientModal .pay-methods button::before { animation:none; }
+#clientModal .pay-methods button:active{
+  transform:scale(.985);
+  filter:brightness(1.12);
+}
+@media(prefers-reduced-motion:reduce){
+  #clientModal .pay-methods button::after{animation:none}
 }
 
 </style>
@@ -947,7 +955,7 @@ main{width:min(1180px,100%);padding:13px;margin:auto}.view{display:none}.view.ac
    <div id="archiveList" class="list"></div>
   </section>
   <section id="reportView" class="view">
-   <div class="report-panel"><div class="eyebrow">КАССА · ЗАВЕРШЕНИЕ СМЕНЫ</div><div class="section-head" style="margin-top:5px"><h2>Итог за сегодня</h2><button id="refreshReport" class="ghost">↻</button></div><div id="reportContent"></div><button id="finishWork" class="primary finish">✓ Завершить работу и архивировать завершённых</button></div>
+   <div class="report-panel"><div class="eyebrow">КАССА · ЗАВЕРШЕНИЕ СМЕНЫ</div><div class="section-head" style="margin-top:5px"><h2>Итог за сегодня</h2><button id="refreshReport" class="ghost">↻</button></div><div id="reportContent"></div><button id="finishWork" class="primary finish">✓ Завершить смену и отправить отчёт руководителю</button></div>
   </section>
  </main>
  <nav class="bottom-nav">
@@ -989,7 +997,7 @@ function loadLocal(){
  try{const old=JSON.parse(localStorage.getItem(DATA_KEY)||'null');if(old&&typeof old==='object')Object.assign(db,old)}catch(e){}
 }
 
-function saveLocal(){try{localStorage.setItem(DATA_KEY,JSON.stringify(db))}catch(e){toast('Сактагыч толду. Архивди текшериңиз.')} }
+function saveLocal(){try{localStorage.setItem(DATA_KEY,JSON.stringify(db))}catch(e){toast('Хранилище переполнено. Проверьте архив.')} }
 async function persistClient(c){
  if(!c?.id)throw new Error('Нет ID клиента');
  c.archived=Boolean(c.archived||db.archived.includes(c.id));
@@ -1007,7 +1015,7 @@ async function syncControlData(){
    await persistClient(c);
   }
   remote=await api('/api/admin/control/clients');
-  toast('Клиенттердин эски тарыхы серверге көчүрүлдү ✅');
+  toast('Старая история клиентов перенесена на сервер ✅');
  }
  if(Array.isArray(remote.clients)){
   db.clients=remote.clients;
@@ -1369,7 +1377,62 @@ $('#logoutButton').onclick=logout;
 $('#refreshProducts').onclick=async()=>{await loadProducts();renderInventory();toast('Товары обновлены')};
 $('#refreshArchive').onclick=renderArchive;$('#refreshReport').onclick=renderReport;
 $('#archiveAll').onclick=()=>confirmAction('Архивировать историю за сегодня?','Завершённые клиенты сегодняшнего дня будут перенесены в архив. Данные и суммы сохранятся.','Архивировать',archiveToday);
-$('#finishWork').onclick=()=>confirmAction('Завершить рабочую смену?','Будет показан итог и завершённые клиенты за сегодня будут перенесены в архив. Активные клиенты останутся активными.','Завершить и архивировать',async()=>{await archiveToday();renderReport();navigate('reportView')});
+let reportSubmitting=false;
+async function finishShiftAndSendReport(){
+ const button=$('#finishWork');
+ if(reportSubmitting)return;
+ reportSubmitting=true;
+ if(button){button.disabled=true;button.dataset.originalText=button.textContent;button.textContent='Отправляем отчёт руководителю…'}
+ try{
+  // Always use the shared server data, not only this device's local cache.
+  await syncControlData();
+  const today=todayKey();
+  const todayClients=allTodayClients();
+  if(!todayClients.length)throw new Error('Нет клиентов за сегодня. Отчёт не сформирован.');
+  if(activeClients().length)throw new Error('Сначала завершите всех активных клиентов.');
+
+  // The previous report's closing timestamp is the exact start of the next shift.
+  // For the first report, use the earliest client start time of today.
+  let reportState;
+  try{reportState=await api('/api/admin/control/reports')}catch(e){
+   if(/no such table|control_shift_reports|500/i.test(String(e.message)))throw new Error('Отчёты ещё не подключены. Примените SQL-миграцию V9 и разверните Worker V9.');
+   throw e;
+  }
+  const lastClosedAt=reportState?.lastClosedAt||null;
+  const candidates=lastClosedAt
+    ? db.clients.filter(c=>Number.isFinite(Date.parse(c.startedAt))&&Date.parse(c.startedAt)>=Date.parse(lastClosedAt))
+    : todayClients;
+  if(!candidates.length){
+   const latest=Array.isArray(reportState?.reports)?reportState.reports[0]:null;
+   if(latest&&latest.shiftDate===today){
+    renderReport();navigate('reportView');
+    toast('Отчёт за последнюю смену уже сохранён и доступен руководителю ✅');
+    return;
+   }
+   throw new Error('В текущей смене нет клиентов для отчёта.');
+  }
+  const unpaid=candidates.reduce((sum,c)=>sum+payments(c).pending,0);
+  if(unpaid>0)throw new Error(`Есть неоплаченные позиции на ${money(unpaid)}. Сначала отметьте оплату.`);
+  const shiftStartAt=lastClosedAt||candidates.reduce((earliest,c)=>{
+   const t=Date.parse(c.startedAt);return !earliest||t<Date.parse(earliest)?c.startedAt:earliest;
+  },null);
+  if(!shiftStartAt||!Number.isFinite(Date.parse(shiftStartAt)))throw new Error('Не удалось определить начало смены.');
+
+  const result=await api('/api/admin/control/reports',{method:'POST',body:JSON.stringify({
+   shiftDate:today,shiftStartAt,closedBy:sessionStorage.getItem(USER_KEY)||'персонал'
+  })});
+  if(!result?.ok||!result?.report)throw new Error('Сервер не подтвердил сохранение отчёта.');
+  await syncControlData();
+  renderHome();renderInventory();renderHistory();renderArchive();renderReport();navigate('reportView');
+  toast(result.duplicate?'Отчёт этой смены уже отправлен руководителю.':'Отчёт автоматически отправлен руководителю и сохранён на сервере ✅');
+ }catch(e){
+  toast('Не удалось отправить отчёт руководителю: '+(e?.message||'ошибка'));
+ }finally{
+  reportSubmitting=false;
+  if(button){button.disabled=false;button.textContent=button.dataset.originalText||'✓ Завершить работу и отправить отчёт';delete button.dataset.originalText}
+ }
+}
+$('#finishWork').onclick=()=>confirmAction('Завершить рабочую смену?','Итог смены будет автоматически сохранён на сервере и появится в панели руководителя. Для закрытия все клиенты должны быть завершены, а все позиции — оплачены.','Завершить и отправить отчёт',finishShiftAndSendReport);
 $('#clientModal').addEventListener('click',e=>{if(e.target.id==='clientModal')closeModal('#clientModal')});
 $('#addModal').addEventListener('click',e=>{if(e.target.id==='addModal')closeModal('#addModal')});
 $('#confirmModal').addEventListener('click',e=>{if(e.target.id==='confirmModal')closeModal('#confirmModal')});
