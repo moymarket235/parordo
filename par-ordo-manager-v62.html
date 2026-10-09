@@ -2,7 +2,7 @@
 <html lang="ru-RU">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#0b0805"><title>ПАР ОРДО · Панель руководителя V71</title>
+<meta name="theme-color" content="#0b0805"><title>ПАР ОРДО · Панель руководителя V81</title>
 <style>
 :root{color-scheme:dark;--gold:#ffda81;--muted:#b8a58d;--line:#563b20;--green:#65e9a0;--blue:#8abbff}*{box-sizing:border-box}body{margin:0;min-height:100dvh;background:radial-gradient(ellipse at top,#2b1808 0,#100904 44%,#050403 100%);color:#fff1db;font:15px/1.45 system-ui,-apple-system,Segoe UI,Arial,sans-serif}.wrap{width:min(100%,850px);margin:auto;padding:16px 13px calc(32px + env(safe-area-inset-bottom))}.top{display:flex;align-items:center;gap:12px;padding:8px 2px 16px;border-bottom:1px solid #4c341d;margin-bottom:16px}.logo{width:53px;height:53px;border-radius:50%;object-fit:cover;border:2px solid #c48c2c;box-shadow:0 0 20px #e9a92b27}.brand{flex:1}.brand b{display:block;letter-spacing:.12em;font-size:17px}.brand small{color:var(--gold);letter-spacing:.2em;font-size:9px}.live{font-size:10px;color:var(--green);border:1px solid #286940;border-radius:99px;padding:6px 9px;white-space:nowrap}.panel{padding:17px;border:1px solid #765025;border-radius:20px;background:linear-gradient(150deg,#1b1008,#0b0705);box-shadow:0 12px 35px #0007;margin-bottom:14px}.eyebrow{font-size:10px;font-weight:900;letter-spacing:.18em;color:var(--gold)}h1{font:700 28px/1.12 Georgia,serif;margin:6px 0 5px}h2{font:700 22px/1.2 Georgia,serif;margin:0}.muted{color:var(--muted);font-size:12px}.form{display:grid;gap:9px;margin-top:17px}.field{width:100%;padding:14px;border-radius:12px;border:1px solid #654523;background:#fff;color:#15100a;font-size:16px}.btn{min-height:48px;padding:12px 15px;border-radius:12px;border:1px solid #c38a2c;background:linear-gradient(110deg,#b97716,#ffdc69);color:#190e04;font-weight:900;font-size:14px;cursor:pointer}.btn.secondary{background:#140c07;color:var(--gold);border-color:#614321}.btn:disabled{opacity:.55}.hidden{display:none!important}.summary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:14px}.tile{min-width:0;padding:12px;border:1px solid #49321c;border-radius:14px;background:#100904}.tile small{display:block;color:var(--muted);font-size:9px;line-height:1.35;min-height:25px}.tile strong{display:block;margin-top:3px;color:var(--gold);font-size:17px;overflow-wrap:anywhere}.tile.cash strong{color:var(--green)}.tile.transfer strong{color:var(--blue)}.report-list{display:grid;gap:10px;margin-top:13px}.report{padding:14px;border:1px solid #5d4123;border-radius:16px;background:linear-gradient(145deg,#190f08,#0d0805)}.report-top{display:flex;justify-content:space-between;gap:8px;align-items:start}.report-top b{display:block;font-size:14px}.report-top strong{color:var(--gold);font-size:17px;white-space:nowrap}.meta{margin-top:4px;color:var(--muted);font-size:10px}.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:12px}.stats>div{padding:9px;border-radius:11px;border:1px solid #3e2b1b;background:#0d0805}.stats small{display:block;color:var(--muted);font-size:8px;line-height:1.35;min-height:19px}.stats strong{display:block;color:#ffe09a;font-size:13px;overflow-wrap:anywhere;margin-top:3px}.cash-text{color:var(--green)!important}.transfer-text{color:var(--blue)!important}.empty{padding:22px;text-align:center;border:1px dashed #604322;border-radius:14px;color:var(--muted);font-size:12px}.notice{margin-top:12px;color:var(--muted);font-size:10px}.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:9;background:#171008;border:1px solid #87602d;color:#ffdfa0;padding:11px 15px;border-radius:13px;box-shadow:0 9px 30px #000;max-width:92vw;font-size:12px;text-align:center} @media(min-width:650px){.summary{grid-template-columns:repeat(4,minmax(0,1fr))}.stats{grid-template-columns:repeat(4,minmax(0,1fr))}.panel{padding:21px}h1{font-size:34px}}
 
@@ -259,7 +259,81 @@ body{font-size:15px;line-height:1.5}
 @media(prefers-reduced-motion:reduce){.live-client[data-bracelet] .live-item::after{animation:none}}
 
 
-.audit-list{display:grid;gap:10px;margin-top:12px}.audit-entry{padding:12px;border:1px solid #5d4228;border-radius:13px;background:linear-gradient(145deg,#1b1008,#0e0805);overflow-wrap:anywhere}.audit-entry-top{display:flex;justify-content:space-between;gap:10px;align-items:start}.audit-entry-top b{color:var(--gold);font-size:14px}.audit-entry .audit-meta{font-size:12px;color:var(--muted);line-height:1.55;margin-top:6px}.audit-entry pre{white-space:pre-wrap;overflow-wrap:anywhere;font-size:12px;line-height:1.5;color:#e6d6bf;background:#0b0704;padding:9px;border-radius:9px;margin:8px 0 0}.audit-actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:12px}.readonly-note{font-size:13px;line-height:1.55;color:#d8c5a6;border:1px dashed #665039;padding:11px;border-radius:11px;margin-top:12px}.role-pill{display:inline-flex;gap:6px;align-items:center;padding:6px 10px;border:1px solid #72512d;border-radius:999px;color:#ffdc91;font-size:12px;font-weight:800}
+/* V81 — mobile-first Russian audit log: filters, search, readable event cards */
+.audit-panel-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.audit-panel-head .audit-head-copy{min-width:0;flex:1 1 230px}
+.audit-panel-head .btn{flex:0 0 auto;min-height:42px;font-size:13px;padding:9px 12px}
+.audit-toolbar{display:grid;gap:10px;margin-top:14px}
+.audit-filter-row{display:flex;gap:7px;max-width:100%;overflow-x:auto;overflow-y:hidden;padding:2px 1px 6px;scrollbar-width:none;overscroll-behavior-inline:contain}
+.audit-filter-row::-webkit-scrollbar{display:none}
+.audit-filter-chip{flex:0 0 auto;min-height:40px;border:1px solid #594027;border-radius:999px;background:#100a06;color:#e7d5b9;padding:8px 13px;font:inherit;font-size:13px;font-weight:700;white-space:nowrap;cursor:pointer}
+.audit-filter-chip.is-active{background:linear-gradient(120deg,#d99620,#ffdc72);border-color:#ffdc72;color:#241605;box-shadow:0 0 12px #dda43b26}
+.audit-tools{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:9px}
+.audit-tool{width:100%;min-width:0;min-height:46px;border:1px solid #60462a;border-radius:12px;background:#100a06;color:#f8ecd9;padding:11px 12px;font:inherit;font-size:14px;outline:none}
+.audit-tool:focus{border-color:#f4c75f;box-shadow:0 0 0 2px #f4c75f22}
+.audit-tool::placeholder{color:#a9977e}
+.audit-count{margin:0;color:var(--muted);font-size:12px;line-height:1.45}
+.audit-list{display:grid;gap:11px;margin-top:12px}
+.audit-entry{--audit-color:#d9a441;padding:12px;border:1px solid #5d4228;border-left:3px solid var(--audit-color);border-radius:15px;background:linear-gradient(145deg,#1b1008,#0e0805);overflow-wrap:anywhere;min-width:0;box-shadow:0 3px 13px #00000018}
+.audit-entry[data-tone="green"]{--audit-color:#35dc7e}
+.audit-entry[data-tone="blue"]{--audit-color:#369bff}
+.audit-entry[data-tone="purple"]{--audit-color:#b27bff}
+.audit-entry[data-tone="orange"]{--audit-color:#ff7c45}
+.audit-entry[data-tone="pink"]{--audit-color:#fb6592}
+.audit-entry[data-tone="red"]{--audit-color:#ff6b69}
+.audit-entry[data-tone="gold"]{--audit-color:#f4c75f}
+.audit-entry[data-tone="slate"]{--audit-color:#98a6bb}
+.audit-card-head{display:grid;grid-template-columns:42px minmax(0,1fr);gap:10px;align-items:start}
+.audit-icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:color-mix(in srgb,var(--audit-color) 20%,#100a06);color:var(--audit-color);font-size:20px;font-weight:900;border:1px solid color-mix(in srgb,var(--audit-color) 55%,transparent)}
+.audit-heading{min-width:0}
+.audit-heading h3{margin:0;color:#fff2dc;font-size:15px;line-height:1.32;font-weight:800;overflow-wrap:anywhere}
+.audit-subtitle{font-size:13px;line-height:1.45;color:#d3c0a3;margin-top:4px}
+.audit-time-row{display:flex;flex-wrap:wrap;gap:8px 12px;margin-top:7px;color:var(--muted);font-size:12px;line-height:1.4}
+.audit-time-row span{display:inline-flex;align-items:center;gap:5px}
+.audit-badge{display:inline-flex;align-items:center;gap:5px;max-width:100%;border-radius:999px;padding:5px 9px;font-size:11px;font-weight:800;line-height:1.2;color:var(--audit-color);border:1px solid color-mix(in srgb,var(--audit-color) 42%,transparent);background:color-mix(in srgb,var(--audit-color) 12%,#100a06)}
+.audit-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:11px}
+.audit-stat{min-width:0;border:1px solid #49331e;border-radius:11px;background:#100a06;padding:9px}
+.audit-stat small{display:block;color:#bfae95;font-size:11px;line-height:1.35}
+.audit-stat strong{display:block;margin-top:4px;color:#f5e4c7;font-size:15px;line-height:1.25;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.audit-stat.green strong{color:#43e88b}.audit-stat.blue strong{color:#63b1ff}.audit-stat.orange strong{color:#ffad62}.audit-stat.purple strong{color:#c29aff}
+.audit-summary-line{font-size:13px;line-height:1.48;color:#e2d0b4;margin-top:10px;padding-top:9px;border-top:1px solid #4d3722}
+.audit-summary-line b{color:#ffe0a0}
+.audit-details{margin-top:9px;border-top:1px solid #4d3722;padding-top:8px}
+.audit-details summary{list-style:none;display:flex;align-items:center;justify-content:space-between;gap:10px;color:#ffda81;font-size:13px;font-weight:800;cursor:pointer;min-height:34px}
+.audit-details summary::-webkit-details-marker{display:none}
+.audit-details summary::after{content:'⌄';display:inline-flex;align-items:center;justify-content:center;width:27px;height:27px;border:1px solid #8a642e;border-radius:50%;font-size:18px;line-height:1;flex:0 0 auto}
+.audit-details[open] summary::after{content:'⌃'}
+.audit-detail-body{padding-top:9px;display:grid;gap:8px}
+.audit-detail-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:10px;font-size:13px;line-height:1.45;padding:7px 0;border-bottom:1px solid #352416}
+.audit-detail-row:last-of-type{border-bottom:0}
+.audit-detail-row span{color:#bda98d}.audit-detail-row strong{text-align:right;color:#f2e1c5;overflow-wrap:anywhere}
+.audit-technical{margin-top:4px}
+.audit-technical summary{justify-content:flex-start;font-size:12px;color:#bda98d;min-height:30px}
+.audit-technical summary::after{display:none}
+.audit-entry pre{white-space:pre-wrap;overflow-wrap:anywhere;word-break:break-word;font-size:11px;line-height:1.45;color:#e6d6bf;background:#0b0704;padding:9px;border-radius:9px;margin:7px 0 0;max-height:260px;overflow:auto}
+.audit-empty{border:1px dashed #60462a;border-radius:13px;padding:18px 13px;color:#bda98d;text-align:center;font-size:13px;line-height:1.5}
+.audit-actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:12px}
+.readonly-note{font-size:13px;line-height:1.55;color:#d8c5a6;border:1px dashed #665039;padding:11px;border-radius:11px;margin-top:12px}
+.role-pill{display:inline-flex;gap:6px;align-items:center;padding:6px 10px;border:1px solid #72512d;border-radius:999px;color:#ffdc91;font-size:12px;font-weight:800}
+@media(max-width:480px){
+ .audit-panel-head .audit-head-copy{flex-basis:100%}
+ .audit-panel-head .btn{width:100%}
+ .audit-tools{grid-template-columns:minmax(0,1fr)}
+ .audit-tool{font-size:14px;min-height:45px}
+ .audit-entry{padding:10px}
+ .audit-card-head{grid-template-columns:38px minmax(0,1fr);gap:9px}
+ .audit-icon{width:36px;height:36px;border-radius:10px;font-size:18px}
+ .audit-heading h3{font-size:14px}
+ .audit-subtitle{font-size:12.5px}
+ .audit-stats{gap:6px}
+ .audit-stat{padding:8px}
+ .audit-stat small{font-size:10.5px}
+ .audit-stat strong{font-size:14px}
+ .audit-detail-row{grid-template-columns:minmax(0,1fr);gap:3px}
+ .audit-detail-row strong{text-align:left}
+}
+@media(prefers-reduced-motion:reduce){.audit-entry,.audit-filter-chip{scroll-behavior:auto;animation:none}}
+
 </style></head>
 <body><main class="wrap">
 <header class="top"><img class="logo" src="./assets/par-ordo-logo.png" alt="ПАР ОРДО" onerror="this.style.display='none'"><div class="brand"><b>ПАР ОРДО</b><small>ПАНЕЛЬ РУКОВОДИТЕЛЯ</small></div><span class="live">● ОБНОВЛЕНИЕ · 20 сек</span></header>
@@ -270,7 +344,7 @@ body{font-size:15px;line-height:1.5}
 <button type="button" class="filter-chip is-active" data-client-filter="all" aria-pressed="true">Все сегодня</button><button type="button" class="filter-chip" data-client-filter="active" aria-pressed="false">В бане</button><button type="button" class="filter-chip" data-client-filter="completed" aria-pressed="false">Завершённые</button>
 </div><div id="liveClients" class="client-list"><div class="client-empty">Загружаем данные о клиентах…</div></div><p id="liveUpdated" class="live-foot">Данные о клиентах обновляются с сервера каждые 20 секунд.</p></div><div class="panel manager-section-hidden" id="inventoryPanel"><div class="inventory-head"><div><div class="eyebrow">СКЛАД · ЦЕНЫ · ПОСТУПЛЕНИЕ</div><h2 style="margin-top:6px">Склад и остатки</h2><p class="muted" style="margin:6px 0 0">Цены, остатки, бронь и поступления — в одном месте.</p></div><span class="inventory-badge">● ОБНОВЛЕНИЕ · 20 сек</span></div><div id="inventorySummary" class="inventory-summary"></div><div id="inventoryAlerts" class="inventory-alerts ok"><h3>✅ Состояние склада</h3><p>Проверяем остатки товаров…</p></div><input id="inventorySearch" class="inventory-search" type="search" placeholder="Поиск товара…" autocomplete="off"><div class="inventory-filter-row" role="group" aria-label="Фильтр остатков">
 <button type="button" class="filter-chip is-active" data-stock-filter="all" aria-pressed="true">Все товары</button><button type="button" class="filter-chip" data-stock-filter="low" aria-pressed="false">Мало осталось</button><button type="button" class="filter-chip" data-stock-filter="empty" aria-pressed="false">Нет в наличии</button>
-</div><div id="inventoryList" class="inventory-list"><div class="client-empty">Загружаем товары…</div></div><p id="inventoryUpdated" class="inventory-foot">Товары обновляются каждые 20 секунд.</p></div><div class="panel manager-section-hidden" id="historyPanel"><div class="eyebrow">ИСТОРИЯ ОТЧЁТОВ</div><h2 style="margin-top:6px">Смены по датам</h2><div id="reportList" class="report-list"></div><p class="notice">Покупки и платежи клиентов обновляются с сервера каждые 20 секунд. После закрытия смены итоговый отчёт сохраняется один раз.</p></div><div class="panel manager-section-hidden" id="auditPanel"><div class="eyebrow">БЕЗОПАСНОСТЬ · КОНТРОЛЬ</div><h2 style="margin-top:6px">Журнал действий</h2><p class="muted">Входы, изменения клиентов, закрытие смен и операции со складом.</p><div class="audit-actions"><button id="refreshAuditBtn" class="btn secondary" type="button">↻ Обновить журнал</button></div><div id="auditList" class="audit-list"><div class="client-empty">Загрузка журнала действий…</div></div><div class="panel" style="margin-top:14px"><div class="eyebrow">РЕЗЕРВНОЕ КОПИРОВАНИЕ</div><h2 style="margin-top:6px">Резервная копия данных</h2><p class="muted">Ручной экспорт рабочих данных в JSON. Файл содержит информацию клиентов и заказов — храните его в безопасном месте.</p><div class="audit-actions"><button id="backupExportBtn" class="btn" type="button">⬇ Скачать резервную копию</button></div><p id="backupRoleNote" class="readonly-note hidden">Скачивать резервную копию может только администратор.</p></div></div></section>
+</div><div id="inventoryList" class="inventory-list"><div class="client-empty">Загружаем товары…</div></div><p id="inventoryUpdated" class="inventory-foot">Товары обновляются каждые 20 секунд.</p></div><div class="panel manager-section-hidden" id="historyPanel"><div class="eyebrow">ИСТОРИЯ ОТЧЁТОВ</div><h2 style="margin-top:6px">Смены по датам</h2><div id="reportList" class="report-list"></div><p class="notice">Покупки и платежи клиентов обновляются с сервера каждые 20 секунд. После закрытия смены итоговый отчёт сохраняется один раз.</p></div><div class="panel manager-section-hidden" id="auditPanel"><div class="audit-panel-head"><div class="audit-head-copy"><div class="eyebrow">БЕЗОПАСНОСТЬ · КОНТРОЛЬ</div><h2 style="margin-top:6px">Журнал действий</h2><p class="muted" style="margin:6px 0 0">Понятная история действий сотрудников, клиентов, оплат и склада.</p></div><button id="refreshAuditBtn" class="btn secondary" type="button">↻ Обновить журнал</button></div><div class="audit-toolbar"><div class="audit-filter-row" role="group" aria-label="Фильтр действий"><button class="audit-filter-chip is-active" type="button" data-audit-filter="all" aria-pressed="true">Все</button><button class="audit-filter-chip" type="button" data-audit-filter="clients" aria-pressed="false">Клиенты</button><button class="audit-filter-chip" type="button" data-audit-filter="products" aria-pressed="false">Товары</button><button class="audit-filter-chip" type="button" data-audit-filter="payments" aria-pressed="false">Оплаты</button><button class="audit-filter-chip" type="button" data-audit-filter="stock" aria-pressed="false">Склад</button><button class="audit-filter-chip" type="button" data-audit-filter="security" aria-pressed="false">Безопасность</button></div><div class="audit-tools"><input id="auditSearch" class="audit-tool" type="search" placeholder="Поиск по сотруднику, браслету или товару…" autocomplete="off" aria-label="Поиск по журналу"><input id="auditDate" class="audit-tool" type="date" aria-label="Фильтр по дате"></div><p id="auditCount" class="audit-count">Загружаем историю действий…</p></div><div id="auditList" class="audit-list"><div class="audit-empty">Загрузка журнала действий…</div></div><div class="panel" style="margin-top:14px"><div class="eyebrow">РЕЗЕРВНОЕ КОПИРОВАНИЕ</div><h2 style="margin-top:6px">Резервная копия данных</h2><p class="muted">Ручной экспорт рабочих данных в JSON. Файл содержит информацию клиентов и заказов — храните его в безопасном месте.</p><div class="audit-actions"><button id="backupExportBtn" class="btn" type="button">⬇ Скачать резервную копию</button></div><p id="backupRoleNote" class="readonly-note hidden">Скачивать резервную копию может только администратор.</p></div></div></section>
 </main><script>
 'use strict';
 const API='https://par-ordo-api.moimarketjibekjolu.workers.dev';
@@ -357,7 +431,130 @@ $('#inventoryList').addEventListener('click',async e=>{const save=e.target.close
 $('#inventorySearch').addEventListener('input',()=>renderInventory({products:inventoryProducts},true));
 document.querySelectorAll('[data-client-filter]').forEach(b=>b.addEventListener('click',()=>{currentClientFilter=b.dataset.clientFilter;if(latestClientData)renderLiveClients(latestClientData)}));
 document.querySelectorAll('[data-stock-filter]').forEach(b=>b.addEventListener('click',()=>{currentStockFilter=b.dataset.stockFilter;renderInventory({products:inventoryProducts},true)}));
-const auditLabels={login_success:'Успешный вход',logout:'Выход',access_denied:'Отказ в доступе',client_created:'Создан клиент',client_updated:'Изменён клиент',clients_archived:'Клиенты архивированы',shift_closed:'Смена закрыта',stock_receipt:'Поступление товара',product_updated:'Изменены цена/остаток',order_status_changed:'Изменён статус заказа',backup_exported:'Скачана резервная копия'};
+const auditLabels={login_success:'Успешный вход',logout:'Выход из системы',access_denied:'Доступ запрещён',client_created:'Создан новый клиент',client_updated:'Изменён клиент',clients_archived:'Клиенты перемещены в архив',shift_closed:'Смена завершена',stock_receipt:'Поступление товара',product_updated:'Изменена цена или остаток',order_status_changed:'Изменён статус заказа',backup_exported:'Создана резервная копия'};
+const auditMeta={
+ login_success:{category:['security'],tone:'slate',icon:'↪',summary:'Пользователь успешно вошёл в систему.',badge:'Вход выполнен'},
+ logout:{category:['security'],tone:'slate',icon:'↩',summary:'Пользователь завершил сеанс.',badge:'Выход'},
+ access_denied:{category:['security'],tone:'red',icon:'⛨',summary:'Система заблокировала действие из-за недостаточных прав.',badge:'Действие заблокировано'},
+ client_created:{category:['clients'],tone:'gold',icon:'♙',summary:'Создана карточка клиента и назначен браслет.',badge:'Клиент создан'},
+ client_updated:{category:['clients'],tone:'orange',icon:'✎',summary:'Обновлены данные посещения, покупки или оплаты.',badge:'Данные обновлены'},
+ clients_archived:{category:['clients'],tone:'slate',icon:'▤',summary:'Завершённые карточки клиентов перемещены в архив.',badge:'Архив'},
+ shift_closed:{category:['payments','security'],tone:'green',icon:'✓',summary:'Итог смены сохранён в отчётах руководителя.',badge:'Отчёт сохранён'},
+ stock_receipt:{category:['products','stock'],tone:'pink',icon:'▣',summary:'Количество товара на складе увеличено.',badge:'Поступление'},
+ product_updated:{category:['products','stock'],tone:'purple',icon:'₽',summary:'Изменена цена или количество товара на складе.',badge:'Товар изменён'},
+ order_status_changed:{category:['clients','payments'],tone:'blue',icon:'▣',summary:'Обновлён статус заказа.',badge:'Заказ обновлён'},
+ backup_exported:{category:['security'],tone:'slate',icon:'⇩',summary:'Администратор скачал резервную копию данных.',badge:'Экспорт'}
+};
+let auditEvents=[],currentAuditFilter='all';
+const auditCategoryNames={all:'Все',clients:'Клиенты',products:'Товары',payments:'Оплаты',stock:'Склад',security:'Безопасность'};
+function auditRoleName(role){return ({admin:'Администратор',manager:'Руководитель',staff:'Сотрудник'})[String(role||'').toLowerCase()]||String(role||'Не указано')}
+function auditMoney(v){return `${Number(v||0).toLocaleString('ru-RU')} сом`}
+function auditDate(v){if(!v)return'Дата не указана';const d=new Date(v);if(Number.isNaN(d.getTime()))return String(v);return d.toLocaleDateString('ru-RU',{day:'2-digit',month:'2-digit',year:'numeric'})+' · '+d.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})}
+function auditDayKey(v){const d=new Date(v);if(Number.isNaN(d.getTime()))return'';return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
+function auditStatusName(s){return ({active:'Посещение продолжается',completed:'Посещение завершено',pending:'Ожидает оплаты',paid:'Оплачен',cancelled:'Отменён',new:'Новый',processing:'В обработке',shipped:'Отправлен',delivered:'Доставлен'})[String(s||'').toLowerCase()]||String(s||'Данные обновлены')}
+function auditPathName(path){const p=String(path||'');if(p.includes('/products/'))return'Изменение товара или складской операции';if(p.includes('/control/clients'))return'Изменение карточки клиента';if(p.includes('/control/reports'))return'Операция со сменным отчётом';if(p.includes('/backup'))return'Резервное копирование';if(p.includes('/admin/audit'))return'Просмотр журнала действий';return p||'Действие без подробностей'}
+function auditCategories(e){
+ const a=String(e.action||''),d=e.details||{},set=new Set(auditMeta[a]?.category||['security']);
+ if(a==='client_updated'){
+  if(d.payments)set.add('payments');
+  if(Array.isArray(d.stockChanges)&&d.stockChanges.length){set.add('stock');set.add('products')}
+ }
+ if(a==='product_updated'){
+  set.delete('products');set.delete('stock');
+  if(d.oldPrice!==d.newPrice)set.add('products');
+  if(Number(d.oldStock)!==Number(d.newStock))set.add('stock');
+  if(!set.has('products')&&!set.has('stock'))set.add('products');
+ }
+ return [...set];
+}
+function auditStats(e){
+ const d=e.details||{},a=e.action||'';let stats=[];
+ if(a==='client_created'){
+  if(d.room!=null)stats.push(['Браслет',`№${d.room}`,'gold']);
+  stats.push(['Событие','Клиент создан','green']);
+ }
+ if(a==='client_updated'){
+  if(d.itemCount!=null)stats.push(['Товаров в заказе',`${Number(d.itemCount)} шт.`,'purple']);
+  const p=d.payments||{};
+  if(p.cash!=null)stats.push(['Наличными',auditMoney(p.cash),'green']);
+  if(p.transfer!=null)stats.push(['Переводом',auditMoney(p.transfer),'blue']);
+  if(p.pending!=null)stats.push(['Не оплачено',auditMoney(p.pending),'orange']);
+ }
+ if(a==='shift_closed'){
+  if(d.clientCount!=null)stats.push(['Клиентов',`${Number(d.clientCount)} чел.`,'purple']);
+  if(d.cashTotal!=null)stats.push(['Наличными',auditMoney(d.cashTotal),'green']);
+  if(d.transferTotal!=null)stats.push(['Переводом',auditMoney(d.transferTotal),'blue']);
+  if(d.paidTotal!=null)stats.push(['Получено всего',auditMoney(d.paidTotal),'gold']);
+ }
+ if(a==='stock_receipt'){
+  if(d.qty!=null)stats.push(['Поступило',`+${Number(d.qty)} шт.`,'green']);
+ }
+ if(a==='product_updated'){
+  if(Number(d.oldPrice)!==Number(d.newPrice)){stats.push(['Было',d.oldPrice==null?'Цена не указана':auditMoney(d.oldPrice),'']);stats.push(['Стало',d.newPrice==null?'Цена не указана':auditMoney(d.newPrice),'green'])}
+  if(Number(d.oldStock)!==Number(d.newStock)){stats.push(['Старый остаток',`${Number(d.oldStock||0)} шт.`,'']);stats.push(['Новый остаток',`${Number(d.newStock||0)} шт.`,'green'])}
+ }
+ if(a==='clients_archived'){
+  if(d.count!=null)stats.push(['Карточек',`${Number(d.count)} шт.`,'purple']);
+  if(d.day)stats.push(['Дата',String(d.day),'']);
+ }
+ if(a==='order_status_changed')stats.push(['Новый статус',auditStatusName(d.status),'blue']);
+ if(a==='backup_exported'&&d.rowCounts){const names={products:'Товары',inventory_movements:'Движения склада',orders:'Заказы',order_items:'Позиции заказов',payments:'Платежи',control_room_state:'Состояние браслетов',control_clients:'Карточки клиентов',control_shift_reports:'Сменные отчёты',audit_log:'Журнал действий'};for(const [k,v] of Object.entries(d.rowCounts))stats.push([names[k]||k,`${Number(v)} записей`,''])}
+ if(a==='login_success'||a==='logout'||a==='access_denied')stats.push(['Результат',auditMeta[a]?.badge||'Зарегистрировано',a==='access_denied'?'orange':'green']);
+ return stats.slice(0,6);
+}
+function auditDetailRows(e){
+ const d=e.details||{},a=e.action||'';let rows=[];
+ if(a==='client_created'){
+  if(d.room!=null)rows.push(['Номер браслета',`№${d.room}`]);
+  if(d.clientNo!=null)rows.push(['Внутренний номер клиента',String(d.clientNo)]);
+  rows.push(['Результат','Карточка клиента создана']);
+ }
+ if(a==='client_updated'){
+  rows.push(['Статус посещения',auditStatusName(d.status)]);
+  if(d.itemCount!=null)rows.push(['Количество позиций',`${Number(d.itemCount)} шт.`]);
+  const p=d.payments||{};if(p.cash!=null)rows.push(['Оплачено наличными',auditMoney(p.cash)]);if(p.transfer!=null)rows.push(['Оплачено переводом',auditMoney(p.transfer)]);if(p.pending!=null)rows.push(['Задолженность',auditMoney(p.pending)]);
+  for(const ch of Array.isArray(d.stockChanges)?d.stockChanges:[]){const q=Number(ch.delta||0);rows.push([q>0?'Списано со склада':'Возвращено на склад',`Товар №${ch.productId}: ${Math.abs(q)} шт.`])}
+ }
+ if(a==='shift_closed'){
+  if(d.shiftDate)rows.push(['Дата смены',auditDate(d.shiftDate).split(' · ')[0]]);
+  if(d.clientCount!=null)rows.push(['Всего клиентов',`${Number(d.clientCount)} чел.`]);
+  if(d.cashTotal!=null)rows.push(['Наличными',auditMoney(d.cashTotal)]);
+  if(d.transferTotal!=null)rows.push(['Переводом',auditMoney(d.transferTotal)]);
+  if(d.paidTotal!=null)rows.push(['Всего получено',auditMoney(d.paidTotal)]);
+ }
+ if(a==='stock_receipt')if(d.qty!=null)rows.push(['Поступило на склад',`+${Number(d.qty)} шт.`]);
+ if(a==='product_updated'){
+  if(Number(d.oldPrice)!==Number(d.newPrice)){rows.push(['Старая цена',d.oldPrice==null?'Не указана':auditMoney(d.oldPrice)]);rows.push(['Новая цена',d.newPrice==null?'Не указана':auditMoney(d.newPrice)])}
+  if(Number(d.oldStock)!==Number(d.newStock)){rows.push(['Старый остаток',`${Number(d.oldStock||0)} шт.`]);rows.push(['Новый остаток',`${Number(d.newStock||0)} шт.`])}
+ }
+ if(a==='access_denied'){rows.push(['Запрошенное действие',auditPathName(e.target)]);if(d.method)rows.push(['Тип запроса',String(d.method).toUpperCase()]);rows.push(['Результат','Заблокировано: недостаточно прав'])}
+ if(a==='login_success')rows.push(['Результат','Вход разрешён']);
+ if(a==='logout')rows.push(['Результат','Сеанс завершён']);
+ if(a==='clients_archived'){if(d.count!=null)rows.push(['Перемещено в архив',`${Number(d.count)} карточек`]);if(d.day)rows.push(['Дата',String(d.day)])}
+ if(a==='order_status_changed')rows.push(['Статус заказа',auditStatusName(d.status)]);
+ if(a==='backup_exported'&&d.rowCounts){const names={products:'Товары',inventory_movements:'История склада',orders:'Заказы',order_items:'Позиции заказов',payments:'Платежи',control_room_state:'Состояние браслетов',control_clients:'Карточки клиентов',control_shift_reports:'Отчёты смен',audit_log:'Записи журнала'};for(const [k,v] of Object.entries(d.rowCounts))rows.push([names[k]||k,`${Number(v)} записей`])}
+ return rows;
+}
+function auditEscDetails(e){return esc(JSON.stringify(e.details||{},null,2))}
+function auditEventMatches(e){
+ const d=e.details||{},filter=$('#auditSearch')?.value?.trim().toLowerCase()||'',day=$('#auditDate')?.value||'';
+ if(currentAuditFilter!=='all'&&!auditCategories(e).includes(currentAuditFilter))return false;
+ if(day&&auditDayKey(e.createdAt)!==day)return false;
+ if(filter){const hay=[auditLabels[e.action]||e.action,e.username,e.role,e.target,JSON.stringify(d),auditPathName(e.target)].join(' ').toLowerCase();if(!hay.includes(filter))return false}
+ return true;
+}
+function renderAudit(){
+ const all=auditEvents.length,events=auditEvents.filter(auditEventMatches);
+ const count=$('#auditCount');if(count)count.textContent=events.length===all?`Записей: ${all} · Показаны последние события`:`Показано ${events.length} из ${all} записей`;
+ const list=$('#auditList');if(!events.length){list.innerHTML='<div class="audit-empty">По выбранным условиям записи не найдены. Измените фильтр, дату или поисковый запрос.</div>';return}
+ list.innerHTML=events.map(e=>{
+  const a=String(e.action||''),m=auditMeta[a]||{category:['security'],tone:'slate',icon:'•',summary:'В журнале зарегистрировано действие.',badge:'Записано'},d=e.details||{},stats=auditStats(e),rows=auditDetailRows(e),bracelet=d.room!=null?`Браслет №${d.room}`:(a==='client_updated'||a==='client_created'?'Карточка клиента':'');
+  const subtitle=bracelet|| (a==='stock_receipt'||a==='product_updated'?`Товар №${e.target||'—'}`:(a==='backup_exported'?'Данные системы':(a==='shift_closed'?'Отчёт смены':auditPathName(e.target))));
+  const itemsHtml=stats.length?`<div class="audit-stats">${stats.map(([label,value,tone])=>`<div class="audit-stat ${esc(tone||'')}"><small>${esc(label)}</small><strong>${esc(value)}</strong></div>`).join('')}</div>`:'';
+  const detailsHtml=(rows.length||Object.keys(d).length)?`<details class="audit-details"><summary>Подробнее</summary><div class="audit-detail-body">${rows.map(([label,value])=>`<div class="audit-detail-row"><span>${esc(label)}</span><strong>${esc(value)}</strong></div>`).join('')}<div class="audit-detail-row"><span>Пользователь</span><strong>${esc(e.username||'—')} · ${esc(auditRoleName(e.role))}</strong></div>${e.target?`<details class="audit-technical"><summary>Технические данные</summary><pre>${auditEscDetails(e)}</pre><div class="audit-detail-row"><span>Внутренний объект</span><strong>${esc(e.target)}</strong></div></details>`:''}</div></details>`:'';
+  return `<article class="audit-entry" data-tone="${esc(m.tone)}"><div class="audit-card-head"><span class="audit-icon" aria-hidden="true">${esc(m.icon)}</span><div class="audit-heading"><h3>${esc(auditLabels[a]||a||'Действие')}</h3>${subtitle?`<div class="audit-subtitle">${esc(subtitle)}</div>`:''}<div class="audit-time-row"><span>◷ ${esc(auditDate(e.createdAt))}</span><span>♙ ${esc(e.username||'Неизвестный пользователь')} · ${esc(auditRoleName(e.role))}</span></div></div></div>${itemsHtml}<div class="audit-summary-line">${esc(m.summary)}</div>${e.action==='access_denied'?`<div class="audit-badge" style="margin-top:8px">⛨ Действие заблокировано</div>`:''}${detailsHtml}</article>`;
+ }).join('');
+}
 function configureRoleUI(){
  $('#backupExportBtn').classList.toggle('hidden',currentRole!=='admin');
  $('#backupRoleNote').classList.toggle('hidden',currentRole==='admin');
@@ -365,9 +562,11 @@ function configureRoleUI(){
  const existing=$('#roleLabel');if(existing)existing.textContent=roleLabel;
 }
 async function loadAudit(){
- const d=await api('/api/admin/audit?limit=100'),events=Array.isArray(d.events)?d.events:[];
- $('#auditList').innerHTML=events.length?events.map(e=>`<article class="audit-entry"><div class="audit-entry-top"><b>${esc(auditLabels[e.action]||e.action||'Действие')}</b><span class="meta">${esc(fmt(e.createdAt))}</span></div><div class="audit-meta">Пользователь: <b>${esc(e.username||'—')}</b> · Роль: ${esc(e.role||'—')}<br>Объект: ${esc(e.target||'—')}</div>${e.details&&Object.keys(e.details).length?`<pre>${esc(JSON.stringify(e.details,null,2))}</pre>`:''}</article>`).join(''):'<div class="client-empty">Записей пока нет.</div>';
+ const d=await api('/api/admin/audit?limit=100');auditEvents=Array.isArray(d.events)?d.events:[];renderAudit();
 }
+document.querySelectorAll('[data-audit-filter]').forEach(b=>b.addEventListener('click',()=>{currentAuditFilter=b.dataset.auditFilter;document.querySelectorAll('[data-audit-filter]').forEach(x=>{const active=x===b;x.classList.toggle('is-active',active);x.setAttribute('aria-pressed',String(active))});renderAudit()}));
+$('#auditSearch').addEventListener('input',renderAudit);
+$('#auditDate').addEventListener('change',renderAudit);
 async function downloadBackup(){
  if(currentRole!=='admin'){toast('Резервную копию может скачать только администратор.');return}
  const btn=$('#backupExportBtn');if(btn)btn.disabled=true;
