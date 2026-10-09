@@ -1,8 +1,8 @@
 <!doctype html>
-<html lang="ru">
+<html lang="ru-RU">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#0b0805"><title>ПАР ОРДО · Панель руководителя V68</title>
+<meta name="theme-color" content="#0b0805"><title>ПАР ОРДО · Панель руководителя V69</title>
 <style>
 :root{color-scheme:dark;--gold:#ffda81;--muted:#b8a58d;--line:#563b20;--green:#65e9a0;--blue:#8abbff}*{box-sizing:border-box}body{margin:0;min-height:100dvh;background:radial-gradient(ellipse at top,#2b1808 0,#100904 44%,#050403 100%);color:#fff1db;font:15px/1.45 system-ui,-apple-system,Segoe UI,Arial,sans-serif}.wrap{width:min(100%,850px);margin:auto;padding:16px 13px calc(32px + env(safe-area-inset-bottom))}.top{display:flex;align-items:center;gap:12px;padding:8px 2px 16px;border-bottom:1px solid #4c341d;margin-bottom:16px}.logo{width:53px;height:53px;border-radius:50%;object-fit:cover;border:2px solid #c48c2c;box-shadow:0 0 20px #e9a92b27}.brand{flex:1}.brand b{display:block;letter-spacing:.12em;font-size:17px}.brand small{color:var(--gold);letter-spacing:.2em;font-size:9px}.live{font-size:10px;color:var(--green);border:1px solid #286940;border-radius:99px;padding:6px 9px;white-space:nowrap}.panel{padding:17px;border:1px solid #765025;border-radius:20px;background:linear-gradient(150deg,#1b1008,#0b0705);box-shadow:0 12px 35px #0007;margin-bottom:14px}.eyebrow{font-size:10px;font-weight:900;letter-spacing:.18em;color:var(--gold)}h1{font:700 28px/1.12 Georgia,serif;margin:6px 0 5px}h2{font:700 22px/1.2 Georgia,serif;margin:0}.muted{color:var(--muted);font-size:12px}.form{display:grid;gap:9px;margin-top:17px}.field{width:100%;padding:14px;border-radius:12px;border:1px solid #654523;background:#fff;color:#15100a;font-size:16px}.btn{min-height:48px;padding:12px 15px;border-radius:12px;border:1px solid #c38a2c;background:linear-gradient(110deg,#b97716,#ffdc69);color:#190e04;font-weight:900;font-size:14px;cursor:pointer}.btn.secondary{background:#140c07;color:var(--gold);border-color:#614321}.btn:disabled{opacity:.55}.hidden{display:none!important}.summary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:14px}.tile{min-width:0;padding:12px;border:1px solid #49321c;border-radius:14px;background:#100904}.tile small{display:block;color:var(--muted);font-size:9px;line-height:1.35;min-height:25px}.tile strong{display:block;margin-top:3px;color:var(--gold);font-size:17px;overflow-wrap:anywhere}.tile.cash strong{color:var(--green)}.tile.transfer strong{color:var(--blue)}.report-list{display:grid;gap:10px;margin-top:13px}.report{padding:14px;border:1px solid #5d4123;border-radius:16px;background:linear-gradient(145deg,#190f08,#0d0805)}.report-top{display:flex;justify-content:space-between;gap:8px;align-items:start}.report-top b{display:block;font-size:14px}.report-top strong{color:var(--gold);font-size:17px;white-space:nowrap}.meta{margin-top:4px;color:var(--muted);font-size:10px}.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:12px}.stats>div{padding:9px;border-radius:11px;border:1px solid #3e2b1b;background:#0d0805}.stats small{display:block;color:var(--muted);font-size:8px;line-height:1.35;min-height:19px}.stats strong{display:block;color:#ffe09a;font-size:13px;overflow-wrap:anywhere;margin-top:3px}.cash-text{color:var(--green)!important}.transfer-text{color:var(--blue)!important}.empty{padding:22px;text-align:center;border:1px dashed #604322;border-radius:14px;color:var(--muted);font-size:12px}.notice{margin-top:12px;color:var(--muted);font-size:10px}.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:9;background:#171008;border:1px solid #87602d;color:#ffdfa0;padding:11px 15px;border-radius:13px;box-shadow:0 9px 30px #000;max-width:92vw;font-size:12px;text-align:center} @media(min-width:650px){.summary{grid-template-columns:repeat(4,minmax(0,1fr))}.stats{grid-template-columns:repeat(4,minmax(0,1fr))}.panel{padding:21px}h1{font-size:34px}}
 
@@ -71,17 +71,94 @@ body{background:radial-gradient(ellipse at 15% -8%,#3a210c 0,transparent 38%),ra
 .live-item-sum{align-self:start;padding-top:2px;font-variant-numeric:tabular-nums}
 @media(max-width:380px){.live-client{padding:11px}.live-item{gap:7px}.live-item-main{gap:4px 6px}.live-item-sum{font-size:10px}.payment-chip{font-size:8px;padding:3px 6px}}
 
+
+
+/* V69 — accessibility pass: larger text, numbers and touch targets for phones */
+html{font-size:16px;-webkit-text-size-adjust:100%;text-size-adjust:100%;scroll-behavior:smooth}
+body{font-size:16px;line-height:1.55}
+.brand b{font-size:19px}.brand small{font-size:12px;letter-spacing:.12em}
+.live,.live-pill,.inventory-badge{font-size:12px;padding:7px 11px}
+.panel{padding:18px}
+.eyebrow{font-size:12px;letter-spacing:.12em;line-height:1.45}
+.panel h1{font-size:clamp(30px,7vw,38px);line-height:1.15}
+.panel h2{font-size:clamp(25px,6vw,31px);line-height:1.22}
+.muted,.panel p.muted{font-size:15px;line-height:1.55}
+.tile,.live-total,.inventory-kpi{padding:14px}
+.tile small,.live-total small,.inventory-kpi small{font-size:12px;line-height:1.45;letter-spacing:0;min-height:0}
+.tile strong,.live-total strong,.inventory-kpi strong{font-size:clamp(20px,5vw,24px);line-height:1.3}
+.section-nav a{font-size:15px;min-height:46px;padding:11px 15px}
+.filter-chip{font-size:14px;min-height:46px;padding:11px 14px}
+.client-heading b{font-size:17px;line-height:1.45}
+.client-heading .client-time,.client-identity-info .client-time{font-size:14px;line-height:1.55}
+.client-total{font-size:clamp(19px,5vw,23px);line-height:1.3}
+.status-chip{font-size:13px;line-height:1.4;padding:6px 10px}
+.live-item{font-size:14px;line-height:1.55;padding:10px 0;gap:9px}
+.live-item-name{font-size:14px;line-height:1.55}
+.live-item-sum{font-size:14px;line-height:1.5}
+.payment-chip{font-size:12px;line-height:1.4;padding:4px 7px;margin:3px 0 0 5px}
+.client-money{gap:7px}
+.client-money>div{padding:10px 9px}
+.client-money small{font-size:11px;line-height:1.4;letter-spacing:0}
+.client-money b{font-size:clamp(12px,3.4vw,15px);line-height:1.4}
+.live-foot,.inventory-foot{font-size:13px;line-height:1.65}
+.inventory-search{font-size:17px;min-height:54px;padding:14px 15px}
+.product-top b{font-size:17px;line-height:1.45}
+.product-category{font-size:13px;line-height:1.5}
+.product-price-tag{font-size:18px;padding:8px 10px}
+.stock-state{font-size:12px;line-height:1.4;padding:6px 9px}
+.inventory-stats>div{padding:10px}
+.inventory-stats small{font-size:11px;line-height:1.4;letter-spacing:0}
+.inventory-stats strong{font-size:15px;line-height:1.45}
+.inventory-field-wrap label{font-size:13px;line-height:1.45;min-height:0;margin-bottom:6px}
+.inventory-field{min-height:52px;padding:12px;font-size:18px}
+.inventory-actions .btn,.receipt-row .btn,.btn{min-height:50px;font-size:15px;line-height:1.35;padding:12px 14px}
+.receipt-row .btn{max-width:160px;white-space:normal}
+.inventory-alerts{padding:15px}
+.inventory-alerts h3{font-size:16px;line-height:1.5}
+.inventory-alerts li{font-size:14px;line-height:1.6;padding:3px 0}
+.inventory-alerts p{font-size:13px!important;line-height:1.6}
+.empty,.client-empty,.inventory-error{font-size:15px;line-height:1.6}
+.report-top b{font-size:16px;line-height:1.45}
+.report-top strong{font-size:20px}
+.meta,.notice{font-size:13px;line-height:1.6}
+.stats small{font-size:11px;line-height:1.4;min-height:0}
+.stats strong{font-size:16px;line-height:1.4}
+.toast{font-size:15px;line-height:1.45;padding:13px 16px}
+.field{font-size:18px;min-height:52px}
+@media(max-width:380px){
+ .wrap{padding-left:10px;padding-right:10px}
+ .panel{padding:14px}
+ .client-bracelet-visual{flex-basis:74px;width:74px;height:70px}
+ .client-bracelet-number{font-size:18px;min-width:36px}
+ .client-identity{gap:9px}
+ .client-heading{gap:8px}
+ .client-total{font-size:18px}
+ .client-money{grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}
+ .client-money>div{padding:9px 6px}
+ .client-money small{font-size:10px}
+ .client-money b{font-size:12px}
+ .inventory-stats{gap:5px}
+ .inventory-stats>div{padding:8px 6px}
+ .inventory-stats small{font-size:10px}
+ .inventory-stats strong{font-size:13px}
+ .receipt-row{grid-template-columns:minmax(0,1fr) 128px}
+ .receipt-row .btn{font-size:13px;padding:9px 8px}
+ .live-item{font-size:13px}
+ .live-item-name,.live-item-sum{font-size:13px}
+ .payment-chip{font-size:11px}
+}
+
 </style></head>
 <body><main class="wrap">
-<header class="top"><img class="logo" src="./assets/par-ordo-logo.png" alt="ПАР ОРДО" onerror="this.style.display='none'"><div class="brand"><b>ПАР ОРДО</b><small>ПАНЕЛЬ РУКОВОДИТЕЛЯ</small></div><span class="live">● LIVE · 20 сек</span></header>
+<header class="top"><img class="logo" src="./assets/par-ordo-logo.png" alt="ПАР ОРДО" onerror="this.style.display='none'"><div class="brand"><b>ПАР ОРДО</b><small>ПАНЕЛЬ РУКОВОДИТЕЛЯ</small></div><span class="live">● ОБНОВЛЕНИЕ · 20 сек</span></header>
 <section id="loginPanel" class="panel"><div class="eyebrow">ЗАЩИЩЁННЫЙ ВХОД</div><h1>Отчёты смен</h1><p class="muted">Войдите с администраторским аккаунтом. Новые отчёты появляются автоматически после завершения смены персоналом.</p><form id="loginForm" class="form"><input id="username" class="field" autocomplete="username" placeholder="Логин" required><input id="password" class="field" type="password" autocomplete="current-password" placeholder="Пароль" required><div id="loginError" class="muted"></div><button id="loginBtn" class="btn" type="submit">Войти в панель →</button></form></section>
 <section id="reportsPanel" class="hidden"><div class="panel"><div class="eyebrow">КОНТРОЛЬ СМЕН</div><h1>Отчёты руководителю</h1><p id="lastUpdated" class="muted">Загружаем отчёты…</p><div id="summary" class="summary"></div><div class="form" style="grid-template-columns:1fr 1fr"><button id="refreshBtn" class="btn secondary" type="button">↻ Обновить</button><button id="logoutBtn" class="btn secondary" type="button">Выйти</button></div></div><nav class="section-nav" aria-label="Быстрый переход">
 <a href="#customersPanel">♙ Клиенты</a><a href="#inventoryPanel">▦ Склад</a><a href="#historyPanel">▤ Отчёты</a>
-</nav><div class="panel" id="customersPanel"><div class="live-head"><div><div class="eyebrow">КОНТРОЛЬ КАЖДОГО КЛИЕНТА</div><h2 style="margin-top:6px">Клиенты и покупки</h2><p class="muted" style="margin:6px 0 0">Товары, сумма заказа и оплата по каждому браслету.</p></div><span class="live-pill">● LIVE · 20 сек</span></div><div id="liveSummary" class="live-summary"></div><div class="client-filter-row" role="group" aria-label="Фильтр клиентов">
+</nav><div class="panel" id="customersPanel"><div class="live-head"><div><div class="eyebrow">КОНТРОЛЬ КАЖДОГО КЛИЕНТА</div><h2 style="margin-top:6px">Клиенты и покупки</h2><p class="muted" style="margin:6px 0 0">Товары, сумма заказа и оплата по каждому браслету.</p></div><span class="live-pill">● ОБНОВЛЕНИЕ · 20 сек</span></div><div id="liveSummary" class="live-summary"></div><div class="client-filter-row" role="group" aria-label="Фильтр клиентов">
 <button type="button" class="filter-chip is-active" data-client-filter="all" aria-pressed="true">Все сегодня</button><button type="button" class="filter-chip" data-client-filter="active" aria-pressed="false">В бане</button><button type="button" class="filter-chip" data-client-filter="completed" aria-pressed="false">Завершённые</button>
-</div><div id="liveClients" class="client-list"><div class="client-empty">Жандуу маалымат жүктөлүүдө…</div></div><p id="liveUpdated" class="live-foot">Маалымат серверден ар 20 секунд сайын текшерилет.</p></div><div class="panel" id="inventoryPanel"><div class="inventory-head"><div><div class="eyebrow">СКЛАД · ЦЕНЫ · ПОСТУПЛЕНИЕ</div><h2 style="margin-top:6px">Склад и остатки</h2><p class="muted" style="margin:6px 0 0">Цены, остатки, бронь и поступления — в одном месте.</p></div><span class="inventory-badge">● LIVE · 20 сек</span></div><div id="inventorySummary" class="inventory-summary"></div><div id="inventoryAlerts" class="inventory-alerts ok"><h3>✅ Кампанын абалы</h3><p>Товарлардын калдыгы текшерилүүдө…</p></div><input id="inventorySearch" class="inventory-search" type="search" placeholder="Товарды издөө: аты же категориясы…" autocomplete="off"><div class="inventory-filter-row" role="group" aria-label="Фильтр остатков">
+</div><div id="liveClients" class="client-list"><div class="client-empty">Загружаем данные о клиентах…</div></div><p id="liveUpdated" class="live-foot">Данные о клиентах обновляются с сервера каждые 20 секунд.</p></div><div class="panel" id="inventoryPanel"><div class="inventory-head"><div><div class="eyebrow">СКЛАД · ЦЕНЫ · ПОСТУПЛЕНИЕ</div><h2 style="margin-top:6px">Склад и остатки</h2><p class="muted" style="margin:6px 0 0">Цены, остатки, бронь и поступления — в одном месте.</p></div><span class="inventory-badge">● ОБНОВЛЕНИЕ · 20 сек</span></div><div id="inventorySummary" class="inventory-summary"></div><div id="inventoryAlerts" class="inventory-alerts ok"><h3>✅ Состояние склада</h3><p>Проверяем остатки товаров…</p></div><input id="inventorySearch" class="inventory-search" type="search" placeholder="Поиск товара по названию или категории…" autocomplete="off"><div class="inventory-filter-row" role="group" aria-label="Фильтр остатков">
 <button type="button" class="filter-chip is-active" data-stock-filter="all" aria-pressed="true">Все товары</button><button type="button" class="filter-chip" data-stock-filter="low" aria-pressed="false">Мало осталось</button><button type="button" class="filter-chip" data-stock-filter="empty" aria-pressed="false">Нет в наличии</button>
-</div><div id="inventoryList" class="inventory-list"><div class="client-empty">Товарлар жүктөлүүдө…</div></div><p id="inventoryUpdated" class="inventory-foot">Товарлар ар 20 секунд сайын жаңыланат.</p></div><div class="panel" id="historyPanel"><div class="eyebrow">ИСТОРИЯ ОТЧЁТЁВ</div><h2 style="margin-top:6px">Смены по датам</h2><div id="reportList" class="report-list"></div><p class="notice">Кардарлардын сатып алуулары жана төлөмдөрү серверден ар 20 секунд сайын жаңыланат. Смена жабылганда жалпы отчёт өзүнчө бир жолу сакталат.</p></div></section>
+</div><div id="inventoryList" class="inventory-list"><div class="client-empty">Загружаем товары…</div></div><p id="inventoryUpdated" class="inventory-foot">Товары обновляются каждые 20 секунд.</p></div><div class="panel" id="historyPanel"><div class="eyebrow">ИСТОРИЯ ОТЧЁТЁВ</div><h2 style="margin-top:6px">Смены по датам</h2><div id="reportList" class="report-list"></div><p class="notice">Покупки и платежи клиентов обновляются с сервера каждые 20 секунд. После закрытия смены итоговый отчёт сохраняется один раз.</p></div></section>
 </main><script>
 'use strict';
 const API='https://par-ordo-api.moimarketjibekjolu.workers.dev';
@@ -105,7 +182,7 @@ function braceletVisual(c){const no=esc(braceletNo(c));return `<div class="clien
 function liveClientCard(c){const s=itemStats(c),active=c.status==='active';const stamp=c.startedAt?fmt(c.startedAt):'Время не указано';const lines=s.items.length?s.items.map(i=>{const method=i.method==='cash'?'Наличные':i.method==='transfer'?'Перевод':'Не оплачено',cls=i.method==='cash'?'cash':i.method==='transfer'?'transfer':'pending';const amount=Math.max(0,Number(i.price||0))*Math.max(1,Number(i.qty||1));return `<div class="live-item"><div class="live-item-main"><span class="live-item-name">${esc(i.name||'Товар')} × ${Math.max(1,Number(i.qty||1))}</span><span class="payment-chip ${cls}">${method}</span></div><span class="live-item-sum">${money(amount)}</span></div>`}).join(''):'<div class="live-item"><span class="live-item-name">Пока покупок нет</span><span class="live-item-sum">—</span></div>';return `<article class="live-client ${active?'active-client':''}" data-bracelet="${esc(braceletNo(c))}"><div class="client-heading"><div class="client-identity">${braceletVisual(c)}<div class="client-identity-info"><div class="client-time">Пришёл: ${esc(stamp)}</div><span class="status-chip ${active?'':'done'}">${active?'● В бане':'✓ Завершён'}</span></div></div><div class="client-total">${money(s.total)}</div></div><div class="live-items">${lines}</div><div class="client-money"><div class="paid-cash"><small>НАЛИЧНЫЕ</small><b>${money(s.cash)}</b></div><div class="paid-transfer"><small>ПЕРЕВОД</small><b>${money(s.transfer)}</b></div><div class="owed"><small>НЕ ОПЛАЧЕНО</small><b>${money(s.pending)}</b></div></div></article>`}
 let currentClientFilter='all';
 let latestClientData=null;
-function renderLiveClients(data){latestClientData=data;const all=Array.isArray(data.clients)?data.clients:[],today=localDayKey();const clients=all.filter(c=>!c.archived&&(c.status==='active'||String(c.startedDay||'')===today)).sort((a,b)=>{if(a.status!==b.status)return a.status==='active'?-1:1;return String(b.startedAt||'').localeCompare(String(a.startedAt||''))});let total=0,cash=0,transfer=0,pending=0;let activeCount=0;for(const c of clients){const s=itemStats(c);total+=s.total;cash+=s.cash;transfer+=s.transfer;pending+=s.pending;if(c.status==='active')activeCount++}$('#liveSummary').innerHTML=`<div class="live-total"><small>КЛИЕНТОВ СЕГОДНЯ</small><strong>${clients.length}</strong></div><div class="live-total"><small>СЕЙЧАС В БАНЕ</small><strong>${activeCount}</strong></div><div class="live-total green"><small>ОПЛАЧЕНО · НАЛИЧНЫЕ + ПЕРЕВОД</small><strong>${money(cash+transfer)}</strong></div><div class="live-total"><small>ОБЩАЯ СУММА ПОЗИЦИЙ</small><strong>${money(total)}</strong></div>`;const allUnique=uniqueByBracelet(clients),activeUnique=uniqueByBracelet(clients.filter(c=>c.status==='active')),completedUnique=uniqueByBracelet(clients.filter(c=>c.status!=='active'));const visible=currentClientFilter==='active'?activeUnique:currentClientFilter==='completed'?completedUnique:allUnique;document.querySelectorAll('[data-client-filter]').forEach(b=>{const key=b.dataset.clientFilter;const count=key==='all'?allUnique.length:key==='active'?activeUnique.length:completedUnique.length;const label=key==='all'?'Все сегодня':key==='active'?'В бане':'Завершённые';b.textContent=`${label} · ${count}`;b.classList.toggle('is-active',key===currentClientFilter);b.setAttribute('aria-pressed',String(key===currentClientFilter))});$('#liveClients').innerHTML=visible.length?visible.map(liveClientCard).join(''):'<div class="client-empty">По выбранному фильтру клиентов нет.</div>';$('#liveUpdated').textContent=`Кардарлар жаңыртылды: ${fmt(new Date().toISOString())} · Ар бир браслет тизмеде бир жолу көрсөтүлөт · Төлөнбөгөнү: ${money(pending)}`}
+function renderLiveClients(data){latestClientData=data;const all=Array.isArray(data.clients)?data.clients:[],today=localDayKey();const clients=all.filter(c=>!c.archived&&(c.status==='active'||String(c.startedDay||'')===today)).sort((a,b)=>{if(a.status!==b.status)return a.status==='active'?-1:1;return String(b.startedAt||'').localeCompare(String(a.startedAt||''))});let total=0,cash=0,transfer=0,pending=0;let activeCount=0;for(const c of clients){const s=itemStats(c);total+=s.total;cash+=s.cash;transfer+=s.transfer;pending+=s.pending;if(c.status==='active')activeCount++}$('#liveSummary').innerHTML=`<div class="live-total"><small>КЛИЕНТОВ СЕГОДНЯ</small><strong>${clients.length}</strong></div><div class="live-total"><small>СЕЙЧАС В БАНЕ</small><strong>${activeCount}</strong></div><div class="live-total green"><small>ОПЛАЧЕНО · НАЛИЧНЫЕ + ПЕРЕВОД</small><strong>${money(cash+transfer)}</strong></div><div class="live-total"><small>ОБЩАЯ СУММА ПОЗИЦИЙ</small><strong>${money(total)}</strong></div>`;const allUnique=uniqueByBracelet(clients),activeUnique=uniqueByBracelet(clients.filter(c=>c.status==='active')),completedUnique=uniqueByBracelet(clients.filter(c=>c.status!=='active'));const visible=currentClientFilter==='active'?activeUnique:currentClientFilter==='completed'?completedUnique:allUnique;document.querySelectorAll('[data-client-filter]').forEach(b=>{const key=b.dataset.clientFilter;const count=key==='all'?allUnique.length:key==='active'?activeUnique.length:completedUnique.length;const label=key==='all'?'Все сегодня':key==='active'?'В бане':'Завершённые';b.textContent=`${label} · ${count}`;b.classList.toggle('is-active',key===currentClientFilter);b.setAttribute('aria-pressed',String(key===currentClientFilter))});$('#liveClients').innerHTML=visible.length?visible.map(liveClientCard).join(''):'<div class="client-empty">По выбранному фильтру клиентов нет.</div>';$('#liveUpdated').textContent=`Клиенты обновлены: ${fmt(new Date().toISOString())} · Каждый номер браслета отображается в списке один раз · Не оплачено: ${money(pending)}`}
 let inventoryProducts=[];
 let currentStockFilter='all';
 let previousInventoryAvailable=new Map();
@@ -124,9 +201,9 @@ function renderInventory(data,force=false){
  const newlyLow=inventoryHasLoaded?lowItems.filter(p=>{const prev=previousInventoryAvailable.get(String(p.id));return prev!==undefined&&prev>3&&availableUnitsOf(p)<=3;}):[];
  const newlyEmpty=inventoryHasLoaded?emptyItems.filter(p=>{const prev=previousInventoryAvailable.get(String(p.id));return prev!==undefined&&prev>0&&availableUnitsOf(p)<=0;}):[];
  const alertBox=$('#inventoryAlerts');
- if(lowItems.length){alertBox.classList.remove('ok');alertBox.innerHTML=`<h3>⚠️ ${emptyItems.length?`ТҮГӨНДҮ: ${emptyItems.length} товар`:'АЗ КАЛГАН ТОВАРЛАР'} · ${lowStock} аталыш</h3><ul>${lowItems.map(p=>`<li><b>${esc(p.name||'Товар')}</b> — ${availableUnitsOf(p)<=0?'КАЛГАН ЖОК':`${availableUnitsOf(p)} даана калды`}</li>`).join('')}</ul><p style="margin:8px 0 0;font-size:10px;color:#d6b8a6">Эскертүү чеги: жеткиликтүү калдык 3 даана же андан аз. Маалымат ар 20 секунд сайын текшерилет.</p>`;}else{alertBox.classList.add('ok');alertBox.innerHTML='<h3>✅ Кампанын абалы</h3><p>Аз калган же түгөнгөн товар жок.</p>';}
- if(newlyLow.length){const msg=newlyEmpty.length?`Товар түгөндү: ${newlyEmpty.map(p=>p.name).join(', ')}`:`Товар аз калды: ${newlyLow.map(p=>`${p.name} (${availableUnitsOf(p)} даана)`).join(', ')}`;toast(msg);}
- $('#inventorySummary').innerHTML=`<div class="inventory-kpi"><small>АКТИВДҮҮ ТОВАРЛАР</small><strong>${inventoryProducts.length}</strong></div><div class="inventory-kpi"><small>ЖАЛПЫ КАЛДЫК</small><strong>${totalUnits.toLocaleString('ru-RU')} даана</strong></div><div class="inventory-kpi"><small>БРОНДОЛГОНУ</small><strong>${reservedUnits.toLocaleString('ru-RU')} даана</strong></div><div class="inventory-kpi"><small>АЗ КАЛГАН ТОВАР</small><strong>${lowStock}</strong></div>`;
+ if(lowItems.length){alertBox.classList.remove('ok');alertBox.innerHTML=`<h3>⚠️ ${emptyItems.length?`ЗАКОНЧИЛОСЬ: ${emptyItems.length} товаров`:'МАЛО ОСТАЛОСЬ'} · ${lowStock} наимен.</h3><ul>${lowItems.map(p=>`<li><b>${esc(p.name||'Товар')}</b> — ${availableUnitsOf(p)<=0?'НЕТ В НАЛИЧИИ':`${availableUnitsOf(p)} шт. осталось`}</li>`).join('')}</ul><p style="margin:8px 0 0;font-size:10px;color:#d6b8a6">Порог предупреждения: доступный остаток — 3 шт. или меньше. Проверка выполняется каждые 20 секунд.</p>`;}else{alertBox.classList.add('ok');alertBox.innerHTML='<h3>✅ Состояние склада</h3><p>Нет товаров с низким остатком или без наличия.</p>';}
+ if(newlyLow.length){const msg=newlyEmpty.length?`Товар закончился: ${newlyEmpty.map(p=>p.name).join(', ')}`:`Товар заканчивается: ${newlyLow.map(p=>`${p.name} (${availableUnitsOf(p)} шт.)`).join(', ')}`;toast(msg);}
+ $('#inventorySummary').innerHTML=`<div class="inventory-kpi"><small>АКТИВНЫЕ ТОВАРЫ</small><strong>${inventoryProducts.length}</strong></div><div class="inventory-kpi"><small>ОБЩИЙ ОСТАТОК</small><strong>${totalUnits.toLocaleString('ru-RU')} шт.</strong></div><div class="inventory-kpi"><small>ЗАРЕЗЕРВИРОВАНО</small><strong>${reservedUnits.toLocaleString('ru-RU')} шт.</strong></div><div class="inventory-kpi"><small>МАЛО ОСТАЛОСЬ</small><strong>${lowStock}</strong></div>`;
  const q=String($('#inventorySearch')?.value||'').trim().toLocaleLowerCase('ru');
  const filtered=inventoryProducts.filter(p=>{const matchesSearch=`${p.name||''} ${p.cat||''}`.toLocaleLowerCase('ru').includes(q);const qty=availableUnitsOf(p);const matchesStock=currentStockFilter==='low'?qty>0&&qty<=3:currentStockFilter==='empty'?qty<=0:true;return matchesSearch&&matchesStock});
  document.querySelectorAll('[data-stock-filter]').forEach(b=>{const key=b.dataset.stockFilter;b.classList.toggle('is-active',key===currentStockFilter);b.setAttribute('aria-pressed',String(key===currentStockFilter))});
@@ -134,10 +211,10 @@ function renderInventory(data,force=false){
   const stock=Math.max(0,Number(p.stock||0)),reserved=Math.max(0,Number(p.reserved||0)),available=Math.max(0,Number(p.available??(stock-reserved)));
   const price=p.price===null||p.price===undefined?'':String(Number(p.price));
   const stateClass=available<=0?'stock-empty':available<=3?'stock-low':'';
-  const stateBadge=available<=0?'<span class="stock-state empty">КАЛГАН ЖОК</span>':available<=3?'<span class="stock-state low">АЗ КАЛДЫ</span>':'';
-  return `<article class="product-card ${stateClass}" data-product-card="${Number(p.id)}"><div class="product-top"><div><b>${esc(p.name||'Товар')}</b><div class="product-category">${esc(p.cat||'Категория не указана')} · ID ${Number(p.id)}</div>${stateBadge}</div><div class="product-price-tag ${price===''?'no-price':''}">${price===''?'Цена не указана':money(price)}</div></div><div class="inventory-stats"><div><small>НА СКЛАДЕ</small><strong>${stock} даана</strong></div><div><small>БРОНЬ</small><strong>${reserved} даана</strong></div><div class="available"><small>ДОСТУПНО</small><strong>${available} даана</strong></div></div><div class="inventory-form"><div class="inventory-field-wrap"><label for="inv-price-${Number(p.id)}">Баасы · сом</label><input class="inventory-field" id="inv-price-${Number(p.id)}" data-inv-price="${Number(p.id)}" type="number" min="0" step="1" inputmode="numeric" value="${esc(price)}" placeholder="Баасы" required></div><div class="inventory-field-wrap"><label for="inv-stock-${Number(p.id)}">Складдагы сан</label><input class="inventory-field" id="inv-stock-${Number(p.id)}" data-inv-stock="${Number(p.id)}" type="number" min="${reserved}" step="1" inputmode="numeric" value="${stock}" required></div></div><div class="inventory-actions"><button class="btn secondary" type="button" data-save-product="${Number(p.id)}">Бааны жана санды сактоо</button></div><div class="receipt-row"><div class="inventory-field-wrap"><label for="inv-receipt-${Number(p.id)}">Поступление · кошула турган даана</label><input class="inventory-field" id="inv-receipt-${Number(p.id)}" data-inv-receipt="${Number(p.id)}" type="number" min="1" step="1" inputmode="numeric" placeholder="Мисалы: 20"></div><button class="btn" type="button" data-receipt-product="${Number(p.id)}">+ Поступление</button></div></article>`;
- }).join(''):'<div class="client-empty">Издөө боюнча товар табылган жок.</div>';
- $('#inventoryUpdated').textContent=`Товарлар: ${inventoryProducts.length} · Жаңыртылды: ${fmt(new Date().toISOString())}. Аз калган товарлар өзүнчө эскертилет; текшерүү ар 20 секунд сайын.`;
+  const stateBadge=available<=0?'<span class="stock-state empty">НЕТ В НАЛИЧИИ</span>':available<=3?'<span class="stock-state low">МАЛО ОСТАЛОСЬ</span>':'';
+  return `<article class="product-card ${stateClass}" data-product-card="${Number(p.id)}"><div class="product-top"><div><b>${esc(p.name||'Товар')}</b><div class="product-category">${esc(p.cat||'Категория не указана')} · ID ${Number(p.id)}</div>${stateBadge}</div><div class="product-price-tag ${price===''?'no-price':''}">${price===''?'Цена не указана':money(price)}</div></div><div class="inventory-stats"><div><small>НА СКЛАДЕ</small><strong>${stock} шт.</strong></div><div><small>БРОНЬ</small><strong>${reserved} шт.</strong></div><div class="available"><small>ДОСТУПНО</small><strong>${available} шт.</strong></div></div><div class="inventory-form"><div class="inventory-field-wrap"><label for="inv-price-${Number(p.id)}">Цена · сом</label><input class="inventory-field" id="inv-price-${Number(p.id)}" data-inv-price="${Number(p.id)}" type="number" min="0" step="1" inputmode="numeric" value="${esc(price)}" placeholder="Цена" required></div><div class="inventory-field-wrap"><label for="inv-stock-${Number(p.id)}">Количество на складе</label><input class="inventory-field" id="inv-stock-${Number(p.id)}" data-inv-stock="${Number(p.id)}" type="number" min="${reserved}" step="1" inputmode="numeric" value="${stock}" required></div></div><div class="inventory-actions"><button class="btn secondary" type="button" data-save-product="${Number(p.id)}">Сохранить цену и остаток</button></div><div class="receipt-row"><div class="inventory-field-wrap"><label for="inv-receipt-${Number(p.id)}">Поступление · количество</label><input class="inventory-field" id="inv-receipt-${Number(p.id)}" data-inv-receipt="${Number(p.id)}" type="number" min="1" step="1" inputmode="numeric" placeholder="Например: 20"></div><button class="btn" type="button" data-receipt-product="${Number(p.id)}">+ Поступление</button></div></article>`;
+ }).join(''):'<div class="client-empty">По вашему запросу товары не найдены.</div>';
+ $('#inventoryUpdated').textContent=`Товаров: ${inventoryProducts.length} · Обновлено: ${fmt(new Date().toISOString())}. Для товаров с низким остатком показываются предупреждения; проверка каждые 20 секунд.`;
  previousInventoryAvailable=new Map(inventoryProducts.map(p=>[String(p.id),availableUnitsOf(p)]));
  inventoryHasLoaded=true;
 }
@@ -146,24 +223,24 @@ async function saveInventoryProduct(id){
  const priceEl=$(`[data-inv-price="${id}"]`),stockEl=$(`[data-inv-stock="${id}"]`);
  if(!priceEl||!stockEl)return;
  const priceText=priceEl.value.trim(),price=priceText===''?null:Number(priceText),stock=Number(stockEl.value),product=inventoryProducts.find(p=>Number(p.id)===Number(id)),reserved=Number(product?.reserved||0);
- if(price!==null&&(!Number.isInteger(price)||price<0)){toast('Баасы бүтүн сан жана 0дөн кем эмес болсун.');return}
- if(!Number.isInteger(stock)||stock<reserved){toast(`Складдагы сан брондон аз болбошу керек: минимум ${reserved}.`);return}
+ if(price!==null&&(!Number.isInteger(price)||price<0)){toast('Укажите целую цену не меньше 0.');return}
+ if(!Number.isInteger(stock)||stock<reserved){toast(`Остаток не может быть меньше зарезервированного количества: минимум ${reserved} шт.`);return}
  const btn=$(`[data-save-product="${id}"]`);if(btn)btn.disabled=true;
- try{await api(`/api/admin/products/${id}`,{method:'PATCH',body:JSON.stringify({price,stock})});await loadInventory(true);toast('Товардын баасы жана саны сакталды ✅')}
- catch(e){toast('Сакталбады: '+e.message)}finally{if(btn)btn.disabled=false}
+ try{await api(`/api/admin/products/${id}`,{method:'PATCH',body:JSON.stringify({price,stock})});await loadInventory(true);toast('Цена и остаток товара сохранены ✅')}
+ catch(e){toast('Не удалось сохранить: '+e.message)}finally{if(btn)btn.disabled=false}
 }
 async function receiveInventoryProduct(id){
  const qtyEl=$(`[data-inv-receipt="${id}"]`);if(!qtyEl)return;const qty=Number(qtyEl.value);
- if(!Number.isInteger(qty)||qty<=0){toast('Поступление санын 1ден баштап киргиз.');qtyEl.focus();return}
+ if(!Number.isInteger(qty)||qty<=0){toast('Введите количество поступления (не меньше 1).');qtyEl.focus();return}
  const btn=$(`[data-receipt-product="${id}"]`);if(btn)btn.disabled=true;
- try{await api(`/api/admin/products/${id}/stock`,{method:'POST',body:JSON.stringify({qty})});await loadInventory(true);toast(`Поступление кошулду: +${qty} даана ✅`)}
- catch(e){toast('Поступление сакталбады: '+e.message)}finally{if(btn)btn.disabled=false}
+ try{await api(`/api/admin/products/${id}/stock`,{method:'POST',body:JSON.stringify({qty})});await loadInventory(true);toast(`Поступление добавлено: +${qty} шт. ✅`)}
+ catch(e){toast('Не удалось сохранить поступление: '+e.message)}finally{if(btn)btn.disabled=false}
 }
 $('#inventoryList').addEventListener('click',async e=>{const save=e.target.closest('[data-save-product]'),receipt=e.target.closest('[data-receipt-product]');if(save)await saveInventoryProduct(Number(save.dataset.saveProduct));else if(receipt)await receiveInventoryProduct(Number(receipt.dataset.receiptProduct))});
 $('#inventorySearch').addEventListener('input',()=>renderInventory({products:inventoryProducts},true));
 document.querySelectorAll('[data-client-filter]').forEach(b=>b.addEventListener('click',()=>{currentClientFilter=b.dataset.clientFilter;if(latestClientData)renderLiveClients(latestClientData)}));
 document.querySelectorAll('[data-stock-filter]').forEach(b=>b.addEventListener('click',()=>{currentStockFilter=b.dataset.stockFilter;renderInventory({products:inventoryProducts},true)}));
-async function loadManagerData(){const results=await Promise.allSettled([api('/api/admin/control/reports'),api('/api/admin/control/clients'),api('/api/products')]);if(results[0].status==='fulfilled')render(results[0].value);else throw results[0].reason;if(results[1].status==='fulfilled')renderLiveClients(results[1].value);else{$('#liveClients').innerHTML=`<div class="client-empty">Не удалось загрузить клиентов: ${esc(results[1].reason?.message||'ошибка API')}</div>`;$('#liveUpdated').textContent='Проверьте доступ Worker API к данным клиентов.'}if(results[2].status==='fulfilled')renderInventory(results[2].value);else{$('#inventoryList').innerHTML=`<div class="inventory-error">Товарлар жүктөлгөн жок: ${esc(results[2].reason?.message||'ошибка API')}. Worker API жана /api/products маршрутун текшериңиз.</div>`;$('#inventoryUpdated').textContent='Склад маалыматтарын алуу мүмкүн болгон жок.'}return results}
+async function loadManagerData(){const results=await Promise.allSettled([api('/api/admin/control/reports'),api('/api/admin/control/clients'),api('/api/products')]);if(results[0].status==='fulfilled')render(results[0].value);else throw results[0].reason;if(results[1].status==='fulfilled')renderLiveClients(results[1].value);else{$('#liveClients').innerHTML=`<div class="client-empty">Не удалось загрузить клиентов: ${esc(results[1].reason?.message||'ошибка API')}</div>`;$('#liveUpdated').textContent='Проверьте доступ Worker API к данным клиентов.'}if(results[2].status==='fulfilled')renderInventory(results[2].value);else{$('#inventoryList').innerHTML=`<div class="inventory-error">Не удалось загрузить товары: ${esc(results[2].reason?.message||'ошибка API')}. Проверьте Worker API и маршрут /api/products.</div>`;$('#inventoryUpdated').textContent='Не удалось получить данные склада.'}return results}
 async function openPanel(){ $('#loginPanel').classList.add('hidden');$('#reportsPanel').classList.remove('hidden');try{await loadManagerData()}catch(e){toast('Не удалось загрузить отчёты: '+e.message);if(/вход|авториз|401|администратор/i.test(e.message))logout(false)}}
 function logout(callApi=true){const t=tok();if(callApi&&t)fetch(API+'/api/admin/logout',{method:'POST',headers:{Authorization:`Bearer ${t}`}}).catch(()=>{});sessionStorage.removeItem(TOKEN_KEY);sessionStorage.removeItem(USER_KEY);$('#reportsPanel').classList.add('hidden');$('#loginPanel').classList.remove('hidden')}
 $('#loginForm').addEventListener('submit',async e=>{e.preventDefault();$('#loginError').textContent='';$('#loginBtn').disabled=true;try{const d=await api('/api/admin/login',{method:'POST',body:JSON.stringify({username:$('#username').value.trim().toLowerCase(),password:$('#password').value})});sessionStorage.setItem(TOKEN_KEY,d.token);sessionStorage.setItem(USER_KEY,$('#username').value.trim().toLowerCase());await openPanel()}catch(err){$('#loginError').textContent=err.message}finally{$('#loginBtn').disabled=false}});
