@@ -1,0 +1,643 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#080604"><title>ПАР ОРДО CONTROL V44</title>
+<link rel="icon" href="./assets/par-ordo-logo.png">
+<style>
+:root{--bg:#070604;--panel:#100b07;--panel2:#171009;--gold:#f6bd47;--gold2:#ffe5a1;--line:#4d351e;--muted:#b2a18a;--green:#2df082;--red:#ff554b;--blue:#76a8ff}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(ellipse at 50% -20%,#30200d 0,#0b0805 35%,#060504 75%);color:#f9f2e6;font:15px/1.4 system-ui,-apple-system,Segoe UI,sans-serif;padding-bottom:82px}
+button,input,select{font:inherit}button{cursor:pointer}button:disabled{opacity:.55;cursor:wait}.hidden{display:none!important}
+.header{height:68px;position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;padding:8px 13px;background:#080604ed;backdrop-filter:blur(14px);border-bottom:1px solid #3f2b19}
+.icon-btn{width:44px;height:44px;display:grid;place-items:center;border-radius:14px;background:linear-gradient(145deg,#191008,#0c0805);border:1px solid #62421f;color:#f7dfb2;font-size:19px}
+.brand{display:flex;align-items:center;gap:9px;min-width:0}.brand img{width:43px;height:43px;object-fit:contain;border-radius:50%;border:1px solid #bf8a2e;box-shadow:0 0 16px #f4bb4930}.brand b{display:block;font-size:13px;letter-spacing:.14em;white-space:nowrap}.brand small{display:block;color:var(--gold2);font-size:9px;letter-spacing:.2em}
+main{width:min(1180px,100%);padding:13px;margin:auto}.view{display:none}.view.active{display:block}
+.eyebrow{font-size:10px;letter-spacing:.17em;text-transform:uppercase;font-weight:900;color:var(--gold2)}
+.hero{padding:17px;border:1px solid #614321;border-radius:23px;background:linear-gradient(140deg,#201307f5,#0d0805f2);box-shadow:0 15px 36px #0007;display:flex;align-items:center;justify-content:space-between;gap:14px}
+.hero h1{margin:5px 0 6px;font:700 clamp(23px,5.5vw,31px)/1.08 Georgia,serif}.hero p{margin:0;color:var(--muted);font-size:11px;max-width:410px}
+.live-badge{min-width:79px;height:79px;border:1px solid #2ddf7c;border-radius:22px;background:#0a1b11;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 0 23px #2df08213}.live-badge strong{font-size:27px;color:#7bf3a9;line-height:1.1}.live-badge span{font-size:9px;color:#bdd9c6}
+.kpis{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:11px 0}.kpi{min-width:0;padding:12px;border:1px solid #3e2d1c;border-radius:17px;background:linear-gradient(145deg,#120c07,#0c0805)}.kpi small{display:block;color:var(--muted);font-size:10px}.kpi strong{display:block;margin-top:5px;font-size:19px;color:#ffda7e;overflow-wrap:anywhere}.kpi.green strong{color:#7af0a7}.kpi.blue strong{color:#8bb6ff}
+.section-head{display:flex;align-items:end;justify-content:space-between;gap:10px;margin:20px 2px 10px}.section-head h2{font:700 22px/1.1 Georgia,serif;margin:5px 0 0}.section-head .hint{color:var(--gold2);font-size:10px;font-weight:800}
+.filters{display:flex;gap:7px;overflow-x:auto;padding:2px 1px 8px;scrollbar-width:none}.filters::-webkit-scrollbar{display:none}.filter{white-space:nowrap;border:1px solid #4a351f;border-radius:999px;padding:9px 13px;color:#c7b69d;background:#110b07;font-size:10px;font-weight:800}.filter.active{background:linear-gradient(120deg,#b87812,#ffd968);color:#211405;border-color:#f4c35a}
+.rooms{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.room{min-width:0;position:relative;isolation:isolate;overflow:hidden;border-radius:19px;padding:11px;border:1px solid #432e1a;background:linear-gradient(155deg,#180f08,#0c0805);box-shadow:0 8px 22px #0005;transition:box-shadow .25s,border-color .25s,transform .18s}.room:active{transform:scale(.99)}.room.active{border-color:#1fbd65;box-shadow:0 0 0 1px #2df08228,0 0 18px #2df08215,0 8px 22px #0005}.room.free{border-color:#b6322a;box-shadow:0 0 0 1px #ff554b17,0 0 12px #ff554b0d,0 8px 22px #0005}
+.room-top{display:flex;align-items:center;gap:8px;min-width:0}.bracelet{flex:0 0 48px;height:35px;border:1px solid #bc852b;border-radius:13px;display:grid;place-items:center;background:#251609;color:#ffe08a;font-size:11px;font-weight:950}.room-name{font-size:12px;font-weight:900;overflow-wrap:anywhere}.room-time{font-size:9px;line-height:1.35;color:var(--muted);margin-top:3px;min-height:12px}.lamp{flex:0 0 15px;width:15px;height:15px;border-radius:50%;margin-left:auto;background:#a9aaab;box-shadow:inset 0 0 0 2px #eee8}.room.active .lamp{background:#60eb92;box-shadow:0 0 11px #2df08288,inset 0 0 0 2px #bfffd4;animation:lampPulse 2.5s ease-in-out infinite}
+.status-switch{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:10px;padding:3px;border:1px solid #322315;border-radius:12px;background:#090705}.status-switch button{min-width:0;border:1px solid transparent;border-radius:9px;min-height:34px;background:transparent;color:#887c6b;font-weight:900;font-size:9px}.status-switch .selected-on{background:#155833;border-color:#238b50;color:#91ffba;box-shadow:0 0 12px #2df0821c}.status-switch .selected-off{background:#481511;border-color:#7d2822;color:#ffaaa4;box-shadow:0 0 12px #ff554b13}
+.room-summary{margin-top:8px;padding:8px;border:1px solid #3a2919;border-radius:12px;background:#0d0805}.room-summary b{display:block;font-size:11px}.room-summary span{display:block;color:var(--muted);font-size:9px;margin-top:3px;line-height:1.35;overflow-wrap:anywhere;max-height:36px;overflow:hidden}
+.room-actions{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px}.action{min-width:0;min-height:38px;padding:7px 5px;border-radius:11px;border:1px solid #624322;background:#171008;color:#ffe9c2;font-weight:900;font-size:10px}.action.gold{background:linear-gradient(135deg,#9c620e,#e4a52e);border-color:#e6b650;color:#211506}.action.green{background:#145b35;border-color:#248c51;color:#9bffc0}.action.wide{grid-column:1/-1}
+.primary{border:1px solid #efbd4c;border-radius:13px;background:linear-gradient(135deg,#a9680d,#ffce5a);color:#261705;font-weight:950;padding:11px 14px;font-size:11px}.ghost{border:1px solid #55402a;border-radius:12px;background:#120b07;color:#ead9bf;padding:10px 12px;font-size:10px;font-weight:800}
+.inventory{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.product{min-width:0;padding:10px;border:1px solid #46301c;border-radius:17px;background:linear-gradient(150deg,#180f08,#0d0805)}.product-top{display:flex;gap:8px;align-items:center;min-height:57px}.product-top img{width:54px;height:54px;flex:0 0 54px;object-fit:cover;border-radius:13px;background:#eee}.product-top b{font-size:11px;line-height:1.3;overflow-wrap:anywhere}.product-top small{display:block;color:var(--muted);font-size:9px;margin-top:3px}.stock-stats{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:9px}.stock-stat{padding:7px;border:1px solid #3a291a;border-radius:10px;background:#0c0805}.stock-stat small{display:block;color:var(--muted);font-size:8px}.stock-stat strong{display:block;font-size:13px;color:#ffdc81;margin-top:3px}.stock-stat.incoming strong{color:#83e7a5}
+.add-stock{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:5px;margin-top:7px}.add-stock input{width:100%;min-width:0;padding:9px 8px;border:1px solid #49341f;border-radius:10px;background:#fff;color:#16100a;font-size:11px}.add-stock button{border:1px solid #b37a23;border-radius:10px;background:#70460e;color:#fff1d0;padding:7px 9px;font-size:9px;font-weight:900}
+.list{display:grid;gap:9px}.history-card{padding:12px;border:1px solid #4b331d;border-radius:17px;background:linear-gradient(145deg,#180f08,#0d0805)}.history-top{display:flex;align-items:start;justify-content:space-between;gap:10px}.history-top b{font-size:12px}.history-top strong{font-size:15px;color:#ffdc81;white-space:nowrap}.history-meta{color:var(--muted);font-size:9px;margin-top:4px}.history-lines{display:grid;gap:6px;margin-top:10px}.history-line{display:flex;justify-content:space-between;gap:8px;padding-bottom:6px;border-bottom:1px solid #2f2115;font-size:10px}.history-line:last-child{border-bottom:0;padding-bottom:0}.pay-tag{display:inline-block;margin-left:4px;padding:3px 5px;border-radius:999px;font-size:8px;font-weight:900;white-space:nowrap}.pay-tag.cash{background:#14522f;color:#8af3af}.pay-tag.transfer{background:#183464;color:#a1c3ff}.pay-tag.pending{background:#4b3711;color:#ffe08a}.history-bottom{display:flex;gap:10px;flex-wrap:wrap;margin-top:9px;padding-top:8px;border-top:1px solid #3e2a19;color:#c3b096;font-size:9px}
+.report-panel{padding:15px;border:1px solid #614221;border-radius:21px;background:linear-gradient(150deg,#1a1008,#0b0705);box-shadow:0 15px 36px #0006}.report-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}.report-tile{padding:13px;border:1px solid #3f2d1c;border-radius:15px;background:#0d0805}.report-tile small{font-size:9px;color:var(--muted)}.report-tile b{display:block;font-size:20px;margin-top:5px}.report-tile.cash b{color:#83f2a9}.report-tile.transfer b{color:#91b8ff}.report-total{margin-top:9px;padding:19px 10px;text-align:center;border:1px solid #b78028;border-radius:17px;background:linear-gradient(145deg,#291906,#100a05)}.report-total small{color:#d1b16f;font-size:10px;font-weight:900;letter-spacing:.1em}.report-total strong{display:block;margin-top:5px;font-size:30px;color:#ffda73}.finish{width:100%;margin-top:10px;min-height:48px}
+.bottom-nav{position:fixed;left:0;right:0;bottom:0;z-index:25;display:grid;grid-template-columns:repeat(5,1fr);height:72px;padding-bottom:env(safe-area-inset-bottom);background:#080604f5;border-top:1px solid #51381f;backdrop-filter:blur(12px)}.nav-item{border:0;background:transparent;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:#988a76;font-size:18px}.nav-item small{font-size:9px}.nav-item.active{color:#ffdc81}.nav-item.active span{filter:drop-shadow(0 0 8px #f6bd4770)}
+.drawer{position:fixed;inset:0;z-index:40;display:none;background:#000b}.drawer.open{display:block}.drawer-panel{width:min(86%,350px);height:100%;padding:22px 17px;background:linear-gradient(180deg,#1a1008,#070504);border-right:1px solid #6a4822;box-shadow:20px 0 55px #000}.drawer-brand{text-align:center;padding:24px 0 14px}.drawer-brand img{width:89px;height:89px;object-fit:contain;border:2px solid #d79e35;border-radius:50%}.drawer-brand h2{font:700 24px Georgia,serif;margin:8px 0 1px}.drawer-brand small{color:var(--gold2);letter-spacing:.2em;font-size:9px}.drawer-links{display:grid;gap:7px;margin-top:8px}.drawer-links button{min-height:47px;text-align:left;border:1px solid #4a321c;border-radius:12px;background:#120b07;color:#f1e4d0;padding:0 13px;font-size:11px}.drawer-links .logout{color:#ffaaa3;border-color:#632a25}.user-caption{text-align:center;color:var(--muted);font-size:9px}
+.modal{position:fixed;inset:0;z-index:50;display:none;align-items:flex-end;justify-content:center;background:#000c;padding:9px}.modal.open{display:flex}.modal-card{width:min(100%,720px);max-height:92dvh;overflow:auto;border:1px solid #765025;border-radius:23px 23px 16px 16px;padding:15px;background:linear-gradient(155deg,#1b1008,#0b0705);box-shadow:0 -20px 65px #000}
+.modal-head{display:flex;align-items:start;justify-content:space-between;gap:10px}.modal-head h2{font:700 24px/1.12 Georgia,serif;margin:4px 0}.close{width:40px;height:40px;border:1px solid #654522;border-radius:12px;background:#140c07;color:#fff1d1;font-size:20px}
+.client-balance{margin-top:11px;padding:12px;border:1px solid #50371d;border-radius:15px;background:#100904}.balance-row{display:flex;justify-content:space-between;gap:8px;font-size:11px;color:#cab69b;margin:4px 0}.balance-row strong{color:#ffdb7b}.balance-total{border-top:1px solid #3d2b1b;padding-top:8px;margin-top:8px;font-size:12px}.balance-total strong{font-size:18px}
+.purchases{display:grid;gap:8px;margin-top:10px}.purchase{display:grid;grid-template-columns:49px minmax(0,1fr);gap:8px;padding:9px;border:1px solid #3d2919;border-radius:14px;background:#0d0805}.purchase img{width:49px;height:49px;object-fit:cover;border-radius:11px;background:#eee}.purchase-info{min-width:0}.purchase-title{font-size:11px;font-weight:900;overflow-wrap:anywhere}.purchase-price{display:flex;justify-content:space-between;gap:8px;align-items:center;font-size:10px;color:#d0bca3;margin-top:4px}.edit-price{border:0;padding:0;background:transparent;color:#ffda79;font-size:9px;font-weight:800}.quantity{display:flex;align-items:center;gap:6px;margin-top:6px}.quantity button{width:27px;height:27px;border:1px solid #51391e;border-radius:8px;background:#1a1008;color:#ffebc8}.quantity b{min-width:14px;text-align:center;font-size:11px}.pay-methods{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;margin-top:7px}.pay-methods button{min-width:0;min-height:32px;padding:4px;border:1px solid #45311f;border-radius:9px;background:#171008;color:#a99a85;font-size:8px;font-weight:900;line-height:1.2}.pay-methods .is-pending{background:#493510;color:#ffe49a;border-color:#9a7026}.pay-methods .is-cash{background:#14542f;color:#94f5b3;border-color:#258e4e}.pay-methods .is-transfer{background:#193568;color:#a1c3ff;border-color:#4678c3}
+.modal-cta{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:10px}.modal-cta button{min-height:45px}.complete-btn{width:100%;min-height:48px;margin-top:8px;border:1px solid #248d51;border-radius:13px;background:linear-gradient(135deg,#104c2a,#176c3d);color:#9bf7bc;font-size:12px;font-weight:950}
+.add-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:10px}.add-product{display:flex;align-items:center;gap:7px;min-width:0;padding:8px;border:1px solid #46311d;border-radius:13px;background:#100904;color:#fff;text-align:left}.add-product img{width:42px;height:42px;flex:0 0 42px;object-fit:cover;border-radius:10px;background:#eee}.add-product b{display:block;font-size:9px;line-height:1.25}.add-product small{display:block;margin-top:3px;color:var(--muted);font-size:8px}.entry-add{width:100%;margin-top:10px;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px;border:1px solid #765020;border-radius:13px;background:#241506;color:#ffedce;text-align:left}.entry-add b{font-size:11px}.entry-add span{color:#ffda79;font-size:13px;font-weight:950}
+.login-view{min-height:100dvh;display:grid;place-items:center;padding:18px}.login-card{width:min(100%,430px);padding:25px;border:1px solid #684821;border-radius:25px;background:linear-gradient(150deg,#1c1008,#0a0705);box-shadow:0 20px 65px #0009;text-align:center}.login-logo{width:103px;height:103px;object-fit:contain;border-radius:50%;border:2px solid #d59a2e;box-shadow:0 0 25px #f3b43120}.login-card h1{font:700 28px Georgia,serif;margin:10px 0 5px}.login-card p{font-size:11px;color:var(--muted);margin:0 0 17px}.login-card input{width:100%;margin:5px 0;padding:14px 13px;border-radius:13px;border:1px solid #634522;background:#fff;color:#15100a;font-size:15px}.login-error{min-height:19px;color:#ff9188;font-size:11px;text-align:left;padding:4px}.login-card .primary{width:100%;min-height:49px;font-size:13px}.toast{position:fixed;left:50%;bottom:86px;transform:translateX(-50%);z-index:100;background:#171008;border:1px solid #87602d;color:#ffdfa0;padding:11px 15px;border-radius:13px;box-shadow:0 9px 30px #000;font-size:11px;max-width:92vw;text-align:center}
+.empty-state{padding:20px;text-align:center;color:var(--muted);border:1px dashed #4a341f;border-radius:15px;background:#0e0906;font-size:11px}
+@keyframes lampPulse{0%,100%{box-shadow:0 0 6px #2df08240,inset 0 0 0 2px #bfffd4}50%{box-shadow:0 0 14px #2df082aa,inset 0 0 0 2px #d8ffe5}}
+@media(min-width:720px){main{padding:19px}.rooms{grid-template-columns:repeat(4,minmax(0,1fr))}.inventory{grid-template-columns:repeat(3,minmax(0,1fr))}.kpis{grid-template-columns:repeat(4,minmax(0,1fr))}.modal{align-items:center}.modal-card{border-radius:23px}.add-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:380px){main{padding:9px}.room{padding:8px}.bracelet{flex-basis:42px}.room-name{font-size:11px}.status-switch button{font-size:8px}.room-actions button{font-size:9px}.product-top img{width:47px;height:47px;flex-basis:47px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+
+/* V41 — inventory editing controls */
+.stock-stat small{display:flex;align-items:center;justify-content:space-between;gap:3px}
+.stock-edit-link{padding:0;border:0;background:transparent;color:#ffdb83;font-size:8px;font-weight:900;white-space:nowrap}
+.stock-edit-link:active{opacity:.65}
+.add-stock input::placeholder{font-size:10px}
+
+
+/* V42 — larger type, consistent inventory layout and touch targets */
+#productsView .section-head h2{font-size:25px;line-height:1.2}
+#productsView .section-head .eyebrow{font-size:11px}
+.inventory{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.product{min-width:0;overflow:hidden;padding:11px;display:flex;flex-direction:column;gap:0}
+.product-top{min-width:0;align-items:center;gap:10px;min-height:70px}
+.product-top img{width:64px;height:64px;flex:0 0 64px;border-radius:14px}
+.product-title{min-width:0;flex:1}
+.product-top b{display:block;font-size:13px;line-height:1.35;overflow-wrap:anywhere}
+.product-top small{font-size:10px;line-height:1.3;margin-top:5px}
+.stock-stats{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:7px;margin-top:10px}
+.stock-stat{min-width:0;overflow:hidden;min-height:119px;padding:10px 9px;display:flex;flex-direction:column;align-items:flex-start;gap:6px}
+.stock-stat small{display:block;width:100%;font-size:9px;line-height:1.35;min-height:25px;overflow-wrap:anywhere}
+.stock-stat strong{display:block;font-size:17px;line-height:1.25;overflow-wrap:anywhere}
+.stock-edit-link{display:block;width:100%;min-height:30px;margin-top:auto;padding:5px 2px;border:1px solid #61431f;border-radius:8px;background:#1a1008;color:#ffdb83;font-size:10px;font-weight:900;white-space:normal;line-height:1.2;text-align:center}
+.stock-edit-link:active{background:#422a0d}
+.stock-spacer{display:block;height:30px;width:100%;margin-top:auto}
+.add-stock{display:grid;grid-template-columns:minmax(0,1fr) minmax(94px,auto);gap:7px;margin-top:9px}
+.add-stock input{width:100%;min-width:0;height:44px;padding:9px 10px;border:1px solid #52412d;border-radius:11px;font-size:12px}
+.add-stock input::placeholder{font-size:11px;opacity:1}
+.add-stock button{min-width:94px;min-height:44px;padding:8px 10px;border-radius:11px;font-size:11px;line-height:1.2;white-space:normal}
+#productsView .kpi small{font-size:11px;line-height:1.4}
+#productsView .kpi strong{font-size:19px}
+@media(max-width:390px){
+ .inventory{gap:7px}
+ .product{padding:8px}
+ .product-top{gap:7px;min-height:58px}
+ .product-top img{width:50px;height:50px;flex-basis:50px;border-radius:11px}
+ .product-top b{font-size:12px}
+ .product-top small{font-size:9px}
+ .stock-stats{gap:5px}
+ .stock-stat{padding:8px 7px;min-height:112px}
+ .stock-stat small{font-size:8px}
+ .stock-stat strong{font-size:15px}
+ .stock-edit-link{font-size:9px}
+ .add-stock{grid-template-columns:minmax(0,1fr) minmax(82px,auto);gap:5px}
+ .add-stock input{font-size:11px;padding:8px 7px}
+ .add-stock input::placeholder{font-size:10px}
+ .add-stock button{min-width:82px;padding:6px;font-size:10px}
+}
+@media(min-width:720px){
+ .inventory{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+ .product-top b{font-size:14px}
+ .stock-stat small{font-size:10px}
+ .stock-stat strong{font-size:18px}
+ .add-stock button{font-size:12px}
+}
+
+
+/* V43 — cleaner stock cards, larger readable text, consistent buttons */
+.product{gap:0}
+.product-top{align-items:center;min-height:72px}
+.product-top b{
+  font-size:13px;
+  line-height:1.35;
+  overflow-wrap:normal;
+  word-break:normal;
+  hyphens:auto;
+}
+.product-top small{font-size:10px;line-height:1.3}
+.stock-stats{grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:stretch;gap:7px;margin-top:10px}
+.stock-stat{min-height:88px;display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-start;padding:10px 9px;gap:7px}
+.stock-stat small{min-height:27px;font-size:9px;line-height:1.35;overflow-wrap:normal;word-break:normal}
+.stock-stat strong{margin-top:0;font-size:17px;line-height:1.2;white-space:nowrap}
+.stock-edit-link{
+  display:block;width:100%;min-height:36px;margin-top:7px;padding:7px 9px;
+  border:1px solid #61431f;border-radius:10px;background:#1a1008;
+  color:#ffdb83;font-size:11px;font-weight:900;line-height:1.25;text-align:center;
+  white-space:normal;
+}
+.add-stock{grid-template-columns:minmax(76px,.68fr) minmax(0,1.32fr);gap:7px;margin-top:8px}
+.add-stock input{min-width:0;width:100%;height:44px;padding:8px 9px;font-size:12px}
+.add-stock input::placeholder{font-size:11px;opacity:1}
+.add-stock button{width:100%;min-width:0;min-height:44px;padding:7px 8px;font-size:10px;line-height:1.2;white-space:normal}
+@media(max-width:390px){
+ .product{padding:8px}
+ .product-top{gap:7px;min-height:60px}
+ .product-top img{width:50px;height:50px;flex-basis:50px}
+ .product-top b{font-size:12px;line-height:1.35}
+ .product-top small{font-size:9px}
+ .stock-stats{gap:5px}
+ .stock-stat{min-height:82px;padding:8px 7px}
+ .stock-stat small{font-size:8px;min-height:25px}
+ .stock-stat strong{font-size:15px}
+ .stock-edit-link{min-height:34px;font-size:10px}
+ .add-stock{grid-template-columns:minmax(70px,.62fr) minmax(0,1.38fr);gap:5px}
+ .add-stock input{font-size:11px;padding:7px}
+ .add-stock input::placeholder{font-size:10px}
+ .add-stock button{font-size:10px;padding:6px 5px}
+}
+@media(min-width:720px){
+ .product-top b{font-size:14px}
+ .stock-stat small{font-size:10px}
+ .stock-stat strong{font-size:18px}
+ .stock-edit-link{font-size:11px}
+ .add-stock button{font-size:11px}
+}
+
+
+/* V44 — mobile-first inventory layout: one roomy card per row */
+#productsView .section-head h2{font-size:25px;line-height:1.2}
+#productsView .section-head .eyebrow{font-size:11px}
+#productsView .inventory{
+  grid-template-columns:minmax(0,1fr);
+  gap:11px;
+}
+#productsView .product{
+  padding:12px;
+  border-radius:18px;
+}
+#productsView .product-top{
+  min-height:78px;
+  gap:12px;
+}
+#productsView .product-top img{
+  width:70px;height:70px;flex-basis:70px;border-radius:15px;
+}
+#productsView .product-top b{
+  font-size:15px;
+  line-height:1.35;
+  word-break:normal;
+  overflow-wrap:normal;
+  hyphens:none;
+}
+#productsView .product-top small{font-size:11px;margin-top:5px}
+#productsView .stock-stats{
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:8px;
+  margin-top:11px;
+}
+#productsView .stock-stat{
+  min-height:90px;
+  padding:10px 11px;
+  gap:7px;
+}
+#productsView .stock-stat small{
+  min-height:0;
+  font-size:10px;
+  line-height:1.35;
+  word-break:normal;
+  overflow-wrap:normal;
+}
+#productsView .stock-stat strong{
+  font-size:19px;
+  line-height:1.25;
+}
+#productsView .stock-edit-link{
+  min-height:42px;
+  margin-top:8px;
+  font-size:12px;
+  white-space:normal;
+}
+#productsView .add-stock{
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:8px;
+  margin-top:8px;
+}
+#productsView .add-stock input{
+  height:48px;
+  padding:10px 12px;
+  font-size:14px;
+}
+#productsView .add-stock input::placeholder{font-size:12px}
+#productsView .add-stock button{
+  min-height:48px;
+  padding:9px 10px;
+  font-size:12px;
+  line-height:1.25;
+  white-space:normal;
+}
+#productsView .kpi small{font-size:11px;line-height:1.4}
+#productsView .kpi strong{font-size:19px}
+@media(max-width:390px){
+  #productsView .product{padding:10px}
+  #productsView .product-top{min-height:66px;gap:9px}
+  #productsView .product-top img{width:60px;height:60px;flex-basis:60px}
+  #productsView .product-top b{font-size:14px}
+  #productsView .product-top small{font-size:10px}
+  #productsView .stock-stat{min-height:84px;padding:9px}
+  #productsView .stock-stat small{font-size:9px}
+  #productsView .stock-stat strong{font-size:18px}
+  #productsView .stock-edit-link{font-size:11px}
+  #productsView .add-stock{gap:7px}
+  #productsView .add-stock input{font-size:13px;padding:9px 10px}
+  #productsView .add-stock input::placeholder{font-size:11px}
+  #productsView .add-stock button{font-size:11px;padding:8px}
+}
+@media(min-width:680px){
+  #productsView .inventory{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+  #productsView .product{padding:11px}
+  #productsView .product-top{gap:9px}
+  #productsView .product-top img{width:58px;height:58px;flex-basis:58px}
+  #productsView .product-top b{font-size:13px}
+  #productsView .stock-stat{padding:9px}
+  #productsView .stock-stat strong{font-size:17px}
+  #productsView .add-stock{grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:6px}
+  #productsView .add-stock button{font-size:10px}
+}
+
+</style>
+</head>
+<body>
+<div id="loginView" class="login-view">
+ <form id="loginForm" class="login-card">
+  <img class="login-logo" src="./assets/par-ordo-logo.png" alt="ПАР ОРДО" onerror="this.style.display='none'">
+  <div class="eyebrow">ПАР ОРДО · CONTROL V41</div>
+  <h1>Управление баней</h1><p>Номера · клиенты · покупки · касса · отчёты</p>
+  <input id="loginUser" autocomplete="username" placeholder="Логин администратора" required>
+  <input id="loginPass" type="password" autocomplete="current-password" placeholder="Пароль" required>
+  <div id="loginError" class="login-error"></div>
+  <button id="loginButton" class="primary" type="submit">Войти →</button>
+ </form>
+</div>
+
+<div id="appView" class="hidden">
+ <header class="header">
+  <button id="menuButton" class="icon-btn" aria-label="Меню">☰</button>
+  <div class="brand"><img src="./assets/par-ordo-logo.png" alt="" onerror="this.style.display='none'"><div><b>ПАР ОРДО</b><small>CONTROL · V44</small></div></div>
+  <button id="headerReport" class="icon-btn" aria-label="Отчёт">▥</button>
+ </header>
+ <main>
+  <section id="homeView" class="view active">
+   <div class="hero"><div><div class="eyebrow">УПРАВЛЕНИЕ СЕГОДНЯ</div><h1>Номера и клиенты</h1><p>Быстро выдавайте браслет, добавляйте покупки и отмечайте оплату.</p></div><div class="live-badge"><strong id="activeCount">0</strong><span>активных</span></div></div>
+   <div class="kpis" id="homeKpis"></div>
+   <div class="section-head"><div><div class="eyebrow">БРАСЛЕТЫ ПАР ОРДО</div><h2>Все номера</h2></div><div class="hint">№1—36</div></div>
+   <div class="filters"><button class="filter active" data-filter="all">Все 36</button><button class="filter" data-filter="active">Активные</button><button class="filter" data-filter="free">Свободные</button></div>
+   <div id="roomsGrid" class="rooms"></div>
+  </section>
+  <section id="productsView" class="view">
+   <div class="section-head"><div><div class="eyebrow">СКЛАД</div><h2>В наличии · Поступило</h2></div><button id="refreshProducts" class="ghost">↻ Обновить</button></div>
+   <div class="kpis" id="inventoryKpis"></div><div id="productsGrid" class="inventory"></div>
+  </section>
+  <section id="historyView" class="view">
+   <div class="section-head"><div><div class="eyebrow">ЗАВЕРШЁННЫЕ СЕАНСЫ</div><h2>История</h2></div><button id="archiveAll" class="primary">Архивировать всё</button></div>
+   <div id="historyList" class="list"></div>
+  </section>
+  <section id="archiveView" class="view">
+   <div class="section-head"><div><div class="eyebrow">СОХРАНЁННЫЕ ДАННЫЕ</div><h2>Архив</h2></div><button id="refreshArchive" class="ghost">↻</button></div>
+   <div id="archiveList" class="list"></div>
+  </section>
+  <section id="reportView" class="view">
+   <div class="report-panel"><div class="eyebrow">КАССА · ЗАВЕРШЕНИЕ СМЕНЫ</div><div class="section-head" style="margin-top:5px"><h2>Итог за сегодня</h2><button id="refreshReport" class="ghost">↻</button></div><div id="reportContent"></div><button id="finishWork" class="primary finish">✓ Завершить работу и архивировать завершённых</button></div>
+  </section>
+ </main>
+ <nav class="bottom-nav">
+  <button class="nav-item active" data-view="homeView"><span>⌂</span><small>Номера</small></button>
+  <button class="nav-item" data-view="productsView"><span>▦</span><small>Товары</small></button>
+  <button class="nav-item" data-view="historyView"><span>◷</span><small>История</small></button>
+  <button class="nav-item" data-view="archiveView"><span>▤</span><small>Архив</small></button>
+  <button class="nav-item" data-view="reportView"><span>▥</span><small>Итог</small></button>
+ </nav>
+</div>
+
+<div id="drawer" class="drawer"><div class="drawer-panel">
+ <button id="closeDrawer" class="icon-btn" style="float:right">×</button>
+ <div class="drawer-brand"><img src="./assets/par-ordo-logo.png" alt="" onerror="this.style.display='none'"><h2>ПАР ОРДО</h2><small>CONTROL</small></div>
+ <div id="loggedUser" class="user-caption"></div>
+ <div class="drawer-links"><button data-drawer-view="homeView">⌂ Номера 1—36</button><button data-drawer-view="productsView">▦ В наличии / Поступило</button><button data-drawer-view="historyView">◷ История клиентов</button><button data-drawer-view="archiveView">▤ Архив</button><button data-drawer-view="reportView">▥ Отчёт / Завершить работу</button><button id="logoutButton" class="logout">↪ Выйти</button></div>
+ </div></div>
+
+<div id="clientModal" class="modal"><div id="clientModalCard" class="modal-card"></div></div>
+<div id="addModal" class="modal"><div id="addModalCard" class="modal-card"></div></div>
+<div id="confirmModal" class="modal"><div id="confirmModalCard" class="modal-card"></div></div>
+
+<script>
+'use strict';
+const API='https://par-ordo-api.moimarketjibekjolu.workers.dev';
+const TOKEN_KEY='parordo_admin_token',USER_KEY='parordo_admin_user';
+const DATA_KEY='parordo_control_clean_v40';
+const $=s=>document.querySelector(s),$$=s=>Array.from(document.querySelectorAll(s));
+const money=v=>`${Number(v||0).toLocaleString('ru-RU')} сом`;
+const todayKey=()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`};
+const stamp=()=>new Date().toISOString();
+const fmtDate=v=>v?new Date(v).toLocaleString('ru-RU',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}):'';
+const token=()=>sessionStorage.getItem(TOKEN_KEY)||'';
+const db={rooms:{},seq:{},clients:[],archived:[],incoming:{},products:[]};
+let filterMode='all',currentClientId=null,currentView='homeView',busy=false;
+
+function loadLocal(){
+ try{const old=JSON.parse(localStorage.getItem(DATA_KEY)||'null');if(old&&typeof old==='object')Object.assign(db,old)}catch(e){}
+}
+function saveLocal(){try{localStorage.setItem(DATA_KEY,JSON.stringify(db))}catch(e){toast('Сактагыч толду. Архивди текшериңиз.')} }
+function toast(message){const n=document.createElement('div');n.className='toast';n.textContent=message;document.body.appendChild(n);setTimeout(()=>n.remove(),2200)}
+async function api(path,options={}){
+ const headers={Accept:'application/json'};if(options.body)headers['Content-Type']='application/json';if(token())headers.Authorization=`Bearer ${token()}`;
+ const res=await fetch(API+path,{...options,headers:{...headers,...(options.headers||{})}});
+ let data=null;try{data=await res.json()}catch(e){}
+ if(!res.ok)throw new Error(data?.error||`Ошибка API ${res.status}`);
+ return data;
+}
+function showLogin(){ $('#loginView').classList.remove('hidden');$('#appView').classList.add('hidden') }
+function showApp(){ $('#loginView').classList.add('hidden');$('#appView').classList.remove('hidden') }
+function products(){return db.products||[]}
+function clientForRoom(n){const id=db.rooms[String(n)];return db.clients.find(c=>c.id===id&&c.status==='active')||null}
+function total(c){return c.items.reduce((s,i)=>s+Number(i.price||0)*Number(i.qty||0),0)}
+function payments(c){return c.items.reduce((a,i)=>{const amount=Number(i.price||0)*Number(i.qty||0);if(i.method==='cash')a.cash+=amount;else if(i.method==='transfer')a.transfer+=amount;else a.pending+=amount;return a},{cash:0,transfer:0,pending:0})}
+function activeClients(){return db.clients.filter(c=>c.status==='active')}
+function allTodayClients(){return db.clients.filter(c=>c.startedDay===todayKey())}
+function completedToday(){return db.clients.filter(c=>c.startedDay===todayKey()&&c.status==='completed')}
+function escapeHtml(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+
+async function loginHandler(event){
+ event.preventDefault();if(busy)return;const username=$('#loginUser').value.trim().toLowerCase(),password=$('#loginPass').value;
+ $('#loginError').textContent='';busy=true;$('#loginButton').disabled=true;
+ try{
+  const d=await api('/api/admin/login',{method:'POST',body:JSON.stringify({username,password})});
+  sessionStorage.setItem(TOKEN_KEY,d.token);sessionStorage.setItem(USER_KEY,username);
+  $('#loggedUser').textContent=`${username} · доступ персонала`;showApp();await bootApp();
+ }catch(e){$('#loginError').textContent=e.message}
+ finally{busy=false;$('#loginButton').disabled=false}
+}
+async function bootApp(){
+ loadLocal();$('#loggedUser').textContent=`${sessionStorage.getItem(USER_KEY)||'admin'} · доступ персонала`;
+ await loadProducts();
+ await migrateLegacyPendingStock();
+ renderHome();renderInventory();renderHistory();renderArchive();renderReport();
+}
+async function migrateLegacyPendingStock(){
+ if(db.stockMigrationV41)return;
+ let missed=0;
+ for(const c of db.clients||[]){
+  for(const i of c.items||[]){
+   if(i.productId==null)continue;
+   if(i.method==='cash'||i.method==='transfer'){i.stockHeldV41=true;continue}
+   if(i.method==='pending'&&c.status==='active'&&!i.stockHeldV41){
+    const p=db.products.find(x=>Number(x.id)===Number(i.productId));
+    if(!p){missed++;continue}
+    const qty=Number(i.qty||0),available=Number(p.available??(Number(p.stock||0)-Number(p.reserved||0)));
+    if(available<qty){missed++;continue}
+    try{
+     const next=Number(p.stock||0)-qty;
+     await api(`/api/admin/products/${p.id}`,{method:'PATCH',body:JSON.stringify({price:p.price==null?null:Number(p.price),stock:next})});
+     p.stock=next;p.available=next-Number(p.reserved||0);i.stockHeldV41=true;
+    }catch(e){missed++}
+   }
+  }
+ }
+ db.stockMigrationV41=true;saveLocal();
+ if(missed)toast(`Внимание: ${missed} позиций старых клиентов не удалось списать со склада. Проверьте остатки.`);
+}
+async function loadProducts(){
+ try{const d=await api('/api/products');db.products=d.products||[];saveLocal()}
+ catch(e){toast('Не удалось загрузить товары: '+e.message)}
+}
+function navigate(view){
+ currentView=view;$$('.view').forEach(v=>v.classList.toggle('active',v.id===view));
+ $$('.nav-item').forEach(b=>b.classList.toggle('active',b.dataset.view===view));
+ $('#drawer').classList.remove('open');
+ if(view==='homeView')renderHome();if(view==='productsView')renderInventory();
+ if(view==='historyView')renderHistory();if(view==='archiveView')renderArchive();if(view==='reportView')renderReport();
+ window.scrollTo({top:0,behavior:'smooth'});
+}
+function setFilter(mode){filterMode=mode;$$('[data-filter]').forEach(b=>b.classList.toggle('active',b.dataset.filter===mode));renderRooms()}
+function renderHome(){
+ const active=activeClients().length,all=allTodayClients(),done=completedToday();
+ $('#activeCount').textContent=active;
+ const ps=all.reduce((sum,c)=>{const p=payments(c);sum.cash+=p.cash;sum.transfer+=p.transfer;return sum},{cash:0,transfer:0});
+ $('#homeKpis').innerHTML=`
+ <div class="kpi"><small>Клиентов сегодня</small><strong>${all.length}</strong></div>
+ <div class="kpi green"><small>Наличные</small><strong>${money(ps.cash)}</strong></div>
+ <div class="kpi blue"><small>Перевод</small><strong>${money(ps.transfer)}</strong></div>
+ <div class="kpi"><small>Итого оплачено</small><strong>${money(ps.cash+ps.transfer)}</strong></div>`;
+ renderRooms();
+}
+function renderRooms(){
+ let nums=Array.from({length:36},(_,i)=>i+1);
+ if(filterMode==='active')nums=nums.filter(n=>clientForRoom(n));
+ if(filterMode==='free')nums=nums.filter(n=>!clientForRoom(n));
+ $('#roomsGrid').innerHTML=nums.map(n=>{
+ const c=clientForRoom(n),p=c?payments(c):{cash:0,transfer:0,pending:0};
+ const title=c?`Клиент ${c.clientNo} (№${n})`:`№${n}`;
+ const count=c?c.items.reduce((s,i)=>s+i.qty,0):0;
+ const purchaseNames=c?c.items.map(i=>`${i.name} ×${i.qty}`).slice(0,3).join(' · '):'Номер свободен';
+ return `<article class="room ${c?'active':'free'}">
+ <div class="room-top"><div class="bracelet">№${n}</div><div style="min-width:0;flex:1"><div class="room-name">${escapeHtml(title)}</div><div class="room-time">${c?`С ${fmtDate(c.startedAt)}`:'Свободен'}</div></div><span class="lamp" aria-label="${c?'Активный':'Свободный'}"></span></div>
+ <div class="status-switch"><button type="button" class="${c?'selected-on':''}" data-activate="${n}">АКТИВНЫЙ</button><button type="button" class="${!c?'selected-off':''}" data-deactivate="${n}">НЕАКТИВ</button></div>
+ ${c?`<div class="room-summary"><b>Покупки: ${count} · ${money(total(c))}</b><span>${escapeHtml(purchaseNames||'Пока ничего не добавлено')}</span></div><div class="room-actions"><button type="button" class="action" data-open-client="${c.id}">Открыть</button><button type="button" class="action gold" data-add-client="${c.id}">＋ Покупка</button></div>`:`<div class="room-actions"><button type="button" class="action gold wide" data-activate="${n}">＋ Выдать браслет</button></div>`}
+ </article>`;
+ }).join('');
+ $$('[data-activate]').forEach(b=>b.onclick=()=>activateRoom(Number(b.dataset.activate)));
+ $$('[data-deactivate]').forEach(b=>b.onclick=()=>deactivateRoom(Number(b.dataset.deactivate)));
+ $$('[data-open-client]').forEach(b=>b.onclick=()=>openClient(b.dataset.openClient));
+ $$('[data-add-client]').forEach(b=>b.onclick=()=>openAdd(b.dataset.addClient));
+}
+function activateRoom(n){
+ if(clientForRoom(n)){openClient(clientForRoom(n).id);return}
+ const seq=(Number(db.seq[n]||0)%50)+1,id=crypto.randomUUID(),now=stamp();
+ const c={id,room:n,clientNo:seq,startedAt:now,startedDay:todayKey(),status:'active',endedAt:null,items:[]};
+ db.seq[n]=seq;db.rooms[String(n)]=id;db.clients.push(c);saveLocal();renderHome();toast(`№${n} · Клиент ${seq} активирован ✅`);
+}
+function deactivateRoom(n){
+ const c=clientForRoom(n);if(c){toast('Сначала завершите клиента с номером №'+n)}else toast(`№${n} свободен`)
+}
+function openModal(sel){$(sel).classList.add('open')}
+function closeModal(sel){$(sel).classList.remove('open')}
+function openClient(id){const c=db.clients.find(x=>x.id===id&&x.status==='active');if(!c)return;currentClientId=id;renderClientModal();openModal('#clientModal')}
+function renderClientModal(){
+ const c=db.clients.find(x=>x.id===currentClientId);if(!c)return;
+ const p=payments(c);
+ $('#clientModalCard').innerHTML=`<div class="modal-head"><div><div class="eyebrow">АКТИВНЫЙ КЛИЕНТ · №${c.room}</div><h2>Клиент ${c.clientNo}</h2><div class="history-meta">Начало: ${fmtDate(c.startedAt)}</div></div><button class="close" type="button" data-close-client>×</button></div>
+ <div class="client-balance"><div class="balance-row"><span>Оплачено наличными</span><strong>${money(p.cash)}</strong></div><div class="balance-row"><span>Оплачено переводом</span><strong>${money(p.transfer)}</strong></div><div class="balance-row"><span>Ожидает оплаты</span><strong>${money(p.pending)}</strong></div><div class="balance-row balance-total"><span>ОБЩИЙ ЧЕК</span><strong>${money(total(c))}</strong></div></div>
+ <div class="section-head"><div><div class="eyebrow">ПОКУПКИ</div><h2>Что приобрёл</h2></div><button class="primary" type="button" id="addPurchaseFromClient">＋ Добавить</button></div>
+ <div class="purchases">${c.items.length?c.items.map(item=>purchaseCard(item)).join(''):'<div class="empty-state">Покупок пока нет.<br>Нажмите «＋ Добавить», чтобы записать вход или товар.</div>'}</div>
+ <button class="complete-btn" type="button" id="completeClient">✓ Завершить клиента</button>
+ <div class="history-meta" style="text-align:center;margin-top:7px">Если есть неоплаченные позиции, завершение будет заблокировано.</div>`;
+ $$('[data-close-client]').forEach(b=>b.onclick=()=>closeModal('#clientModal'));
+ $('#addPurchaseFromClient').onclick=()=>openAdd(c.id);
+ $('#completeClient').onclick=()=>completeClient(c.id);
+}
+function purchaseCard(i){
+ const prod=db.products.find(p=>Number(p.id)===Number(i.productId)),img=prod?.img||'./assets/par-ordo-logo.png';
+ const method=i.method||'pending';
+ const methodClass=method==='cash'?'is-cash':method==='transfer'?'is-transfer':'is-pending';
+ return `<article class="purchase"><img src="${escapeHtml(img)}" alt="" onerror="this.src='./assets/par-ordo-logo.png'"><div class="purchase-info"><div class="purchase-title">${escapeHtml(i.name)}</div><div class="purchase-price"><span>${money(i.price)} × ${i.qty} = <b>${money(i.price*i.qty)}</b></span><button class="edit-price" type="button" data-edit-price="${i.id}">Изменить цену ✎</button></div><div class="quantity"><button type="button" data-qty="${i.id}|-1">−</button><b>${i.qty}</b><button type="button" data-qty="${i.id}|1">＋</button><span style="margin-left:auto;color:var(--muted);font-size:9px">шт.</span></div><div class="pay-methods"><button class="${method==='pending'?methodClass:''}" type="button" data-payment="${i.id}|pending">Ожидает оплаты</button><button class="${method==='cash'?methodClass:''}" type="button" data-payment="${i.id}|cash">Оплачено наличными</button><button class="${method==='transfer'?methodClass:''}" type="button" data-payment="${i.id}|transfer">Оплачено переводом</button></div></div></article>`;
+}
+function openAdd(clientId){
+ currentClientId=clientId;const c=db.clients.find(x=>x.id===clientId);if(!c)return;
+ $('#addModalCard').innerHTML=`<div class="modal-head"><div><div class="eyebrow">ДОБАВИТЬ ПОКУПКУ</div><h2>Клиент ${c.clientNo} (№${c.room})</h2></div><button class="close" type="button" data-close-add>×</button></div>
+ <button class="entry-add" type="button" id="addEntry"><b>🚿 Вход</b><span>300 сом　＋</span></button>
+ <div class="add-grid">${db.products.map(p=>`<button type="button" class="add-product" data-product="${p.id}"><img src="${escapeHtml(p.img||'./assets/par-ordo-logo.png')}" alt="" onerror="this.src='./assets/par-ordo-logo.png'"><span><b>${escapeHtml(p.name)}</b><small>${p.price==null?'Цена не указана':money(p.price)} · в наличии ${Number(p.available??p.stock??0)}</small></span></button>`).join('')}</div>
+ <div class="history-meta" style="text-align:center;margin-top:9px">Каждое добавление записывается в чек клиента.</div>`;
+ openModal('#addModal');
+ $$('[data-close-add]').forEach(b=>b.onclick=()=>closeModal('#addModal'));
+ $('#addEntry').onclick=()=>addPurchase({name:'Вход',price:300,productId:null});
+ $$('[data-product]').forEach(b=>b.onclick=()=>{const p=db.products.find(x=>Number(x.id)===Number(b.dataset.product));if(p)addPurchase({name:p.name,price:Number(p.price||0),productId:Number(p.id)})});
+}
+async function setInventoryStock(p,nextStock){
+ const reserved=Number(p.reserved||0);
+ if(!Number.isInteger(nextStock)||nextStock<reserved)throw new Error(`Недостаточно товара. Доступно: ${Math.max(0,Number(p.stock||0)-reserved)} шт.`);
+ await api(`/api/admin/products/${p.id}`,{method:'PATCH',body:JSON.stringify({price:p.price==null?null:Number(p.price),stock:nextStock})});
+ p.stock=nextStock;p.available=nextStock-reserved;saveLocal();
+}
+async function addPurchase({name,price,productId}){
+ const c=db.clients.find(x=>x.id===currentClientId);if(!c)return;
+ let p=null;
+ if(productId!=null){
+  p=db.products.find(x=>Number(x.id)===Number(productId));
+  if(!p){toast('Товар не найден');return}
+  if(p._stockUpdating){toast('Подождите, обновляется остаток');return}
+  const available=Number(p.available??(Number(p.stock||0)-Number(p.reserved||0)));
+  if(available<1){toast(`«${p.name}» закончился на складе`);return}
+  p._stockUpdating=true;
+ }
+ try{
+  // Deduct one unit immediately at the moment it is added to the client's purchase list.
+  if(p)await setInventoryStock(p,Number(p.stock||0)-1);
+  const existing=productId==null?null:c.items.find(i=>Number(i.productId)===Number(productId)&&i.method==='pending');
+  if(existing){existing.qty+=1;existing.stockHeldV41=true}
+  else c.items.push({id:crypto.randomUUID(),productId:productId==null?null:Number(productId),name,price:Number(price||0),qty:1,method:'pending',createdAt:stamp(),stockHeldV41:productId!=null});
+  saveLocal();closeModal('#addModal');renderClientModal();openModal('#clientModal');renderHome();renderInventory();
+  toast(p?`Добавлено. Остаток: ${p.available} шт. ✅`:'Покупка добавлена ✅');
+ }catch(e){toast('Не удалось добавить покупку: '+e.message)}
+ finally{if(p)p._stockUpdating=false}
+}
+function editPrice(id){
+ const c=db.clients.find(x=>x.id===currentClientId),i=c?.items.find(x=>x.id===id);if(!i)return;
+ const value=prompt('Новая цена (сом):',String(i.price));if(value===null)return;
+ const price=Number(value);if(!Number.isFinite(price)||price<0){toast('Введите корректную цену');return}
+ i.price=price;saveLocal();renderClientModal();renderHome();toast('Цена обновлена ✅');
+}
+async function itemPayment(id,method){
+ const c=db.clients.find(x=>x.id===currentClientId),i=c?.items.find(x=>x.id===id);if(!i)return;
+ i.method=method;saveLocal();renderClientModal();renderHome();renderInventory();
+ toast(method==='pending'?'Статус: ожидает оплаты ✅':method==='cash'?'Оплачено наличными ✅':'Оплачено переводом ✅');
+}
+async function changeQty(id,delta){
+ const c=db.clients.find(x=>x.id===currentClientId),i=c?.items.find(x=>x.id===id);if(!i)return;
+ const p=i.productId==null?null:db.products.find(x=>Number(x.id)===Number(i.productId));
+ if(i.productId!=null&&(!p||!i.stockHeldV41)){toast('Не удалось подтвердить резерв товара. Обновите остатки.');return}
+ let restore=0,consume=0,remove=false;
+ const next=Number(i.qty)+delta;
+ if(next<1){
+  if(!confirm('Удалить позицию из чека?'))return;
+  remove=true;restore=Number(i.qty||0);
+ }else if(delta>0)consume=delta;
+ else if(delta<0)restore=Math.abs(delta);
+ try{
+  if(p&&consume){
+   const available=Number(p.available??(Number(p.stock||0)-Number(p.reserved||0)));
+   if(available<consume){toast(`Недостаточно товара. Остаток: ${available} шт.`);return}
+   await setInventoryStock(p,Number(p.stock||0)-consume);
+  }
+  if(p&&restore)await setInventoryStock(p,Number(p.stock||0)+restore);
+  if(remove)c.items=c.items.filter(x=>x.id!==id);else i.qty=next;
+  saveLocal();renderClientModal();renderHome();renderInventory();
+  toast(remove?'Позиция удалена, товар возвращён на склад ✅':'Количество обновлено ✅');
+ }catch(e){toast('Не удалось изменить количество: '+e.message)}
+}
+function completeClient(){
+ const c=db.clients.find(x=>x.id===currentClientId);if(!c)return;
+ if(c.items.some(i=>i.method==='pending')){toast('Есть неоплаченные позиции. Отметьте оплату.');return}
+ if(!confirm(`Завершить Клиент ${c.clientNo} (№${c.room}) на ${money(total(c))}?`))return;
+ c.status='completed';c.endedAt=stamp();delete db.rooms[String(c.room)];saveLocal();closeModal('#clientModal');renderHome();renderHistory();renderReport();toast('Клиент завершён и сохранён в истории ✅');
+}
+async function renderInventory(){
+ const stockInToday=Object.entries(db.incoming||{}).filter(([id,x])=>x.day===todayKey()).reduce((s,[id,x])=>s+Number(x.qty||0),0);
+ const stockTotal=db.products.reduce((s,p)=>s+Number(p.available??p.stock??0),0);
+ $('#inventoryKpis').innerHTML=`<div class="kpi"><small>Товаров в каталоге</small><strong>${db.products.length}</strong></div><div class="kpi green"><small>Остаток, всего штук</small><strong>${stockTotal}</strong></div><div class="kpi blue"><small>Поступило сегодня</small><strong>${stockInToday} шт.</strong></div><div class="kpi"><small>Единиц учёта</small><strong>В наличии</strong></div>`;
+ $('#productsGrid').innerHTML=db.products.length?db.products.map(p=>{
+ const i=db.incoming[p.id],inc=i?.day===todayKey()?Number(i.qty||0):0;
+ return `<article class="product">
+  <div class="product-top">
+    <img src="${escapeHtml(p.img||'./assets/par-ordo-logo.png')}" alt="" onerror="this.src='./assets/par-ordo-logo.png'">
+    <div class="product-title"><b>${escapeHtml(p.name)}</b><small>${escapeHtml(p.cat||'Товар')}</small></div>
+  </div>
+  <div class="stock-stats">
+    <div class="stock-stat">
+      <small>В НАЛИЧИИ</small>
+      <strong>${Number(p.available??p.stock??0)} шт.</strong>
+    </div>
+    <div class="stock-stat incoming">
+      <small>ПОСТУПИЛО СЕГОДНЯ</small>
+      <strong>+${inc} шт.</strong>
+    </div>
+  </div>
+  <button type="button" class="stock-edit-link" data-stock-edit="${p.id}">✎ Изменить остаток</button>
+  <div class="add-stock">
+    <input type="number" min="1" step="1" inputmode="numeric" id="incoming-${p.id}" placeholder="+ шт." aria-label="Количество поступившего товара">
+    <button type="button" data-stock-add="${p.id}">＋ Добавить поступление</button>
+  </div>
+</article>`;
+ }).join(''):'<div class="empty-state">Товары не загрузились. Нажмите «Обновить».</div>';
+ $$('[data-stock-add]').forEach(b=>b.onclick=()=>addStock(Number(b.dataset.stockAdd)));
+ $$('[data-stock-edit]').forEach(b=>b.onclick=()=>editStock(Number(b.dataset.stockEdit)));
+}
+async function editStock(id){
+ const p=db.products.find(x=>Number(x.id)===Number(id));if(!p)return;
+ const currentAvailable=Number(p.available??(Number(p.stock||0)-Number(p.reserved||0)));
+ const entered=prompt(`Изменить остаток товара «${p.name}».\nВведите новое количество В НАЛИЧИИ:`,String(currentAvailable));
+ if(entered===null)return;
+ if(entered.trim()===''||!Number.isInteger(Number(entered))||Number(entered)<0){toast('Введите целое количество от 0');return}
+ const nextAvailable=Number(entered),reserved=Number(p.reserved||0),nextStock=nextAvailable+reserved;
+ try{
+  await api(`/api/admin/products/${id}`,{method:'PATCH',body:JSON.stringify({price:p.price==null?null:Number(p.price),stock:nextStock})});
+  p.stock=nextStock;p.available=nextAvailable;saveLocal();renderInventory();toast(`Остаток обновлён: ${nextAvailable} шт. ✅`);
+ }catch(e){toast('Не удалось изменить остаток: '+e.message)}
+}
+async function addStock(id){
+ const input=$(`#incoming-${id}`),qty=Number(input?.value),p=db.products.find(x=>Number(x.id)===id);
+ if(!p||!Number.isInteger(qty)||qty<=0){toast('Укажите количество больше нуля');return}
+ try{
+  await api(`/api/admin/products/${id}/stock`,{method:'POST',body:JSON.stringify({qty})});
+  p.stock=Number(p.stock||0)+qty;p.available=p.stock-Number(p.reserved||0);
+  const prev=db.incoming[id]?.day===todayKey()?Number(db.incoming[id].qty||0):0;db.incoming[id]={day:todayKey(),qty:prev+qty};saveLocal();
+  await loadProducts();renderInventory();toast(`Поступило +${qty} ✅`);
+ }catch(e){toast('Ошибка поступления: '+e.message)}
+}
+function recordCard(c,isArchive){
+ const ps=payments(c);
+ return `<article class="history-card"><div class="history-top"><div><b>Клиент ${c.clientNo} (№${c.room})</b><div class="history-meta">${fmtDate(c.startedAt)}${c.endedAt?' — '+fmtDate(c.endedAt):''}</div></div><strong>${money(total(c))}</strong></div><div class="history-lines">${c.items.map(i=>`<div class="history-line"><span>${escapeHtml(i.name)} ×${i.qty}</span><span>${money(i.price*i.qty)} <em class="pay-tag ${i.method||'pending'}">${i.method==='cash'?'Наличные':i.method==='transfer'?'Перевод':'Ожидает'}</em></span></div>`).join('')||'<div class="history-meta">Покупок нет</div>'}</div><div class="history-bottom"><span>💵 ${money(ps.cash)}</span><span>💳 ${money(ps.transfer)}</span><span>${isArchive?'📦 Архив':'✓ Завершён'}</span></div></article>`;
+}
+function renderHistory(){const arr=db.clients.filter(c=>c.status==='completed'&&!db.archived.includes(c.id)).sort((a,b)=>new Date(b.endedAt)-new Date(a.endedAt));$('#historyList').innerHTML=arr.length?arr.map(c=>recordCard(c,false)).join(''):'<div class="empty-state">История пока пустая. Завершённые клиенты появятся здесь.</div>'}
+function renderArchive(){const arr=db.clients.filter(c=>c.status==='completed'&&db.archived.includes(c.id)).sort((a,b)=>new Date(b.endedAt)-new Date(a.endedAt));$('#archiveList').innerHTML=arr.length?arr.map(c=>recordCard(c,true)).join(''):'<div class="empty-state">Архив пока пуст.</div>'}
+function archiveToday(){const arr=db.clients.filter(c=>c.status==='completed'&&!db.archived.includes(c.id)&&c.startedDay===todayKey());arr.forEach(c=>db.archived.push(c.id));saveLocal();renderHistory();renderArchive();renderReport();toast(`В архив перенесено: ${arr.length} клиентов ✅`)}
+function renderReport(){
+ const cs=completedToday(),totalClients=allTodayClients(),paymentsTotal=totalClients.reduce((acc,c)=>{const p=payments(c);acc.cash+=p.cash;acc.transfer+=p.transfer;return acc},{cash:0,transfer:0});
+ const sum=paymentsTotal.cash+paymentsTotal.transfer;
+ $('#reportContent').innerHTML=`<div class="report-grid"><div class="report-tile"><small>КЛИЕНТОВ СЕГОДНЯ</small><b>${totalClients.length}</b></div><div class="report-tile cash"><small>НАЛИЧНЫЕ</small><b>${money(paymentsTotal.cash)}</b></div><div class="report-tile transfer"><small>ПЕРЕВОД</small><b>${money(paymentsTotal.transfer)}</b></div><div class="report-tile"><small>НЕ ОПЛАЧЕНО</small><b>${money(totalClients.reduce((s,c)=>s+payments(c).pending,0))}</b></div></div><div class="report-total"><small>ИТОГ ОБЩИЙ · ПОЛУЧЕНО</small><strong>${money(sum)}</strong></div><div class="history-meta" style="margin-top:9px">Завершено клиентов: ${cs.length}. В отчёте учитываются оплаты активных и завершённых клиентов за сегодня.</div>`;
+}
+function confirmAction(title,description,okLabel,action){
+ $('#confirmModalCard').innerHTML=`<div class="modal-head"><div><div class="eyebrow">ПАР ОРДО · ПОДТВЕРЖДЕНИЕ</div><h2>${escapeHtml(title)}</h2></div><button class="close" type="button" id="cancelConfirm">×</button></div><p class="history-meta" style="font-size:11px;line-height:1.6">${escapeHtml(description)}</p><div class="modal-cta"><button id="confirmNo" class="ghost" type="button">Назад</button><button id="confirmYes" class="primary" type="button">${escapeHtml(okLabel)}</button></div>`;
+ openModal('#confirmModal');$('#cancelConfirm').onclick=$('#confirmNo').onclick=()=>closeModal('#confirmModal');$('#confirmYes').onclick=()=>{closeModal('#confirmModal');action()};
+}
+function logout(){
+ const t=token();if(t)fetch(API+'/api/admin/logout',{method:'POST',headers:{Authorization:`Bearer ${t}`}}).catch(()=>{});
+ sessionStorage.removeItem(TOKEN_KEY);sessionStorage.removeItem(USER_KEY);showLogin();
+}
+document.addEventListener('click',e=>{
+ const pay=e.target.closest('[data-payment]');if(pay){const [id,method]=pay.dataset.payment.split('|');itemPayment(id,method)}
+ const qty=e.target.closest('[data-qty]');if(qty){const [id,d]=qty.dataset.qty.split('|');changeQty(id,Number(d))}
+ const ep=e.target.closest('[data-edit-price]');if(ep)editPrice(ep.dataset.editPrice);
+});
+$$('[data-filter]').forEach(b=>b.onclick=()=>setFilter(b.dataset.filter));
+$$('[data-view]').forEach(b=>b.onclick=()=>navigate(b.dataset.view));
+$$('[data-drawer-view]').forEach(b=>b.onclick=()=>navigate(b.dataset.drawerView));
+$('#loginForm').addEventListener('submit',loginHandler);
+$('#menuButton').onclick=()=>$('#drawer').classList.add('open');$('#closeDrawer').onclick=()=>$('#drawer').classList.remove('open');
+$('#headerReport').onclick=()=>navigate('reportView');
+$('#logoutButton').onclick=logout;
+$('#refreshProducts').onclick=async()=>{await loadProducts();renderInventory();toast('Товары обновлены')};
+$('#refreshArchive').onclick=renderArchive;$('#refreshReport').onclick=renderReport;
+$('#archiveAll').onclick=()=>confirmAction('Архивировать историю за сегодня?','Завершённые клиенты сегодняшнего дня будут перенесены в архив. Данные и суммы сохранятся.','Архивировать',archiveToday);
+$('#finishWork').onclick=()=>confirmAction('Завершить рабочую смену?','Будет показан итог и завершённые клиенты за сегодня будут перенесены в архив. Активные клиенты останутся активными.','Завершить и архивировать',()=>{renderReport();archiveToday();navigate('reportView')});
+$('#clientModal').addEventListener('click',e=>{if(e.target.id==='clientModal')closeModal('#clientModal')});
+$('#addModal').addEventListener('click',e=>{if(e.target.id==='addModal')closeModal('#addModal')});
+$('#confirmModal').addEventListener('click',e=>{if(e.target.id==='confirmModal')closeModal('#confirmModal')});
+loadLocal();
+if(token()){showApp();bootApp().catch(e=>toast(e.message))}else showLogin();
+</script>
+</body></html>
