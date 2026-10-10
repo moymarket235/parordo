@@ -940,6 +940,13 @@ main{width:min(1180px,100%);padding:13px;margin:auto}.view{display:none}.view.ac
 
 /* V83 — brand wordmark icons instead of product photos */
 .product-top img,.add-product img{object-fit:contain!important;background:#0c0805!important;border:1px solid #624321;border-radius:13px;padding:0}
+
+/* Staff and administrators may edit catalog prices; stock controls remain admin-only. */
+.stock-price-row{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:9px;padding:8px 9px;border:1px solid #3a291a;border-radius:10px;background:#0c0805}
+.stock-price-label{min-width:0;color:var(--muted);font-size:11px;line-height:1.4}
+.stock-price-label strong{display:block;margin-top:3px;color:#ffdc81;font-size:15px;overflow-wrap:anywhere}
+.stock-price-row .stock-edit-link{flex:0 0 48%;width:auto;max-width:48%;min-height:36px;margin-top:0;padding:6px 7px;font-size:10px;white-space:normal}
+@media(max-width:360px){.stock-price-row{align-items:stretch;flex-direction:column}.stock-price-row .stock-edit-link{width:100%;max-width:none;flex-basis:auto}}
 </style>
 <style>/* V82.1 — password visibility control, added without altering panel logic */
 .password-field-wrap{position:relative;display:block;width:100%;min-width:0;box-sizing:border-box}
@@ -1384,6 +1391,10 @@ async function renderInventory(){
       <strong>+${inc} шт.</strong>
     </div>
   </div>
+  <div class="stock-price-row">
+    <span class="stock-price-label">Цена: <strong>${p.price==null?'не указана':money(p.price)}</strong></span>
+    ${['admin','staff'].includes(currentRole())?`<button type="button" class="stock-edit-link" data-price-edit="${p.id}">✎ Изменить цену</button>`:''}
+  </div>
   ${currentRole()==='admin'?`<button type="button" class="stock-edit-link" data-stock-edit="${p.id}">✎ Изменить остаток</button>
   <div class="add-stock">
     <input type="number" min="1" step="1" inputmode="numeric" id="incoming-${p.id}" placeholder="+ шт." aria-label="Количество поступившего товара">
@@ -1393,6 +1404,20 @@ async function renderInventory(){
  }).join(''):'<div class="empty-state">Товары не загрузились. Нажмите «Обновить».</div>';
  $$('[data-stock-add]').forEach(b=>b.onclick=()=>addStock(Number(b.dataset.stockAdd)));
  $$('[data-stock-edit]').forEach(b=>b.onclick=()=>editStock(Number(b.dataset.stockEdit)));
+ $$('[data-price-edit]').forEach(b=>b.onclick=()=>editProductPrice(Number(b.dataset.priceEdit)));
+}
+async function editProductPrice(id){
+ if(!['admin','staff'].includes(currentRole())){toast('Нет права изменять цену.');return}
+ const p=db.products.find(x=>Number(x.id)===Number(id));if(!p)return;
+ const entered=prompt(`Новая цена товара «${p.name}» (сом):`,p.price==null?'':String(p.price));
+ if(entered===null)return;
+ const raw=entered.trim();
+ if(raw!==''&&(!Number.isInteger(Number(raw))||Number(raw)<0)){toast('Введите целую цену от 0 сом или оставьте пустым.');return}
+ const price=raw===''?null:Number(raw),oldPrice=p.price;
+ try{
+  await api(`/api/admin/products/${id}`,{method:'PATCH',body:JSON.stringify({price})});
+  p.price=price;saveLocal();renderInventory();toast('Цена товара обновлена ✅');
+ }catch(e){p.price=oldPrice;toast('Не удалось изменить цену: '+e.message)}
 }
 async function editStock(id){
  const p=db.products.find(x=>Number(x.id)===Number(id));if(!p)return;
