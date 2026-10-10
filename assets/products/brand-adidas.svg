@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-label="adidas">
+<defs>
+ <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0d0d0f"/><stop offset="1" stop-color="#e8ebef" stop-opacity=".40"/></linearGradient>
+ <linearGradient id="shine" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".14"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+</defs>
+<rect x="12" y="12" width="488" height="488" rx="86" fill="url(#bg)" stroke="#e8ebef" stroke-width="9"/>
+<rect x="24" y="24" width="464" height="232" rx="72" fill="url(#shine)"/>
+<rect x="31" y="31" width="450" height="450" rx="70" fill="none" stroke="#ffffff" stroke-opacity=".14" stroke-width="2"/>
+<path d="M150 167 L197 167 L272 290 L225 290 Z M220 126 L267 126 L339 246 L292 246 Z M288 88 L335 88 L385 171 L338 171 Z" fill="#e8ebef" opacity=".95"/>
+<text x="256" y="283" text-anchor="middle" dominant-baseline="middle" font-family="Arial, Helvetica, sans-serif" font-size="57" font-weight="900" letter-spacing="-1.2" fill="#ffffff">adidas</text>
+
+</svg>
