@@ -431,11 +431,13 @@ $('#inventoryList').addEventListener('click',async e=>{const save=e.target.close
 $('#inventorySearch').addEventListener('input',()=>renderInventory({products:inventoryProducts},true));
 document.querySelectorAll('[data-client-filter]').forEach(b=>b.addEventListener('click',()=>{currentClientFilter=b.dataset.clientFilter;if(latestClientData)renderLiveClients(latestClientData)}));
 document.querySelectorAll('[data-stock-filter]').forEach(b=>b.addEventListener('click',()=>{currentStockFilter=b.dataset.stockFilter;renderInventory({products:inventoryProducts},true)}));
-const auditLabels={login_success:'Успешный вход',logout:'Выход из системы',access_denied:'Доступ запрещён',client_created:'Создан новый клиент',client_updated:'Изменён клиент',clients_archived:'Клиенты перемещены в архив',shift_closed:'Смена завершена',stock_receipt:'Поступление товара',product_updated:'Изменена цена или остаток',order_status_changed:'Изменён статус заказа',backup_exported:'Создана резервная копия'};
+const auditLabels={login_success:'Успешный вход',logout:'Выход из системы',access_denied:'Доступ запрещён',client_created:'Создан новый клиент',client_updated:'Изменён клиент',clients_archived:'Клиенты перемещены в архив',shift_opened:'Смена открыта',shift_closed:'Смена завершена',client_create_denied_shift_closed:'Действие заблокировано: смена закрыта',stock_receipt:'Поступление товара',product_updated:'Изменена цена или остаток',order_status_changed:'Изменён статус заказа',backup_exported:'Создана резервная копия'};
 const auditMeta={
  login_success:{category:['security'],tone:'slate',icon:'↪',summary:'Пользователь успешно вошёл в систему.',badge:'Вход выполнен'},
  logout:{category:['security'],tone:'slate',icon:'↩',summary:'Пользователь завершил сеанс.',badge:'Выход'},
  access_denied:{category:['security'],tone:'red',icon:'⛨',summary:'Система заблокировала действие из-за недостаточных прав.',badge:'Действие заблокировано'},
+ client_create_denied_shift_closed:{category:['security','clients'],tone:'red',icon:'⛨',summary:'Попытка добавить клиента при закрытой смене заблокирована.',badge:'Смена закрыта'},
+ shift_opened:{category:['security','payments'],tone:'green',icon:'▶',summary:'Сотрудник открыл новую смену. Начался отдельный учёт клиентов и оплат.',badge:'Смена открыта'},
  client_created:{category:['clients'],tone:'gold',icon:'♙',summary:'Создана карточка клиента и назначен браслет.',badge:'Клиент создан'},
  client_updated:{category:['clients'],tone:'orange',icon:'✎',summary:'Обновлены данные посещения, покупки или оплаты.',badge:'Данные обновлены'},
  clients_archived:{category:['clients'],tone:'slate',icon:'▤',summary:'Завершённые карточки клиентов перемещены в архив.',badge:'Архив'},
@@ -480,6 +482,8 @@ function auditStats(e){
   if(p.transfer!=null)stats.push(['Переводом',auditMoney(p.transfer),'blue']);
   if(p.pending!=null)stats.push(['Не оплачено',auditMoney(p.pending),'orange']);
  }
+ if(a==='shift_opened'&&d.openedAt)stats.push(['Начало смены',auditDate(d.openedAt),'green']);
+ if(a==='client_create_denied_shift_closed')stats.push(['Результат','Клиент не создан: смена закрыта','orange']);
  if(a==='shift_closed'){
   if(d.clientCount!=null)stats.push(['Клиентов',`${Number(d.clientCount)} чел.`,'purple']);
   if(d.cashTotal!=null)stats.push(['Наличными',auditMoney(d.cashTotal),'green']);
@@ -515,6 +519,8 @@ function auditDetailRows(e){
   const p=d.payments||{};if(p.cash!=null)rows.push(['Оплачено наличными',auditMoney(p.cash)]);if(p.transfer!=null)rows.push(['Оплачено переводом',auditMoney(p.transfer)]);if(p.pending!=null)rows.push(['Задолженность',auditMoney(p.pending)]);
   for(const ch of Array.isArray(d.stockChanges)?d.stockChanges:[]){const q=Number(ch.delta||0);rows.push([q>0?'Списано со склада':'Возвращено на склад',`Товар №${ch.productId}: ${Math.abs(q)} шт.`])}
  }
+ if(a==='shift_opened'&&d.openedAt)rows.push(['Начало смены',auditDate(d.openedAt)]);
+ if(a==='client_create_denied_shift_closed')rows.push(['Результат','Действие заблокировано: сначала откройте смену']);
  if(a==='shift_closed'){
   if(d.shiftDate)rows.push(['Дата смены',auditDate(d.shiftDate).split(' · ')[0]]);
   if(d.clientCount!=null)rows.push(['Всего клиентов',`${Number(d.clientCount)} чел.`]);
@@ -549,7 +555,7 @@ function renderAudit(){
  const list=$('#auditList');if(!events.length){list.innerHTML='<div class="audit-empty">По выбранным условиям записи не найдены. Измените фильтр, дату или поисковый запрос.</div>';return}
  list.innerHTML=events.map(e=>{
   const a=String(e.action||''),m=auditMeta[a]||{category:['security'],tone:'slate',icon:'•',summary:'В журнале зарегистрировано действие.',badge:'Записано'},d=e.details||{},stats=auditStats(e),rows=auditDetailRows(e),bracelet=d.room!=null?`Браслет №${d.room}`:(a==='client_updated'||a==='client_created'?'Карточка клиента':'');
-  const subtitle=bracelet|| (a==='stock_receipt'||a==='product_updated'?`Товар №${e.target||'—'}`:(a==='backup_exported'?'Данные системы':(a==='shift_closed'?'Отчёт смены':auditPathName(e.target))));
+  const subtitle=bracelet|| (a==='stock_receipt'||a==='product_updated'?`Товар №${e.target||'—'}`:(a==='backup_exported'?'Данные системы':((a==='shift_closed'||a==='shift_opened')?'Отчёт смены':(a==='client_create_denied_shift_closed'?'Новая карточка клиента':auditPathName(e.target)))));
   const itemsHtml=stats.length?`<div class="audit-stats">${stats.map(([label,value,tone])=>`<div class="audit-stat ${esc(tone||'')}"><small>${esc(label)}</small><strong>${esc(value)}</strong></div>`).join('')}</div>`:'';
   const detailsHtml=(rows.length||Object.keys(d).length)?`<details class="audit-details"><summary>Подробнее</summary><div class="audit-detail-body">${rows.map(([label,value])=>`<div class="audit-detail-row"><span>${esc(label)}</span><strong>${esc(value)}</strong></div>`).join('')}<div class="audit-detail-row"><span>Пользователь</span><strong>${esc(e.username||'—')} · ${esc(auditRoleName(e.role))}</strong></div>${e.target?`<details class="audit-technical"><summary>Технические данные</summary><pre>${auditEscDetails(e)}</pre><div class="audit-detail-row"><span>Внутренний объект</span><strong>${esc(e.target)}</strong></div></details>`:''}</div></details>`:'';
   return `<article class="audit-entry" data-tone="${esc(m.tone)}"><div class="audit-card-head"><span class="audit-icon" aria-hidden="true">${esc(m.icon)}</span><div class="audit-heading"><h3>${esc(auditLabels[a]||a||'Действие')}</h3>${subtitle?`<div class="audit-subtitle">${esc(subtitle)}</div>`:''}<div class="audit-time-row"><span>◷ ${esc(auditDate(e.createdAt))}</span><span>♙ ${esc(e.username||'Неизвестный пользователь')} · ${esc(auditRoleName(e.role))}</span></div></div></div>${itemsHtml}<div class="audit-summary-line">${esc(m.summary)}</div>${e.action==='access_denied'?`<div class="audit-badge" style="margin-top:8px">⛨ Действие заблокировано</div>`:''}${detailsHtml}</article>`;

@@ -317,6 +317,7 @@ main{width:min(1180px,100%);padding:13px;margin:auto}.view{display:none}.view.ac
  #homeView>.hero{grid-column:1;grid-row:1;min-height:230px;align-items:flex-start;justify-content:center;flex-direction:column}
  #homeView>.hero .live-badge{align-self:flex-end;min-width:68px;height:68px}
  #homeView>#homeKpis{grid-column:2;grid-row:1;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:0}
+ #homeView>#shiftControl{grid-column:1/-1;grid-row:2}
  #homeView>.section-head,#homeView>.filters,#homeView>#roomsGrid{grid-column:1/-1}
  #homeKpis .kpi-v3{min-height:102px;padding:12px}
  #homeKpis .kpi-copy strong{font-size:clamp(21px,2.1vw,29px)}
@@ -913,13 +914,36 @@ main{width:min(1180px,100%);padding:13px;margin:auto}.view{display:none}.view.ac
   #clientModal .pay-methods button::after{animation:none}
 }
 
+
+/* V62 — explicit open/closed shift status and mobile-friendly actions */
+.shift-control-card{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:0 0 16px;padding:18px;border:1px solid #795728;border-radius:20px;background:linear-gradient(135deg,rgba(52,31,13,.94),rgba(13,9,6,.98));box-shadow:0 10px 28px rgba(0,0,0,.18)}
+.shift-control-card.is-open{border-color:#287e53;background:linear-gradient(135deg,rgba(10,48,31,.9),rgba(13,9,6,.98))}
+.shift-control-card.is-closing{border-color:#b76d28}
+.shift-control-main{min-width:0;flex:1}
+.shift-control-eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:800;letter-spacing:.13em;text-transform:uppercase;color:#f7d27f}
+.shift-control-eyebrow .shift-dot{width:9px;height:9px;border-radius:50%;background:#f1b84b;box-shadow:0 0 12px currentColor}
+.shift-control-card.is-open .shift-control-eyebrow{color:#75edac}
+.shift-control-card.is-open .shift-dot{background:#45e28d}
+.shift-control-title{margin:7px 0 4px;font-size:clamp(19px,4.8vw,25px);line-height:1.15;color:#fff2d6;font-weight:800}
+.shift-control-text{margin:0;color:#d0c1a7;font-size:14px;line-height:1.55}
+.shift-control-meta{margin-top:6px;color:#baa98b;font-size:12px}
+.shift-control-card .shift-open-btn{flex:0 0 auto;min-width:155px;min-height:54px;padding:12px 18px;white-space:normal;line-height:1.2}
+.shift-control-card .shift-report-btn{flex:0 0 auto;min-height:48px;padding:11px 16px;border:1px solid #337e59;border-radius:14px;background:rgba(12,45,29,.65);color:#8df0b8;font-weight:800}
+.shift-closed-notice{margin-top:14px;padding:16px;border:1px solid #8b642b;border-radius:16px;background:rgba(46,29,11,.6)}
+.shift-closed-notice strong{display:block;font-size:18px;color:#ffcf69;margin-bottom:6px}
+.shift-closed-notice p{margin:0 0 12px;color:#c8b79b;font-size:14px;line-height:1.55}
+.shift-closed-notice button{width:100%;min-height:52px}
+.shift-open-notice{margin:8px 0 14px;padding:11px 13px;border-radius:12px;border:1px solid #286f49;background:rgba(16,54,34,.5);color:#8ef0b5;font-size:13px;font-weight:700}
+#finishWork[hidden]{display:none!important}
+@media(max-width:560px){.shift-control-card{align-items:stretch;flex-direction:column;padding:15px;gap:12px}.shift-control-card .shift-open-btn,.shift-control-card .shift-report-btn{width:100%;min-width:0}.shift-control-text{font-size:14px}}
+
 </style>
 </head>
 <body>
 <div id="loginView" class="login-view">
  <form id="loginForm" class="login-card">
   <img class="login-logo" src="./assets/par-ordo-logo.png" alt="ПАР ОРДО" onerror="this.style.display='none'">
-  <div class="eyebrow">ПАР ОРДО · CONTROL V46</div>
+  <div class="eyebrow">ПАР ОРДО · CONTROL V62</div>
   <h1>Управление баней</h1><p>Номера · клиенты · покупки · касса · отчёты</p>
   <input id="loginUser" autocomplete="username" placeholder="Логин администратора" required>
   <input id="loginPass" type="password" autocomplete="current-password" placeholder="Пароль" required>
@@ -931,12 +955,13 @@ main{width:min(1180px,100%);padding:13px;margin:auto}.view{display:none}.view.ac
 <div id="appView" class="hidden">
  <header class="header">
   <button id="menuButton" class="icon-btn" aria-label="Меню">☰</button>
-  <div class="brand"><img src="./assets/par-ordo-logo.png" alt="" onerror="this.style.display='none'"><div><b>ПАР ОРДО</b><small>CONTROL · V61</small></div></div>
+  <div class="brand"><img src="./assets/par-ordo-logo.png" alt="" onerror="this.style.display='none'"><div><b>ПАР ОРДО</b><small>CONTROL · V62</small></div></div>
   <button id="headerReport" class="icon-btn" aria-label="Отчёт">▥</button>
  </header>
  <main>
   <section id="homeView" class="view active">
    <div class="hero"><div><div class="eyebrow">УПРАВЛЕНИЕ СЕГОДНЯ</div><h1>Номера и клиенты</h1><p>Быстро выдавайте браслет, добавляйте покупки и отмечайте оплату.</p></div><div class="live-badge"><strong id="activeCount">0</strong><span>активных</span></div></div>
+   <div id="shiftControl" class="shift-control-slot" aria-live="polite"></div>
    <div class="kpis" id="homeKpis"></div>
    <div class="section-head"><div><div class="eyebrow">БРАСЛЕТЫ ПАР ОРДО</div><h2>Все номера</h2></div><div class="hint">№1—36</div></div>
    <div class="filters"><button class="filter active" data-filter="all">Все 36</button><button class="filter" data-filter="active">Активные</button><button class="filter" data-filter="free">Свободные</button></div>
@@ -955,7 +980,7 @@ main{width:min(1180px,100%);padding:13px;margin:auto}.view{display:none}.view.ac
    <div id="archiveList" class="list"></div>
   </section>
   <section id="reportView" class="view">
-   <div class="report-panel"><div class="eyebrow">КАССА · ЗАВЕРШЕНИЕ СМЕНЫ</div><div class="section-head" style="margin-top:5px"><h2>Итог за сегодня</h2><button id="refreshReport" class="ghost">↻</button></div><div id="reportContent"></div><button id="finishWork" class="primary finish">✓ Завершить смену и отправить отчёт руководителю</button></div>
+   <div class="report-panel"><div class="eyebrow">КАССА · ЗАВЕРШЕНИЕ СМЕНЫ</div><div class="section-head" style="margin-top:5px"><h2>Итог текущей смены</h2><button id="refreshReport" class="ghost">↻</button></div><div id="reportContent"></div><button id="finishWork" class="primary finish">✓ Завершить смену и отправить отчёт руководителю</button></div>
   </section>
  </main>
  <nav class="bottom-nav">
@@ -992,6 +1017,8 @@ const stamp=()=>new Date().toISOString();
 const fmtDate=v=>v?new Date(v).toLocaleString('ru-RU',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}):'';
 const token=()=>sessionStorage.getItem(TOKEN_KEY)||'';
 const db={rooms:{},seq:{},clients:[],archived:[],incoming:{},products:[]};
+let shiftState={isOpen:false,isClosing:false,openedAt:null,openedBy:'',closedAt:null,loaded:false};
+let shiftBusy=false;
 let filterMode='all',currentClientId=null,currentView='homeView',busy=false;
 
 function loadLocal(){
@@ -999,6 +1026,11 @@ function loadLocal(){
 }
 
 function saveLocal(){try{localStorage.setItem(DATA_KEY,JSON.stringify(db))}catch(e){toast('Хранилище переполнено. Проверьте архив.')} }
+async function syncShiftState(){
+ const d=await api('/api/admin/control/shift');
+ shiftState={...(d.shift||{}),loaded:true};
+ return shiftState;
+}
 async function persistClient(c){
  if(!c?.id)throw new Error('Нет ID клиента');
  c.archived=Boolean(c.archived||db.archived.includes(c.id));
@@ -1037,12 +1069,18 @@ async function api(path,options={}){
 function showLogin(){ $('#loginView').classList.remove('hidden');$('#appView').classList.add('hidden') }
 function showApp(){ $('#loginView').classList.add('hidden');$('#appView').classList.remove('hidden') }
 function products(){return db.products||[]}
-function clientForRoom(n){const id=db.rooms[String(n)];return db.clients.find(c=>c.id===id&&c.status==='active')||null}
+function isCurrentShiftClient(c){
+ if(!shiftState.isOpen||!shiftState.openedAt||!c?.startedAt)return false;
+ const started=Date.parse(c.startedAt),opened=Date.parse(shiftState.openedAt);
+ return Number.isFinite(started)&&Number.isFinite(opened)&&started>=opened;
+}
+function currentShiftClients(){return shiftState.isOpen?db.clients.filter(isCurrentShiftClient):[]}
+function clientForRoom(n){return currentShiftClients().find(c=>Number(c.room)===Number(n)&&c.status==='active')||null}
 function total(c){return c.items.reduce((s,i)=>s+Number(i.price||0)*Number(i.qty||0),0)}
 function payments(c){return c.items.reduce((a,i)=>{const amount=Number(i.price||0)*Number(i.qty||0);if(i.method==='cash')a.cash+=amount;else if(i.method==='transfer')a.transfer+=amount;else a.pending+=amount;return a},{cash:0,transfer:0,pending:0})}
-function activeClients(){return db.clients.filter(c=>c.status==='active')}
-function allTodayClients(){return db.clients.filter(c=>c.startedDay===todayKey())}
-function completedToday(){return db.clients.filter(c=>c.startedDay===todayKey()&&c.status==='completed')}
+function activeClients(){return currentShiftClients().filter(c=>c.status==='active')}
+function allTodayClients(){return currentShiftClients()}
+function completedToday(){return currentShiftClients().filter(c=>c.status==='completed')}
 function escapeHtml(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 
 async function loginHandler(event){
@@ -1058,7 +1096,8 @@ async function loginHandler(event){
 async function bootApp(){
  loadLocal();$('#loggedUser').textContent=`${sessionStorage.getItem(USER_KEY)||'admin'} · доступ персонала`;
  await loadProducts();
- try{await syncControlData()}catch(e){toast('Синхронизация не подключена: обновите API Worker до V8. Локальные данные сохранены.')}
+ try{await syncShiftState()}catch(e){shiftState={isOpen:false,isClosing:false,openedAt:null,openedBy:'',closedAt:null,loaded:false};toast('Не удалось получить статус смены: '+e.message)}
+ try{await syncControlData()}catch(e){toast('Не удалось синхронизировать данные: '+e.message)}
  await migrateLegacyPendingStock();
  renderHome();renderInventory();renderHistory();renderArchive();renderReport();
 }
@@ -1113,7 +1152,15 @@ function navigate(view){
  window.scrollTo({top:0,behavior:'smooth'});
 }
 function setFilter(mode){filterMode=mode;$$('[data-filter]').forEach(b=>b.classList.toggle('active',b.dataset.filter===mode));renderRooms()}
+function renderShiftControl(){
+ const root=$('#shiftControl');if(!root)return;
+ if(!shiftState.loaded){root.innerHTML=`<div class="shift-control-card is-closing"><div class="shift-control-main"><div class="shift-control-eyebrow"><i class="shift-dot"></i> СТАТУС СМЕНЫ</div><div class="shift-control-title">Проверяем состояние…</div><p class="shift-control-text">Подключаемся к серверу, чтобы показать актуальную смену.</p></div></div>`;return}
+ if(shiftState.isClosing){root.innerHTML=`<div class="shift-control-card is-closing"><div class="shift-control-main"><div class="shift-control-eyebrow"><i class="shift-dot"></i> СМЕНА ЗАКРЫВАЕТСЯ</div><div class="shift-control-title">Подождите завершения</div><p class="shift-control-text">Отчёт сохраняется на сервере. Не открывайте новую смену, пока процесс не завершится.</p></div></div>`;return}
+ if(!shiftState.isOpen){root.innerHTML=`<div class="shift-control-card is-closed"><div class="shift-control-main"><div class="shift-control-eyebrow"><i class="shift-dot"></i> СМЕНА ЗАКРЫТА</div><div class="shift-control-title">Готовы начать работу?</div><p class="shift-control-text">Нажмите «Открыть смену». Старые клиенты и оплаты останутся в истории и не попадут в новый отчёт.</p></div><button type="button" class="primary shift-open-btn" data-open-shift>Открыть смену</button></div>`;return}
+ root.innerHTML=`<div class="shift-control-card is-open"><div class="shift-control-main"><div class="shift-control-eyebrow"><i class="shift-dot"></i> СМЕНА ОТКРЫТА</div><div class="shift-control-title">Смена открыта</div><p class="shift-control-text">Новые клиенты, покупки и оплаты учитываются только в этой смене.</p><div class="shift-control-meta">Начало: ${escapeHtml(fmtDate(shiftState.openedAt))}${shiftState.openedBy?' · Открыл: '+escapeHtml(shiftState.openedBy):''}</div></div><button type="button" class="shift-report-btn" data-shift-report>Перейти к отчёту →</button></div>`;
+}
 function renderHome(){
+ renderShiftControl();
  const active=activeClients().length,all=allTodayClients(),done=completedToday();
  $('#activeCount').textContent=active;
  const ps=all.reduce((sum,c)=>{const p=payments(c);sum.cash+=p.cash;sum.transfer+=p.transfer;return sum},{cash:0,transfer:0});
@@ -1168,6 +1215,8 @@ function renderRooms(){
  $$('[data-add-client]').forEach(b=>b.onclick=()=>openAdd(b.dataset.addClient));
 }
 async function activateRoom(n){
+ if(!shiftState.loaded){toast('Проверяем статус смены. Подождите и повторите.');return}
+ if(!shiftState.isOpen){toast('Смена закрыта. Сначала нажмите «Открыть смену».');renderShiftControl();return}
  if(clientForRoom(n)){openClient(clientForRoom(n).id);return}
  try{
   const now=stamp();
@@ -1371,7 +1420,17 @@ async function archiveToday(){
 function renderReport(){
  const cs=completedToday(),totalClients=allTodayClients(),paymentsTotal=totalClients.reduce((acc,c)=>{const p=payments(c);acc.cash+=p.cash;acc.transfer+=p.transfer;return acc},{cash:0,transfer:0});
  const sum=paymentsTotal.cash+paymentsTotal.transfer;
- $('#reportContent').innerHTML=`<div class="report-grid"><div class="report-tile"><small>КЛИЕНТОВ СЕГОДНЯ</small><b>${totalClients.length}</b></div><div class="report-tile cash"><small>НАЛИЧНЫЕ</small><b>${money(paymentsTotal.cash)}</b></div><div class="report-tile transfer"><small>ПЕРЕВОД</small><b>${money(paymentsTotal.transfer)}</b></div><div class="report-tile"><small>НЕ ОПЛАЧЕНО</small><b>${money(totalClients.reduce((s,c)=>s+payments(c).pending,0))}</b></div></div><div class="report-total"><small>ИТОГ ОБЩИЙ · ПОЛУЧЕНО</small><strong>${money(sum)}</strong></div><div class="history-meta" style="margin-top:9px">Завершено клиентов: ${cs.length}. В отчёте учитываются оплаты активных и завершённых клиентов за сегодня.</div>`;
+ const finish=$('#finishWork');
+ if(finish)finish.hidden=!shiftState.isOpen;
+ if(shiftState.isClosing){
+  $('#reportContent').innerHTML=`<div class="report-grid"><div class="report-tile"><small>КЛИЕНТОВ В СМЕНЕ</small><b>—</b></div><div class="report-tile cash"><small>НАЛИЧНЫЕ</small><b>—</b></div><div class="report-tile transfer"><small>ПЕРЕВОД</small><b>—</b></div><div class="report-tile"><small>НЕ ОПЛАЧЕНО</small><b>—</b></div></div><div class="shift-closed-notice"><strong>Смена закрывается</strong><p>Отчёт сохраняется на сервере. Подождите завершения операции, не открывайте новую смену.</p></div>`;
+  return;
+ }
+ if(!shiftState.isOpen){
+  $('#reportContent').innerHTML=`<div class="report-grid"><div class="report-tile"><small>КЛИЕНТОВ В СМЕНЕ</small><b>0</b></div><div class="report-tile cash"><small>НАЛИЧНЫЕ</small><b>${money(0)}</b></div><div class="report-tile transfer"><small>ПЕРЕВОД</small><b>${money(0)}</b></div><div class="report-tile"><small>НЕ ОПЛАЧЕНО</small><b>${money(0)}</b></div></div><div class="report-total"><small>ИТОГ ТЕКУЩЕЙ СМЕНЫ</small><strong>${money(0)}</strong></div><div class="shift-closed-notice"><strong>Смена закрыта</strong><p>Предыдущий отчёт сохранён в истории. Откройте новую смену, чтобы начать отдельный учёт клиентов и оплат.</p><button type="button" class="primary" data-open-shift>Открыть смену</button></div>`;
+  return;
+ }
+ $('#reportContent').innerHTML=`<div class="shift-open-notice">● Смена открыта · начало ${escapeHtml(fmtDate(shiftState.openedAt))}</div><div class="report-grid"><div class="report-tile"><small>КЛИЕНТОВ В СМЕНЕ</small><b>${totalClients.length}</b></div><div class="report-tile cash"><small>НАЛИЧНЫЕ</small><b>${money(paymentsTotal.cash)}</b></div><div class="report-tile transfer"><small>ПЕРЕВОД</small><b>${money(paymentsTotal.transfer)}</b></div><div class="report-tile"><small>НЕ ОПЛАЧЕНО</small><b>${money(totalClients.reduce((s,c)=>s+payments(c).pending,0))}</b></div></div><div class="report-total"><small>ИТОГ ТЕКУЩЕЙ СМЕНЫ · ПОЛУЧЕНО</small><strong>${money(sum)}</strong></div><div class="history-meta" style="margin-top:9px">Завершено клиентов: ${cs.length}. В отчёт попадут только клиенты, созданные после открытия этой смены.</div>`;
 }
 function confirmAction(title,description,okLabel,action){
  $('#confirmModalCard').innerHTML=`<div class="modal-head"><div><div class="eyebrow">ПАР ОРДО · ПОДТВЕРЖДЕНИЕ</div><h2>${escapeHtml(title)}</h2></div><button class="close" type="button" id="cancelConfirm">×</button></div><p class="history-meta" style="font-size:11px;line-height:1.6">${escapeHtml(description)}</p><div class="modal-cta"><button id="confirmNo" class="ghost" type="button">Назад</button><button id="confirmYes" class="primary" type="button">${escapeHtml(okLabel)}</button></div>`;
@@ -1382,6 +1441,8 @@ function logout(){
  sessionStorage.removeItem(TOKEN_KEY);sessionStorage.removeItem(USER_KEY);sessionStorage.removeItem(ROLE_KEY);showLogin();
 }
 document.addEventListener('click',e=>{
+ const openShiftBtn=e.target.closest('[data-open-shift]');if(openShiftBtn){e.preventDefault();requestOpenShift();return}
+ const shiftReportBtn=e.target.closest('[data-shift-report]');if(shiftReportBtn){e.preventDefault();navigate('reportView');return}
  const pay=e.target.closest('[data-payment]');if(pay){const [id,method]=pay.dataset.payment.split('|');itemPayment(id,method)}
  const qty=e.target.closest('[data-qty]');if(qty){const [id,d]=qty.dataset.qty.split('|');changeQty(id,Number(d))}
  const ep=e.target.closest('[data-edit-price]');if(ep)editPrice(ep.dataset.editPrice);
@@ -1397,65 +1458,76 @@ $('#refreshProducts').onclick=async()=>{await loadProducts();renderInventory();t
 $('#refreshArchive').onclick=renderArchive;$('#refreshReport').onclick=renderReport;
 $('#archiveAll').onclick=()=>confirmAction('Архивировать историю за сегодня?','Завершённые клиенты сегодняшнего дня будут перенесены в архив. Данные и суммы сохранятся.','Архивировать',archiveToday);
 let reportSubmitting=false;
+async function openShift(){
+ if(shiftBusy)return;shiftBusy=true;
+ const buttons=$$('[data-open-shift]');buttons.forEach(b=>{b.disabled=true;b.dataset.originalText=b.textContent;b.textContent='Открываем смену…'});
+ try{
+  const result=await api('/api/admin/control/shift/open',{method:'POST',body:JSON.stringify({openedBy:sessionStorage.getItem(USER_KEY)||'staff'})});
+  await syncShiftState();
+  await syncControlData();
+  await loadProducts();
+  renderHome();renderInventory();renderHistory();renderArchive();renderReport();navigate('homeView');
+  toast(result.duplicate?'Смена уже открыта ✅':'Смена открыта. Новый учёт начат ✅');
+ }catch(e){toast('Не удалось открыть смену: '+(e?.message||'ошибка'));try{await syncShiftState()}catch(_){}renderHome();renderReport()}
+ finally{shiftBusy=false;$$('[data-open-shift]').forEach(b=>{b.disabled=false;if(b.dataset.originalText){b.textContent=b.dataset.originalText;delete b.dataset.originalText}})}
+}
+function requestOpenShift(){
+ if(shiftState.isOpen){toast('Смена уже открыта ✅');return}
+ confirmAction('Открыть новую смену?','Начнётся отдельный учёт новых клиентов, покупок и оплат. Предыдущие смены и их отчёты останутся в истории.','Открыть смену',openShift);
+}
 async function finishShiftAndSendReport(){
  const button=$('#finishWork');
  if(reportSubmitting)return;
+ if(!shiftState.isOpen||!shiftState.openedAt){toast('Смена закрыта. Сначала нажмите «Открыть смену».');renderHome();renderReport();return}
  reportSubmitting=true;
  if(button){button.disabled=true;button.dataset.originalText=button.textContent;button.textContent='Отправляем отчёт руководителю…'}
  try{
-  // Always use the shared server data, not only this device's local cache.
+  await syncShiftState();
+  if(!shiftState.isOpen||!shiftState.openedAt)throw new Error('Смена уже закрыта или закрывается на другом устройстве. Обновите экран.');
   await syncControlData();
-  const today=todayKey();
-  const todayClients=allTodayClients();
-  if(!todayClients.length)throw new Error('Нет клиентов за сегодня. Отчёт не сформирован.');
+  const shiftClients=allTodayClients();
+  if(!shiftClients.length)throw new Error('В текущей смене нет клиентов. Отчёт не сформирован.');
   if(activeClients().length)throw new Error('Сначала завершите всех активных клиентов.');
-
-  // The previous report's closing timestamp is the exact start of the next shift.
-  // For the first report, use the earliest client start time of today.
-  let reportState;
-  try{reportState=await api('/api/admin/control/reports')}catch(e){
-   if(/no such table|control_shift_reports|500/i.test(String(e.message)))throw new Error('Отчёты ещё не подключены. Примените SQL-миграцию V9 и разверните Worker V9.');
-   throw e;
-  }
-  const lastClosedAt=reportState?.lastClosedAt||null;
-  const candidates=lastClosedAt
-    ? db.clients.filter(c=>Number.isFinite(Date.parse(c.startedAt))&&Date.parse(c.startedAt)>=Date.parse(lastClosedAt))
-    : todayClients;
-  if(!candidates.length){
-   const latest=Array.isArray(reportState?.reports)?reportState.reports[0]:null;
-   if(latest&&latest.shiftDate===today){
-    renderReport();navigate('reportView');
-    toast('Отчёт за последнюю смену уже сохранён и доступен руководителю ✅');
-    return;
-   }
-   throw new Error('В текущей смене нет клиентов для отчёта.');
-  }
-  const unpaid=candidates.reduce((sum,c)=>sum+payments(c).pending,0);
+  const unpaid=shiftClients.reduce((sum,c)=>sum+payments(c).pending,0);
   if(unpaid>0)throw new Error(`Есть неоплаченные позиции на ${money(unpaid)}. Сначала отметьте оплату.`);
-  const shiftStartAt=lastClosedAt||candidates.reduce((earliest,c)=>{
-   const t=Date.parse(c.startedAt);return !earliest||t<Date.parse(earliest)?c.startedAt:earliest;
-  },null);
-  if(!shiftStartAt||!Number.isFinite(Date.parse(shiftStartAt)))throw new Error('Не удалось определить начало смены.');
-
+  const shiftStartAt=shiftState.openedAt;
+  if(!Number.isFinite(Date.parse(shiftStartAt)))throw new Error('Не удалось определить начало смены.');
   const result=await api('/api/admin/control/reports',{method:'POST',body:JSON.stringify({
-   shiftDate:today,shiftStartAt,closedBy:sessionStorage.getItem(USER_KEY)||'персонал'
+   shiftDate:todayKey(),shiftStartAt,closedBy:sessionStorage.getItem(USER_KEY)||'персонал'
   })});
   if(!result?.ok||!result?.report)throw new Error('Сервер не подтвердил сохранение отчёта.');
+  await syncShiftState();
   await syncControlData();
-  renderHome();renderInventory();renderHistory();renderArchive();renderReport();navigate('reportView');
-  toast(result.duplicate?'Отчёт этой смены уже отправлен руководителю.':'Отчёт автоматически отправлен руководителю и сохранён на сервере ✅');
+  renderHome();renderInventory();renderHistory();renderArchive();renderReport();navigate('homeView');
+  toast(result.duplicate?'Эта смена уже отправлена руководителю. Можно открыть новую смену.':'Отчёт полностью сохранён и отправлен руководителю ✅ Теперь можно открыть новую смену.');
  }catch(e){
   toast('Не удалось отправить отчёт руководителю: '+(e?.message||'ошибка'));
+  try{await syncShiftState()}catch(_){}
+  renderHome();renderReport();
  }finally{
   reportSubmitting=false;
-  if(button){button.disabled=false;button.textContent=button.dataset.originalText||'✓ Завершить работу и отправить отчёт';delete button.dataset.originalText}
+  if(button){button.disabled=false;button.textContent=button.dataset.originalText||'✓ Завершить смену и отправить отчёт';delete button.dataset.originalText}
  }
 }
-$('#finishWork').onclick=()=>confirmAction('Завершить рабочую смену?','Итог смены будет автоматически сохранён на сервере и появится в панели руководителя. Для закрытия все клиенты должны быть завершены, а все позиции — оплачены.','Завершить и отправить отчёт',finishShiftAndSendReport);
+$('#finishWork').onclick=()=>confirmAction('Завершить рабочую смену?','Отчёт будет сохранён на сервере и появится у руководителя. В него попадут только клиенты текущей открытой смены. После успешного закрытия касса очистится для нового учёта, а предыдущие отчёты останутся в истории.','Завершить и отправить отчёт',finishShiftAndSendReport);
 $('#clientModal').addEventListener('click',e=>{if(e.target.id==='clientModal')closeModal('#clientModal')});
 $('#addModal').addEventListener('click',e=>{if(e.target.id==='addModal')closeModal('#addModal')});
 $('#confirmModal').addEventListener('click',e=>{if(e.target.id==='confirmModal')closeModal('#confirmModal')});
 loadLocal();
 if(token()){showApp();bootApp().catch(e=>toast(e.message))}else showLogin();
+let shiftRefreshBusy=false;
+setInterval(async()=>{
+ if(!token()||document.hidden||shiftRefreshBusy)return;
+ shiftRefreshBusy=true;
+ try{
+  const before=`${shiftState.isOpen}:${shiftState.openedAt||''}:${shiftState.isClosing}`;
+  await syncShiftState();
+  const after=`${shiftState.isOpen}:${shiftState.openedAt||''}:${shiftState.isClosing}`;
+  if(before!==after){
+   await syncControlData();renderHome();renderInventory();renderHistory();renderArchive();renderReport();
+   toast(shiftState.isOpen?'Новая смена открыта на сервере ✅':shiftState.isClosing?'Смена закрывается на другом устройстве.':'Смена закрыта на сервере.');
+  }
+ }catch(e){}finally{shiftRefreshBusy=false}
+},20000);
 </script>
 </body></html>
