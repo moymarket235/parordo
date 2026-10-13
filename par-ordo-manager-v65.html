@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b0805">
+<title>ПАР ОРДО · Панель руководителя V65 — статистика посещений</title>
+<style>
+:root{color-scheme:dark;--gold:#ffda81;--muted:#b8a58d;--line:#563b20;--green:#65e9a0;--blue:#8abbff;--red:#ff8b82}
+*{box-sizing:border-box}
+body{margin:0;min-height:100dvh;background:radial-gradient(ellipse at top,#2b1808 0,#100904 44%,#050403 100%);color:#fff1db;font:15px/1.45 system-ui,-apple-system,Segoe UI,Arial,sans-serif}
+.wrap{width:min(100%,1000px);margin:auto;padding:16px 13px calc(32px + env(safe-area-inset-bottom))}
+.top{display:flex;align-items:center;gap:12px;padding:8px 2px 16px;border-bottom:1px solid #4c341d;margin-bottom:16px}
+.logo{width:53px;height:53px;border-radius:50%;object-fit:cover;border:2px solid #c48c2c;box-shadow:0 0 20px #e9a92b27}
+.brand{flex:1;min-width:0}.brand b{display:block;letter-spacing:.12em;font-size:17px}.brand small{color:var(--gold);letter-spacing:.15em;font-size:9px}
+.live{font-size:10px;color:var(--green);border:1px solid #286940;border-radius:99px;padding:6px 9px;white-space:nowrap}
+.panel{padding:16px;border:1px solid #765025;border-radius:20px;background:linear-gradient(150deg,#1b1008,#0b0705);box-shadow:0 12px 35px #0007;margin-bottom:14px}
+.eyebrow{font-size:10px;font-weight:900;letter-spacing:.17em;color:var(--gold)}
+h1{font:700 28px/1.12 Georgia,serif;margin:6px 0 5px}h2{font:700 22px/1.2 Georgia,serif;margin:0}
+h3{font-size:15px;margin:0 0 5px;color:#ffe3a0}
+.muted{color:var(--muted);font-size:12px}
+.form{display:grid;gap:9px;margin-top:17px}
+.field{width:100%;padding:14px;border-radius:12px;border:1px solid #654523;background:#fff;color:#15100a;font-size:16px}
+.btn{min-height:46px;padding:11px 15px;border-radius:12px;border:1px solid #c38a2c;background:linear-gradient(110deg,#b97716,#ffdc69);color:#190e04;font-weight:900;font-size:14px;cursor:pointer}
+.btn.secondary{background:#140c07;color:var(--gold);border-color:#614321}
+.btn:disabled{opacity:.55}.hidden{display:none!important}
+.summary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:14px}
+.tile{min-width:0;padding:12px;border:1px solid #49321c;border-radius:14px;background:#100904}
+.tile small{display:block;color:var(--muted);font-size:9px;line-height:1.35;min-height:25px}
+.tile strong{display:block;margin-top:3px;color:var(--gold);font-size:17px;overflow-wrap:anywhere}
+.tile.cash strong{color:var(--green)}.tile.transfer strong{color:var(--blue)}.tile.red strong{color:var(--red)}
+.section-head{display:flex;justify-content:space-between;align-items:end;gap:8px;flex-wrap:wrap}
+.section-head .muted{max-width:620px}
+.grid2{display:grid;grid-template-columns:1fr;gap:12px}
+.client-list,.report-list{display:grid;gap:10px;margin-top:13px}
+.client-card,.report{padding:13px;border:1px solid #5d4123;border-radius:16px;background:linear-gradient(145deg,#190f08,#0d0805);min-width:0}
+.client-top,.report-top{display:flex;justify-content:space-between;gap:9px;align-items:flex-start}
+.client-top b,.report-top b{display:block;font-size:14px}
+.client-top strong,.report-top strong{color:var(--gold);font-size:14px;text-align:right}
+.meta{margin-top:4px;color:var(--muted);font-size:10px;overflow-wrap:anywhere}
+.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:11px}
+.stats>div{padding:9px;border-radius:11px;border:1px solid #3e2b1b;background:#0d0805;min-width:0}
+.stats small{display:block;color:var(--muted);font-size:8px;line-height:1.35;min-height:19px}
+.stats strong{display:block;color:#ffe09a;font-size:13px;overflow-wrap:anywhere;margin-top:3px}
+.cash-text{color:var(--green)!important}.transfer-text{color:var(--blue)!important}
+.duration{color:#a9f4c5!important}.tag{display:inline-block;padding:4px 7px;border:1px solid #4c3922;border-radius:99px;color:#ffdf99;font-size:9px;white-space:nowrap}
+.tag.active{color:#9df4bc;border-color:#286940;background:#0c2415}.tag.done{color:#bfd4ff;border-color:#2d4774;background:#0c1627}
+.empty{padding:22px;text-align:center;border:1px dashed #604322;border-radius:14px;color:var(--muted);font-size:12px}
+.notice{margin-top:12px;color:var(--muted);font-size:10px}
+.client-search{display:grid;grid-template-columns:1fr;gap:8px;margin-top:12px}
+details{margin-top:11px;border-top:1px solid #3e2b1b;padding-top:10px}
+summary{cursor:pointer;color:var(--gold);font-size:12px;font-weight:800}
+.client-lines{display:grid;gap:7px;margin-top:10px}
+.client-line{padding:9px 10px;border:1px solid #382719;border-radius:10px;background:#0b0705}
+.client-line b{font-size:12px}.client-line .meta{line-height:1.5}
+.filters{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}
+.filter-btn{padding:8px 11px;border-radius:999px;border:1px solid #5b3f22;background:#100904;color:#f2d9a5;font-size:11px;font-weight:800}
+.filter-btn.active{background:#f2c45e;color:#201304;border-color:#f2c45e}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:9;background:#171008;border:1px solid #87602d;color:#ffdfa0;padding:11px 15px;border-radius:13px;box-shadow:0 9px 30px #000;max-width:92vw;font-size:12px;text-align:center}
+@media(min-width:650px){.summary{grid-template-columns:repeat(4,minmax(0,1fr))}.stats{grid-template-columns:repeat(4,minmax(0,1fr))}.panel{padding:21px}h1{font-size:34px}.grid2{grid-template-columns:1fr 1fr}.client-search{grid-template-columns:1fr auto}}
+</style></head>
+<body><main class="wrap">
+<header class="top">
+<img class="logo" src="./assets/par-ordo-logo.png" alt="ПАР ОРДО" onerror="this.style.display='none'">
+<div class="brand"><b>ПАР ОРДО</b><small>АДМИН-ПАНЕЛЬ · СТАТИСТИКА ПОСЕЩЕНИЙ V65</small></div>
+<span class="live">● LIVE · 20 сек</span>
+</header>
+
+<section id="loginPanel" class="panel">
+<div class="eyebrow">ЗАЩИЩЁННЫЙ ВХОД</div><h1>Админ-панель</h1>
+<p class="muted">Статистика посещений, время по каждому браслету и отчёты смен. Войдите с администраторским аккаунтом.</p>
+<form id="loginForm" class="form">
+<input id="username" class="field" autocomplete="username" placeholder="Логин администратора" required>
+<input id="password" class="field" type="password" autocomplete="current-password" placeholder="Пароль" required>
+<div id="loginError" class="muted"></div><button id="loginBtn" class="btn" type="submit">Войти в панель →</button>
+</form></section>
+
+<section id="dashboard" class="hidden">
+<section class="panel">
+<div class="section-head"><div><div class="eyebrow">ОБЩАЯ СТАТИСТИКА</div><h1>Время пребывания клиентов</h1><p class="muted">Время считается от активации браслета до кнопки «Завершить клиента». Активные посещения показываются в реальном времени.</p></div></div>
+<div id="overallStats" class="summary"></div>
+<div class="form" style="grid-template-columns:1fr 1fr"><button id="refreshBtn" class="btn secondary" type="button">↻ Обновить статистику</button><button id="logoutBtn" class="btn secondary" type="button">Выйти</button></div>
+<p id="lastUpdated" class="notice">Загрузка данных…</p>
+</section>
+
+<div class="grid2">
+<section class="panel">
+<div class="eyebrow">СЕГОДНЯ</div><h2 style="margin-top:6px">Статистика за день</h2>
+<p class="muted">Клиенты, чей браслет активирован сегодня.</p><div id="todayStats" class="summary"></div>
+</section>
+<section class="panel">
+<div class="eyebrow">СЕЙЧАС</div><h2 style="margin-top:6px">Активные браслеты</h2>
+<p class="muted">Счётчик времени обновляется автоматически.</p><div id="activeList" class="client-list"></div>
+</section></div>
+
+<section class="panel">
+<div class="section-head"><div><div class="eyebrow">ИСТОРИЯ ПОСЕЩЕНИЙ</div><h2 style="margin-top:6px">Каждый клиент · время в бане</h2><p class="muted">В истории указаны дата, номер браслета, время начала, завершения и общая длительность.</p></div></div>
+<div class="client-search"><input id="clientSearch" class="field" placeholder="Поиск: браслет, клиент, дата…" aria-label="Поиск по посещениям"><button id="clearSearch" class="btn secondary" type="button">Очистить</button></div>
+<div class="filters"><button class="filter-btn active" data-filter="all" type="button">Все</button><button class="filter-btn" data-filter="completed" type="button">Завершённые</button><button class="filter-btn" data-filter="active" type="button">Активные</button></div>
+<div id="clientHistory" class="client-list"></div>
+</section>
+
+<section class="panel">
+<div class="eyebrow">ОТЧЁТЫ РУКОВОДИТЕЛЮ</div><h2 style="margin-top:6px">Смены и длительность посещений</h2>
+<p class="muted">В каждом отчёте показаны клиенты смены, суммарное и среднее время, а также время пребывания каждого клиента.</p>
+<div id="reportList" class="report-list"></div>
+</section>
+</section>
+</main><script>
+'use strict';
+const API='https://par-ordo-api.moimarketjibekjolu.workers.dev';
+const TOKEN_KEY='parordo_admin_token',USER_KEY='parordo_admin_user';
+const $=s=>document.querySelector(s),$$=s=>Array.from(document.querySelectorAll(s));
+const money=v=>`${Number(v||0).toLocaleString('ru-RU')} сом`;
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const parseTime=v=>{if(!v)return NaN;const n=Date.parse(v);return Number.isFinite(n)?n:NaN};
+const clientStart=c=>c.startedAt||c.started_at||'';
+const clientEnd=c=>c.endedAt||c.ended_at||'';
+const clientDate=c=>c.startedDay||c.started_day||String(clientStart(c)).slice(0,10)||'';
+const roomNum=c=>Number(c.room??c.bracelet??0);
+const clientNo=c=>Number(c.clientNo??c.client_no??0);
+const isActive=c=>c.status==='active';
+const isCompleted=c=>c.status==='completed'||Boolean(clientEnd(c));
+const durationMs=c=>{const a=parseTime(clientStart(c));const b=parseTime(clientEnd(c))||(isActive(c)?Date.now():NaN);return Number.isFinite(a)&&Number.isFinite(b)&&b>=a?b-a:null};
+function dur(ms){if(ms==null||!Number.isFinite(ms))return'—';let mins=Math.floor(ms/60000);const days=Math.floor(mins/1440);mins%=1440;const hrs=Math.floor(mins/60);mins%=60;if(days)return`${days} д ${hrs} ч ${mins} мин`;if(hrs)return`${hrs} ч ${mins} мин`;return`${mins} мин`}
+function fmt(v){return v?new Date(v).toLocaleString('ru-RU',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}):'—'}
+function fmtDay(v){if(!v)return'Дата не указана';const d=/^\d{4}-\d{2}-\d{2}$/.test(v)?new Date(v+'T12:00:00'):new Date(v);return Number.isNaN(d.getTime())?esc(v):d.toLocaleDateString('ru-RU',{day:'2-digit',month:'long',year:'numeric'})}
+function tok(){return sessionStorage.getItem(TOKEN_KEY)||''}
+async function api(path,opt={}){const h={Accept:'application/json'};if(opt.body)h['Content-Type']='application/json';if(tok())h.Authorization=`Bearer ${tok()}`;const r=await fetch(API+path,{...opt,headers:{...h,...(opt.headers||{})}});let d={};try{d=await r.json()}catch{}if(!r.ok)throw Error(d.error||`API ${r.status}`);return d}
+let toastTimer=null;function toast(msg){let el=$('.toast');if(!el){el=document.createElement('div');el.className='toast';document.body.appendChild(el)}el.textContent=msg;clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.remove(),2400)}
+let allClients=[],allReports=[],historyFilter='all',loadBusy=false;
+function clientTotal(c){if(Number.isFinite(Number(c.total))&&c.total!==''&&c.total!=null)return Number(c.total);return(Array.isArray(c.items)?c.items:[]).reduce((s,i)=>s+Math.max(0,Number(i.price||0))*Math.max(1,Number(i.qty||1)),0)}
+function statTiles(arr,includeActive=true){
+ const completed=arr.filter(isCompleted),active=arr.filter(isActive);
+ const durations=completed.map(durationMs).filter(x=>x!=null);
+ const sum=durations.reduce((a,b)=>a+b,0),avg=durations.length?sum/durations.length:null,max=durations.length?Math.max(...durations):null;
+ return `<div class="tile"><small>ВСЕГО ПОСЕЩЕНИЙ</small><strong>${arr.length}</strong></div>
+ <div class="tile"><small>ЗАВЕРШЕНО</small><strong>${completed.length}</strong></div>
+ <div class="tile ${active.length?'cash':''}"><small>СЕЙЧАС В БАНЕ</small><strong>${includeActive?active.length:0}</strong></div>
+ <div class="tile"><small>СРЕДНЕЕ ВРЕМЯ · ЗАВЕРШЁННЫЕ</small><strong>${dur(avg)}</strong></div>
+ <div class="tile"><small>СУММАРНОЕ ВРЕМЯ</small><strong>${dur(sum)}</strong></div>
+ <div class="tile"><small>САМОЕ ДОЛГОЕ ПОСЕЩЕНИЕ</small><strong>${dur(max)}</strong></div>
+ <div class="tile"><small>ОПЛАЧЕНО · ВСЕ ПОСЕЩЕНИЯ</small><strong>${money(arr.reduce((s,c)=>s+paidTotal(c),0))}</strong></div>
+ <div class="tile"><small>СРЕДНИЙ ОПЛАЧЕННЫЙ ЧЕК</small><strong>${money(completed.length?completed.reduce((s,c)=>s+paidTotal(c),0)/completed.length:0)}</strong></div>`;
+}
+function paidTotal(c){if(Array.isArray(c.items))return c.items.reduce((s,i)=>s+(i.method==='cash'||i.method==='transfer'?Math.max(0,Number(i.price||0))*Math.max(1,Number(i.qty||1)):0),0);return Number(c.paidTotal||c.total||0)}
+function todayKey(){const d=new Date();return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
+function renderActive(){const arr=allClients.filter(isActive).sort((a,b)=>roomNum(a)-roomNum(b));$('#activeList').innerHTML=arr.length?arr.map(c=>`<article class="client-card"><div class="client-top"><div><b>Браслет №${roomNum(c)} · Клиент ${clientNo(c)}</b><div class="meta">Начало: ${fmt(clientStart(c))}</div></div><span class="tag active">АКТИВЕН</span></div><div class="stats"><div><small>ВРЕМЯ В БАНЕ</small><strong class="duration" data-live-id="${esc(c.id)}">${dur(durationMs(c))}</strong></div><div><small>ТЕКУЩИЙ ЧЕК</small><strong>${money(clientTotal(c))}</strong></div></div></article>`).join(''):'<div class="empty">Сейчас активных браслетов нет.</div>'}
+function renderStats(){
+ const today=todayKey(),todayClients=allClients.filter(c=>clientDate(c)===today);
+ $('#overallStats').innerHTML=statTiles(allClients);
+ $('#todayStats').innerHTML=statTiles(todayClients);
+ $('#lastUpdated').textContent=`Обновлено: ${fmt(new Date().toISOString())} · Записей клиентов: ${allClients.length} · Отчётов: ${allReports.length}`;
+ renderActive();renderHistory();renderReports();
+}
+function historyCard(c){const ms=durationMs(c),done=isCompleted(c);return `<article class="client-card"><div class="client-top"><div><b>Браслет №${roomNum(c)} · Клиент ${clientNo(c)}</b><div class="meta">${fmtDay(clientDate(c))} · ID: ${esc(c.id||'—')}</div></div><span class="tag ${done?'done':'active'}">${done?'ЗАВЕРШЁН':'АКТИВЕН'}</span></div><div class="stats"><div><small>НАЧАЛО</small><strong>${fmt(clientStart(c))}</strong></div><div><small>ЗАВЕРШЕНИЕ</small><strong>${done?fmt(clientEnd(c)):'Ещё находится в бане'}</strong></div><div><small>ДЛИТЕЛЬНОСТЬ</small><strong class="duration">${dur(ms)}</strong></div><div><small>ОПЛАЧЕНО</small><strong>${money(paidTotal(c))}</strong></div></div></article>`}
+function renderHistory(){
+ const q=$('#clientSearch').value.trim().toLowerCase();
+ const rows=allClients.filter(c=>historyFilter==='all'||(historyFilter==='active'?isActive(c):isCompleted(c)))
+ .filter(c=>!q||[roomNum(c),clientNo(c),clientDate(c),clientStart(c),clientEnd(c),c.id].join(' ').toLowerCase().includes(q))
+ .sort((a,b)=>(parseTime(clientEnd(b))||parseTime(clientStart(b))||0)-(parseTime(clientEnd(a))||parseTime(clientStart(a))||0));
+ const shown=rows.slice(0,150);
+ $('#clientHistory').innerHTML=shown.length?shown.map(historyCard).join(''):'<div class="empty">По вашему запросу посещений нет.</div>';
+ if(rows.length>shown.length)$('#clientHistory').insertAdjacentHTML('beforeend',`<p class="notice">Показаны последние ${shown.length} записей из ${rows.length} совпадений.</p>`);
+}
+function reportDurationStats(r){const cs=Array.isArray(r.clients)?r.clients:[];const d=cs.map(durationMs).filter(x=>x!=null);return{cs,avg:d.length?d.reduce((a,b)=>a+b,0)/d.length:null,sum:d.reduce((a,b)=>a+b,0),max:d.length?Math.max(...d):null,count:d.length}}
+function reportCard(r){const t=reportDurationStats(r);return `<article class="report"><div class="report-top"><div><b>Отчёт · ${fmtDay(r.shiftDate)}</b><div class="meta">Отправлен: ${fmt(r.closedAt)} · ${esc(r.closedBy||'персонал')}</div></div><strong>${money(r.paidTotal)}</strong></div><div class="stats"><div><small>КЛИЕНТОВ</small><strong>${Number(r.clientCount||0)}</strong></div><div><small>СРЕДНЕЕ ВРЕМЯ</small><strong class="duration">${dur(t.avg)}</strong></div><div><small>СУММАРНОЕ ВРЕМЯ</small><strong>${dur(t.sum)}</strong></div><div><small>САМОЕ ДОЛГОЕ</small><strong>${dur(t.max)}</strong></div><div><small>НАЛИЧНЫЕ</small><strong class="cash-text">${money(r.cashTotal)}</strong></div><div><small>ПЕРЕВОД</small><strong class="transfer-text">${money(r.transferTotal)}</strong></div><div><small>СРЕДНИЙ ЧЕК</small><strong>${money(r.averageCheck)}</strong></div><div><small>ЗАВЕРШЁННЫХ С ДАННЫМИ О ВРЕМЕНИ</small><strong>${t.count}</strong></div></div>
+ <div class="meta">${r.pendingTotal?`Не оплачено: ${money(r.pendingTotal)}`:'Все оплаты закрыты ✅'}</div>
+ <details><summary>Показать время по каждому клиенту (${t.cs.length})</summary><div class="client-lines">${t.cs.length?t.cs.map(c=>`<div class="client-line"><b>Браслет №${roomNum(c)} · Клиент ${clientNo(c)}</b><div class="meta">Начало: ${fmt(clientStart(c))}<br>Завершение: ${fmt(clientEnd(c))}<br>Длительность: <b class="duration">${dur(durationMs(c))}</b> · Сумма: ${money(c.total)}</div></div>`).join(''):'<div class="empty">В сохранённом отчёте нет списка клиентов с временем.</div>'}</div></details></article>`}
+function renderReports(){$('#reportList').innerHTML=allReports.length?allReports.map(reportCard).join(''):'<div class="empty">Отчётов пока нет. Они появятся после отправки отчёта о смене.</div>'}
+async function loadData(showToast=false){
+ if(loadBusy)return;loadBusy=true;
+ try{
+  const [r,c]=await Promise.all([api('/api/admin/control/reports'),api('/api/admin/control/clients')]);
+  allReports=Array.isArray(r.reports)?r.reports:[];
+  allClients=Array.isArray(c.clients)?c.clients:[];
+  renderStats();if(showToast)toast('Статистика обновлена ✅');
+ }catch(e){if(showToast)toast('Не удалось загрузить статистику: '+e.message);if(/вход|авториз|401|администратор/i.test(e.message))logout(false);throw e}
+ finally{loadBusy=false}
+}
+async function openPanel(){$('#loginPanel').classList.add('hidden');$('#dashboard').classList.remove('hidden');try{await loadData()}catch(e){toast('Ошибка загрузки: '+e.message)}}
+function logout(callApi=true){const t=tok();if(callApi&&t)fetch(API+'/api/admin/logout',{method:'POST',headers:{Authorization:`Bearer ${t}`}}).catch(()=>{});sessionStorage.removeItem(TOKEN_KEY);sessionStorage.removeItem(USER_KEY);$('#dashboard').classList.add('hidden');$('#loginPanel').classList.remove('hidden')}
+$('#loginForm').addEventListener('submit',async e=>{e.preventDefault();$('#loginError').textContent='';$('#loginBtn').disabled=true;try{const d=await api('/api/admin/login',{method:'POST',body:JSON.stringify({username:$('#username').value.trim().toLowerCase(),password:$('#password').value})});if(d.role!=='admin')throw Error('Доступ только для руководителя.');sessionStorage.setItem(TOKEN_KEY,d.token);sessionStorage.setItem(USER_KEY,$('#username').value.trim().toLowerCase());await openPanel()}catch(err){$('#loginError').textContent=err.message}finally{$('#loginBtn').disabled=false}});
+$('#refreshBtn').onclick=()=>loadData(true).catch(()=>{});
+$('#logoutBtn').onclick=()=>logout();
+$('#clientSearch').addEventListener('input',renderHistory);
+$('#clearSearch').onclick=()=>{$('#clientSearch').value='';renderHistory()};
+$$('[data-filter]').forEach(b=>b.addEventListener('click',()=>{historyFilter=b.dataset.filter;$$('[data-filter]').forEach(x=>x.classList.toggle('active',x===b));renderHistory()}));
+if(tok()&&(sessionStorage.getItem(USER_KEY)||'').toLowerCase()!=='staff')openPanel();else if(tok()){sessionStorage.removeItem(TOKEN_KEY);sessionStorage.removeItem(USER_KEY)}
+setInterval(async()=>{if(tok()&&!document.hidden&&!$('#dashboard').classList.contains('hidden')){try{await loadData()}catch{}}},20000);
+setInterval(()=>{if(!document.hidden&&!$('#dashboard').classList.contains('hidden')){$$('[data-live-id]').forEach(el=>{const c=allClients.find(x=>String(x.id)===el.dataset.liveId);if(c)el.textContent=dur(durationMs(c))});renderStats()}},15000);
+</script></body></html>
