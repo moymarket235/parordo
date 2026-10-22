@@ -1435,7 +1435,7 @@ main{width:min(1180px,100%);padding:13px;margin:auto}.view{display:none}.view.ac
 <div id="appView" class="hidden">
  <header class="header">
   <button id="menuButton" class="icon-btn" aria-label="Меню">☰</button>
-  <div class="brand"><img src="./assets/par-ordo-logo.png" alt="" onerror="this.style.display='none'"><div><b>ПАР ОРДО</b><small>CONTROL · V83</small></div></div>
+  <div class="brand"><img src="./assets/par-ordo-logo.png" alt="" onerror="this.style.display='none'"><div><b>ПАР ОРДО</b><small>CONTROL · V84</small></div></div>
   <button id="headerReport" class="icon-btn" aria-label="Отчёт">▥</button>
  </header>
  <main>
@@ -2300,13 +2300,13 @@ async function managerPanelLogin(event){
  const error=$('#managerLoginError'),button=$('#managerLoginSubmit');if(error)error.textContent='';button.disabled=true;
  try{
   const result=await api('/api/admin/login',{method:'POST',body:JSON.stringify({username,password})});
-  // admin1-admin5 authenticate as role=admin; allow them through this entry point
-  // while preserving their full administrator permissions. The manager account remains restricted.
-  if(!['admin','manager'].includes(result.role))throw new Error('У этой учётной записи нет доступа к панели руководителя.');
-  const actualRole=result.role;
-  sessionStorage.setItem(TOKEN_KEY,result.token);sessionStorage.setItem(USER_KEY,username);sessionStorage.setItem(ROLE_KEY,actualRole);
-  closeModal('#managerLoginModal');$('#drawer').classList.remove('open');$('#loggedUser').textContent=`${username} · ${actualRole==='admin'?'администратор':'руководитель'}`;
-  showApp();await bootApp();navigate('homeView');toast(actualRole==='admin'?'Вход администратора выполнен ✅':'Вход руководителя выполнен ✅');
+  // admin1-admin5 are authenticated by the API with role "admin". Accept that
+  // real role here instead of incorrectly requiring only the separate manager role.
+  if(!['manager','admin'].includes(String(result.role||'')))throw new Error('У этого аккаунта нет прав для панели. Используйте admin1 и действующий ADMIN1_PASSWORD либо аккаунт руководителя.');
+  const grantedRole=String(result.role);
+  sessionStorage.setItem(TOKEN_KEY,result.token);sessionStorage.setItem(USER_KEY,username);sessionStorage.setItem(ROLE_KEY,grantedRole);
+  closeModal('#managerLoginModal');$('#drawer').classList.remove('open');$('#loggedUser').textContent=grantedRole==='admin'?`${username} · администратор`:`${username} · руководитель`;
+  showApp();await bootApp();navigate('homeView');toast(grantedRole==='admin'?'Вход admin1 выполнен ✅':'Вход руководителя выполнен ✅');
  }catch(e){if(error)error.textContent=e.message}
  finally{button.disabled=false}
 }
