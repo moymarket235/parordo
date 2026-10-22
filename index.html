@@ -977,6 +977,69 @@ main{width:min(1180px,100%);padding:13px;margin:auto}.view{display:none}.view.ac
 #addModal .category-chip:focus-visible{outline:2px solid #ffdc82;outline-offset:3px}
 @media(min-width:900px){#addModal .category-chip .category-icon{width:22px;height:22px;flex-basis:22px}}
 
+
+
+/* V53 — full-width customer registration / customer database shortcut */
+.customer-base-launch-wrap{width:100%;margin:0 0 16px}
+.customer-base-launch{
+ width:100%;min-height:72px;display:flex;align-items:center;gap:13px;padding:13px 16px;
+ border:1px solid #a47732;border-radius:17px;text-align:left;color:#ffebc7;
+ background:radial-gradient(ellipse at 0 0,#6c471d55,transparent 55%),linear-gradient(110deg,#211406,#100a05 68%,#1a1008);
+ box-shadow:inset 0 1px 0 #ffffff0c,0 8px 22px #0004;transition:transform .18s,border-color .18s,box-shadow .18s;
+}
+.customer-base-launch:active{transform:scale(.995)}
+.customer-base-launch:hover{border-color:#efbd55;box-shadow:0 0 0 1px #f6bd4730,0 8px 22px #0005}
+.customer-base-launch-icon{width:43px;height:43px;flex:0 0 43px;display:grid;place-items:center;border-radius:13px;border:1px solid #956b2d;background:#2a1a09;color:#ffd476}
+.customer-base-launch-icon svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.customer-base-launch-copy{min-width:0;flex:1}
+.customer-base-launch-copy strong{display:block;font-size:15px;font-weight:900;line-height:1.3}
+.customer-base-launch-copy small{display:block;color:#c4ad88;font-size:10px;line-height:1.35;margin-top:3px}
+.customer-base-launch-arrow{width:22px;height:22px;flex:0 0 22px;color:#f7c968}
+.customer-base-launch-arrow svg{width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.customer-base-modal{max-height:92dvh}
+.customer-base-form{display:grid;gap:10px;margin-top:12px;padding:13px;border:1px solid #5b3d20;border-radius:17px;background:#100904}
+.customer-base-form-heading{font-size:12px;font-weight:950;color:#ffda81;line-height:1.35}.customer-base-field{display:grid;gap:5px}
+.customer-base-field label{font-size:10px;font-weight:900;letter-spacing:.04em;color:#e6cfaa}
+.customer-base-field input,.customer-base-field textarea{width:100%;min-width:0;border:1px solid #634522;border-radius:11px;background:#fffaf1;color:#21160b;padding:12px;font:inherit;font-size:13px;outline:none}
+.customer-base-field input:focus,.customer-base-field textarea:focus{border-color:#e9b64b;box-shadow:0 0 0 2px #f6bd4722}
+.customer-base-field textarea{min-height:70px;resize:vertical}
+.customer-base-form-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.customer-base-form-actions button{min-height:44px}
+.customer-base-search{margin-top:12px}
+.customer-base-search input{width:100%;min-height:45px;border:1px solid #4b341e;border-radius:12px;padding:10px 13px;background:#0d0805;color:#fff0d3;font-size:12px}
+.customer-base-count{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:13px 2px 8px;color:#d7c4a5;font-size:10px}
+.customer-base-list{display:grid;gap:8px;padding-bottom:5px}
+.customer-base-entry{display:flex;align-items:flex-start;gap:10px;padding:11px;border:1px solid #44301c;border-radius:14px;background:linear-gradient(145deg,#170f08,#0b0705)}
+.customer-base-entry-avatar{width:39px;height:39px;flex:0 0 39px;display:grid;place-items:center;border:1px solid #815b2a;border-radius:12px;background:#291a0a;color:#ffda81}
+.customer-base-entry-avatar svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.customer-base-entry-main{min-width:0;flex:1}
+.customer-base-entry-main strong{display:block;overflow-wrap:anywhere;font-size:12px;line-height:1.35}
+.customer-base-entry-main small{display:block;overflow-wrap:anywhere;color:#c2ad8e;font-size:10px;line-height:1.45;margin-top:3px}
+.customer-base-entry-note{white-space:pre-wrap;overflow-wrap:anywhere;color:#9e8b71;font-size:10px;margin-top:5px}
+.customer-base-entry-actions{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}
+.customer-base-entry-actions button{min-height:32px;padding:6px 9px;border:1px solid #624421;border-radius:9px;background:#1b1007;color:#ffdfa1;font-weight:900;font-size:9px}
+.customer-base-entry-actions button[data-edit-base-customer]{border-color:#775321}
+.customer-base-empty{padding:19px 12px;border:1px dashed #4b341d;border-radius:14px;text-align:center;color:#b6a185;font-size:11px;line-height:1.6}
+@media(min-width:720px){
+ .customer-base-launch{min-height:80px;padding:15px 20px;border-radius:18px}
+ .customer-base-launch-icon{width:48px;height:48px;flex-basis:48px}
+ .customer-base-launch-copy strong{font-size:17px}
+ .customer-base-launch-copy small{font-size:11px}
+ .customer-base-modal{width:min(100%,860px);max-height:90dvh}
+ .customer-base-form{grid-template-columns:1fr 1fr;align-items:start}
+ .customer-base-form-heading,.customer-base-field-note{grid-column:1/-1}
+ .customer-base-form-actions{grid-column:1/-1;grid-template-columns:minmax(0,220px) minmax(0,180px);justify-content:start}
+ .customer-base-list{grid-template-columns:repeat(2,minmax(0,1fr));align-items:start}
+}
+@media(max-width:390px){
+ .customer-base-launch{gap:10px;padding:11px;min-height:66px}
+ .customer-base-launch-icon{width:39px;height:39px;flex-basis:39px}
+ .customer-base-launch-copy strong{font-size:13px}
+ .customer-base-launch-copy small{font-size:9px}
+ .customer-base-entry{gap:8px;padding:9px}
+ .customer-base-entry-avatar{width:34px;height:34px;flex-basis:34px}
+}
+
 </style>
 <style>/* V82.1 — password visibility control, added without altering panel logic */
 .password-field-wrap{position:relative;display:block;width:100%;min-width:0;box-sizing:border-box}
@@ -1153,6 +1216,105 @@ main{width:min(1180px,100%);padding:13px;margin:auto}.view{display:none}.view.ac
 }
 </style>
 
+<style id="v54-bold-compact-product-cards">
+/* V54 — bold readable product information and tighter product cards on phones. */
+@media (max-width: 600px) {
+  #addModal .add-grid {
+    gap: 7px !important;
+    margin-top: 9px;
+    align-items: start;
+  }
+  #addModal .add-product-tile {
+    min-width: 0;
+    border-radius: 13px;
+  }
+  #addModal .add-product-tile .add-product {
+    min-height: 0 !important;
+    height: auto;
+    align-items: center;
+    gap: 7px;
+    padding: 7px !important;
+  }
+  #addModal .add-product-tile .add-product img {
+    width: 38px !important;
+    height: 38px !important;
+    flex: 0 0 38px !important;
+    border-radius: 9px;
+  }
+  #addModal .add-product-tile .add-product span {
+    min-width: 0;
+    overflow-wrap: anywhere;
+    line-height: 1.2;
+  }
+  #addModal .add-product-tile .add-product b {
+    display: block;
+    color: #fff8e9;
+    font-size: 12px !important;
+    font-weight: 900;
+    line-height: 1.22;
+    overflow-wrap: anywhere;
+  }
+  #addModal .add-product-tile .add-product small {
+    display: block;
+    margin-top: 4px !important;
+    color: #e4d4bd;
+    font-size: 10px !important;
+    font-weight: 750;
+    line-height: 1.25;
+    overflow-wrap: anywhere;
+  }
+  #addModal .product-edit-actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 5px;
+    padding: 0 6px 6px !important;
+  }
+  #addModal .product-edit-actions button {
+    min-height: 32px !important;
+    padding: 5px 3px !important;
+    font-size: 9px !important;
+    font-weight: 850;
+    line-height: 1.15;
+  }
+  #addModal .add-products-empty {
+    padding: 13px 10px;
+    font-weight: 700;
+  }
+}
+@media (max-width: 380px) {
+  #addModal .add-product-tile .add-product { gap: 6px; padding: 6px !important; }
+  #addModal .add-product-tile .add-product img { width: 34px !important; height: 34px !important; flex-basis: 34px !important; }
+  #addModal .add-product-tile .add-product b { font-size: 11px !important; }
+  #addModal .add-product-tile .add-product small { font-size: 9px !important; }
+}
+/* Desktop: clearer bold labels with compact vertical spacing, while keeping the full-screen layout. */
+@media (min-width: 601px) {
+  #addModal .add-grid { gap: 10px; }
+  #addModal .add-product-tile .add-product {
+    min-height: 82px;
+    padding: 11px 13px;
+    align-items: center;
+    gap: 11px;
+  }
+  #addModal .add-product-tile .add-product img {
+    width: 56px;
+    height: 56px;
+    flex-basis: 56px;
+  }
+  #addModal .add-product-tile .add-product b {
+    color: #fff8e9;
+    font-size: 15px;
+    font-weight: 900;
+    line-height: 1.28;
+  }
+  #addModal .add-product-tile .add-product small {
+    color: #e4d4bd;
+    font-size: 12px;
+    font-weight: 750;
+    line-height: 1.3;
+    margin-top: 4px;
+  }
+}
+</style>
 </head>
 <body>
 <div id="loginView" class="login-view">
@@ -1178,6 +1340,13 @@ main{width:min(1180px,100%);padding:13px;margin:auto}.view{display:none}.view.ac
    <div class="hero"><div><div class="eyebrow">УПРАВЛЕНИЕ СЕГОДНЯ</div><h1>Номера и клиенты</h1><p>Быстро выдавайте браслет, добавляйте покупки и отмечайте оплату.</p></div><div class="live-badge"><strong id="activeCount">0</strong><span>активных</span></div></div>
    <div id="shiftControl" class="shift-control-slot" aria-live="polite"></div>
    <div class="kpis" id="homeKpis"></div>
+   <div class="customer-base-launch-wrap">
+    <button id="openCustomerBase" type="button" class="customer-base-launch" aria-label="Открыть базу клиентов и зарегистрировать клиента">
+     <span class="customer-base-launch-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20v-1.5A4.5 4.5 0 0 1 7 14h4a4.5 4.5 0 0 1 4.5 4.5V20"/><path d="M16 5.5a3.5 3.5 0 0 1 0 6.8M18 14.5a4.5 4.5 0 0 1 3.5 4.3V20"/></svg></span>
+     <span class="customer-base-launch-copy"><strong>База клиентов</strong><small>Регистрация, поиск и сохранение данных клиентов</small></span>
+     <span class="customer-base-launch-arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 5l7 7-7 7"/></svg></span>
+    </button>
+   </div>
    <div class="section-head"><div><div class="eyebrow">БРАСЛЕТЫ ПАР ОРДО</div><h2>Все номера</h2></div><div class="hint">№1—36</div></div>
    <div class="filters"><button class="filter active" data-filter="all">Все 36</button><button class="filter" data-filter="active">Активные</button><button class="filter" data-filter="free">Свободные</button></div>
    <div id="roomsGrid" class="rooms"></div>
@@ -1215,6 +1384,7 @@ main{width:min(1180px,100%);padding:13px;margin:auto}.view{display:none}.view.ac
  </div></div>
 
 <div id="clientModal" class="modal"><div id="clientModalCard" class="modal-card"></div></div>
+<div id="customerBaseModal" class="modal"><div id="customerBaseModalCard" class="modal-card customer-base-modal"></div></div>
 <div id="addModal" class="modal"><div id="addModalCard" class="modal-card"></div></div>
 <div id="confirmModal" class="modal"><div id="confirmModalCard" class="modal-card"></div></div>
 
@@ -1310,6 +1480,72 @@ async function loginHandler(event){
  }catch(e){$('#loginError').textContent=e.message}
  finally{busy=false;$('#loginButton').disabled=false}
 }
+let customerBaseEntries=[];
+let customerBaseEditingId='';
+function resetCustomerBaseForm(){
+ customerBaseEditingId='';
+ const form=$('#customerBaseForm');if(form)form.reset();
+ const title=$('#customerBaseFormTitle');if(title)title.textContent='Регистрация клиента';
+ const save=$('#customerBaseSave');if(save)save.textContent='＋ Сохранить клиента';
+ const cancel=$('#customerBaseCancel');if(cancel)cancel.classList.add('hidden');
+}
+function renderCustomerBaseList(){
+ const list=$('#customerBaseList');if(!list)return;
+ const query=String($('#customerBaseSearch')?.value||'').trim().toLocaleLowerCase('ru');
+ const canEditBase=currentRole()!=='manager';
+ const filtered=customerBaseEntries.filter(c=>[c.name,c.phone,c.note].some(v=>String(v||'').toLocaleLowerCase('ru').includes(query)));
+ const count=$('#customerBaseCount');if(count)count.textContent=`Клиентов в базе: ${customerBaseEntries.length} · найдено: ${filtered.length}`;
+ list.innerHTML=filtered.length?filtered.map(c=>`<article class="customer-base-entry"><div class="customer-base-entry-avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M4.5 20v-1.8a5 5 0 0 1 5-5h5a5 5 0 0 1 5 5V20"/></svg></div><div class="customer-base-entry-main"><strong>${escapeHtml(c.name)}</strong><small>${c.phone?`Телефон: ${escapeHtml(c.phone)}`:'Телефон не указан'} · Добавлен: ${escapeHtml(fmtDate(c.createdAt))}</small>${c.note?`<div class="customer-base-entry-note">${escapeHtml(c.note)}</div>`:''}${canEditBase?`<div class="customer-base-entry-actions"><button type="button" data-edit-base-customer="${escapeHtml(c.id)}">✎ Изменить</button></div>`:''}</div></article>`).join(''):'<div class="customer-base-empty">Клиентов не найдено.<br>Заполните форму выше, чтобы зарегистрировать первого клиента.</div>';
+ $$('[data-edit-base-customer]').forEach(b=>b.onclick=()=>editCustomerBaseEntry(b.dataset.editBaseCustomer));
+}
+function renderCustomerBaseModal(){
+ $('#customerBaseModalCard').innerHTML=`<div class="modal-head"><div><div class="eyebrow">ПАР ОРДО · CRM</div><h2>База клиентов</h2><div class="history-meta">Регистрация и поиск постоянных клиентов</div></div><button class="close" id="closeCustomerBase" type="button" aria-label="Закрыть">×</button></div>
+ <form id="customerBaseForm" class="customer-base-form ${currentRole()==='manager'?'hidden':''}"><div id="customerBaseFormTitle" class="customer-base-form-heading">Регистрация клиента</div><div class="customer-base-field"><label for="customerBaseName">ИМЯ / ФИО КЛИЕНТА *</label><input id="customerBaseName" name="name" autocomplete="name" maxlength="120" placeholder="Например, Азамат Токтосунов" required></div><div class="customer-base-field"><label for="customerBasePhone">ТЕЛЕФОН</label><input id="customerBasePhone" name="phone" type="tel" inputmode="tel" autocomplete="tel" maxlength="40" placeholder="+996 700 000 000"></div><div class="customer-base-field customer-base-field-note"><label for="customerBaseNote">ПРИМЕЧАНИЕ</label><textarea id="customerBaseNote" name="note" maxlength="500" placeholder="Дополнительная информация (необязательно)"></textarea></div><div class="customer-base-form-actions"><button id="customerBaseSave" class="primary" type="submit">＋ Сохранить клиента</button><button id="customerBaseCancel" class="ghost hidden" type="button">Отмена изменений</button></div></form>${currentRole()==='manager'?'<div class="customer-base-empty">Режим просмотра: регистрация и изменение записей недоступны вашей роли.</div>':''}
+ <div class="customer-base-search"><input id="customerBaseSearch" type="search" placeholder="Поиск по имени, телефону или примечанию…" autocomplete="off"></div><div id="customerBaseCount" class="customer-base-count">Загрузка базы…</div><div id="customerBaseList" class="customer-base-list"><div class="customer-base-empty">Загружаем базу клиентов…</div></div>`;
+ $('#closeCustomerBase').onclick=()=>closeModal('#customerBaseModal');
+ $('#customerBaseSearch').addEventListener('input',renderCustomerBaseList);
+ $('#customerBaseCancel').onclick=resetCustomerBaseForm;
+ $('#customerBaseForm').addEventListener('submit',saveCustomerBaseEntry);
+}
+async function openCustomerBase(){
+ renderCustomerBaseModal();resetCustomerBaseForm();openModal('#customerBaseModal');await loadCustomerBaseEntries();
+}
+async function loadCustomerBaseEntries(){
+ const list=$('#customerBaseList');if(list)list.innerHTML='<div class="customer-base-empty">Загружаем базу клиентов…</div>';
+ try{
+  const data=await api('/api/admin/control/customer-base');
+  customerBaseEntries=Array.isArray(data.customers)?data.customers:[];
+  renderCustomerBaseList();
+ }catch(e){
+  customerBaseEntries=[];
+  if(list)list.innerHTML=`<div class="customer-base-empty">Не удалось загрузить базу клиентов.<br>${escapeHtml(e.message)}<br><br>Установите Worker API V10.4 из ZIP-пакета и нажмите Save and Deploy.</div>`;
+  const count=$('#customerBaseCount');if(count)count.textContent='Нет соединения с базой';
+ }
+}
+function editCustomerBaseEntry(id){
+ const c=customerBaseEntries.find(x=>String(x.id)===String(id));if(!c)return;
+ customerBaseEditingId=String(c.id);$('#customerBaseName').value=c.name||'';$('#customerBasePhone').value=c.phone||'';$('#customerBaseNote').value=c.note||'';
+ $('#customerBaseFormTitle').textContent='Изменить клиента';
+ $('#customerBaseSave').textContent='Сохранить изменения';$('#customerBaseCancel').classList.remove('hidden');
+ $('#customerBaseName').focus({preventScroll:true});$('#customerBaseForm').scrollIntoView({behavior:'smooth',block:'start'});
+}
+async function saveCustomerBaseEntry(event){
+ event.preventDefault();
+ const name=$('#customerBaseName').value.trim().replace(/\s+/g,' '),phone=$('#customerBasePhone').value.trim(),note=$('#customerBaseNote').value.trim();
+ if(name.length<2){toast('Укажите имя клиента (не менее 2 символов).');return}
+ if(name.length>120||phone.length>40||note.length>500){toast('Проверьте длину введённых данных.');return}
+ const save=$('#customerBaseSave');if(save)save.disabled=true;
+ try{
+  const editing=customerBaseEditingId;
+  const endpoint=editing?`/api/admin/control/customer-base/${encodeURIComponent(editing)}`:'/api/admin/control/customer-base';
+  const result=await api(endpoint,{method:editing?'PUT':'POST',body:JSON.stringify({name,phone,note})});
+  if(!result.customer)throw new Error('Сервер не вернул сохранённую запись.');
+  toast(editing?'Данные клиента обновлены ✅':'Клиент зарегистрирован ✅');
+  resetCustomerBaseForm();await loadCustomerBaseEntries();
+ }catch(e){toast('Не удалось сохранить клиента: '+e.message)}
+ finally{if(save)save.disabled=false}
+}
+
 async function bootApp(){
  loadLocal();$('#loggedUser').textContent=`${sessionStorage.getItem(USER_KEY)||'admin'} · доступ персонала`;
  await loadProducts();
@@ -1765,6 +2001,7 @@ $('#loginForm').addEventListener('submit',loginHandler);
 $('#menuButton').onclick=()=>$('#drawer').classList.add('open');$('#closeDrawer').onclick=()=>$('#drawer').classList.remove('open');
 $('#headerReport').onclick=()=>navigate('reportView');
 $('#logoutButton').onclick=logout;
+$('#openCustomerBase').onclick=openCustomerBase;
 
 async function seedNewCatalogFromControl(){
  if(currentRole()!=='admin'){toast('Добавлять товары может только администратор.');return}
