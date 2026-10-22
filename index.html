@@ -1315,6 +1315,74 @@ main{width:min(1180px,100%);padding:13px;margin:auto}.view{display:none}.view.ac
   }
 }
 </style>
+
+<style id="v55-clear-cards-staff-access">
+/* V55: easy-to-distinguish product cards and aligned actions on every screen */
+#addModal #addProductGrid.add-grid{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  align-items:stretch!important;
+  gap:10px!important;
+}
+#addModal .add-product-tile{
+  display:flex!important;flex-direction:column!important;align-self:stretch!important;height:100%;
+  min-width:0;overflow:hidden;border:1px solid #79572e!important;border-radius:15px!important;
+  background:linear-gradient(155deg,#1b1209 0%,#100a06 72%,#0b0705 100%)!important;
+  box-shadow:inset 0 1px 0 #ffda7b12,0 4px 12px #0004;
+}
+#addModal .add-product-tile .add-product{
+  flex:1 1 auto!important;width:100%;min-width:0;min-height:104px!important;height:auto!important;
+  display:flex!important;align-items:flex-start!important;gap:9px!important;padding:10px!important;
+  border:0!important;border-radius:0!important;background:transparent!important;text-align:left!important;
+}
+#addModal .add-product-tile .add-product img{
+  width:42px!important;height:42px!important;flex:0 0 42px!important;margin-top:1px;border-radius:10px!important;
+}
+#addModal .add-product-tile .add-product span{min-width:0;flex:1;display:block;overflow-wrap:anywhere}
+#addModal .add-product-tile .add-product b{
+  display:block;color:#fff9ed!important;font-size:13px!important;font-weight:950!important;
+  line-height:1.28!important;letter-spacing:.005em;overflow-wrap:anywhere;word-break:normal;
+}
+#addModal .add-product-tile .add-product small{
+  display:block;margin-top:7px!important;padding-top:5px;border-top:1px solid #4b3825;
+  color:#f1d6a3!important;font-size:11px!important;font-weight:850!important;line-height:1.35!important;
+  overflow-wrap:anywhere;
+}
+#addModal .product-edit-actions{
+  display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:6px!important;margin-top:auto;padding:0 8px 8px!important;
+}
+#addModal .product-edit-actions button{
+  min-width:0;min-height:36px!important;padding:6px 4px!important;border:1px solid #7a582e!important;
+  border-radius:10px!important;background:#21160c!important;color:#ffe1a2!important;
+  font-size:10px!important;font-weight:900!important;line-height:1.2!important;white-space:normal!important;
+}
+#addModal .product-edit-actions button:active{background:#4a2c0b!important;border-color:#ffd06c!important}
+#addModal .entry-add-wrap{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:11px}
+#addModal .entry-add-wrap .entry-add{min-width:0;min-height:58px;margin:0!important;padding:10px!important;align-items:center}
+#addModal .entry-add-wrap .entry-add b{font-size:12px!important;font-weight:950!important}
+#addModal .entry-add-wrap .entry-add span{font-size:13px!important;font-weight:950!important}
+#addModal #addChildEntry{border-color:#80643a;background:linear-gradient(145deg,#20190c,#120c06)}
+#productsView .product{border-color:#74522c;box-shadow:inset 0 1px 0 #ffda7b10,0 5px 14px #0003}
+#productsView .product-title b{font-size:14px;font-weight:950;line-height:1.3;color:#fff9eb}
+#productsView .product-title small{color:#e6c98e;font-size:10px;font-weight:850;letter-spacing:.03em}
+#productsView .stock-stat strong{font-size:17px;font-weight:950}
+@media(max-width:380px){
+ #addModal #addProductGrid.add-grid{gap:7px!important}
+ #addModal .add-product-tile .add-product{gap:6px!important;padding:7px!important;min-height:100px!important}
+ #addModal .add-product-tile .add-product img{width:34px!important;height:34px!important;flex-basis:34px!important}
+ #addModal .add-product-tile .add-product b{font-size:11px!important}
+ #addModal .add-product-tile .add-product small{font-size:9px!important}
+ #addModal .product-edit-actions{gap:4px!important;padding:0 5px 5px!important}
+ #addModal .product-edit-actions button{font-size:9px!important;min-height:34px!important}
+ #addModal .entry-add-wrap{gap:6px}
+ #addModal .entry-add-wrap .entry-add{padding:8px!important;gap:4px;flex-direction:column;align-items:flex-start}
+ #addModal .entry-add-wrap .entry-add b{font-size:11px!important}
+ #addModal .entry-add-wrap .entry-add span{font-size:12px!important}
+}
+@media(min-width:601px){#addModal #addProductGrid.add-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+@media(min-width:900px){#addModal #addProductGrid.add-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}}
+</style>
 </head>
 <body>
 <div id="loginView" class="login-view">
@@ -1702,16 +1770,21 @@ function purchaseCard(i){
  const prod=db.products.find(p=>Number(p.id)===Number(i.productId)),img=prod?.img||'./assets/par-ordo-logo.png';
  const method=i.method||'pending';
  const methodClass=method==='cash'?'is-cash':method==='transfer'?'is-transfer':'is-pending';
- const editButton=currentRole()==='admin'?`<button class="edit-price" type="button" data-edit-price="${i.id}">Изменить цену ✎</button>`:'';
+ const canEditLinePrice=currentRole()==='admin'||(currentRole()==='staff'&&method==='pending');
+ const editButton=canEditLinePrice?`<button class="edit-price" type="button" data-edit-price="${i.id}">Изменить цену ✎</button>`:'';
  return `<article class="purchase"><img src="${escapeHtml(img)}" alt="" onerror="this.src='./assets/par-ordo-logo.png'"><div class="purchase-info"><div class="purchase-title">${escapeHtml(i.name)}</div><div class="purchase-price"><span>${money(i.price)} × ${i.qty} = <b>${money(i.price*i.qty)}</b></span>${editButton}</div><div class="quantity"><button type="button" data-qty="${i.id}|-1">−</button><b>${i.qty}</b><button type="button" data-qty="${i.id}|1">＋</button><span style="margin-left:auto;color:var(--muted);font-size:9px">шт.</span></div><div class="pay-methods"><button class="${method==='pending'?methodClass:''}" type="button" data-payment="${i.id}|pending">Ожидает оплаты</button><button class="${method==='cash'?methodClass:''}" type="button" data-payment="${i.id}|cash">Оплачено наличными</button><button class="${method==='transfer'?methodClass:''}" type="button" data-payment="${i.id}|transfer">Оплачено переводом</button></div></div></article>`;
+}
+function cleanCatalogDisplayName(value){
+ return String(value||'').replace(/\s*(?:[-–—,:]\s*)?\d+(?:[.,]\d+)?\s*(?:мл|ml|л|l|литр(?:а|ов)?)(?=\s|$|[,;.)])/giu,'').replace(/\s{2,}/g,' ').replace(/\s*[-–—,:;]\s*$/g,'').trim();
 }
 function productPickerCategory(p){
  const raw=`${p?.cat||''} ${p?.name||''}`.toLocaleLowerCase('ru-RU');
+ const stored=String(p?.cat||'').trim();
+ if(['Напитки','Для бани','Гигиена','Одежда'].includes(stored))return stored;
  if(/напит|вода|энергет|лимонад|чай|сок|шоро|drink/.test(raw))return 'Напитки';
  if(/одежд|майк|футбол|трусы|носки|шорт|тапоч|халат|бель[её]/.test(raw))return 'Одежда';
  if(/гигиен|шампун|дезодорант|мочалк|пилк|мыло|бритв|гель для душа|гигиен/.test(raw))return 'Гигиена';
- const cat=String(p?.cat||'').trim().toLocaleLowerCase('ru-RU');
- if(cat==='для бани'||cat==='для бани и сауны')return 'Для бани';
+ if(/аксессуар|веник|полотенц|простын|шапк|ковш|таз/.test(raw))return 'Для бани';
  return 'Для бани';
 }
 function categoryIcon(cat){
@@ -1735,7 +1808,7 @@ function renderAddProductGrid(){
  if(!list.length){root.innerHTML='<div class="add-products-empty">Бул категорияда азырынча товар жок.<br>Администратор «Добавить товар» аркылуу кошо алат.</div>';return}
  root.innerHTML=list.map(p=>`<article class="add-product-tile">
   <button type="button" class="add-product" data-product="${Number(p.id)}"><img src="${escapeHtml(p.img||'./assets/par-ordo-logo.png')}" alt="" onerror="this.src='./assets/par-ordo-logo.png'"><span><b>${escapeHtml(p.name)}</b><small>${p.price==null?'Цена не указана':money(p.price)} · в наличии ${Number(p.available??p.stock??0)} шт.</small></span></button>
-  ${currentRole()==='admin'?`<div class="product-edit-actions"><button type="button" data-edit-catalog-name="${Number(p.id)}">✎ Название</button><button type="button" data-edit-catalog-price="${Number(p.id)}">✎ Цена</button></div>`:''}
+  ${['admin','staff'].includes(currentRole())?`<div class="product-edit-actions"><button type="button" data-edit-catalog-name="${Number(p.id)}">✎ Название</button><button type="button" data-edit-catalog-price="${Number(p.id)}">✎ Цена</button></div>`:''}
  </article>`).join('');
  $$('[data-product]').forEach(b=>b.onclick=async()=>{
   const p=db.products.find(x=>Number(x.id)===Number(b.dataset.product));if(!p)return;
@@ -1747,11 +1820,11 @@ function renderAddProductGrid(){
  $$('[data-edit-catalog-price]').forEach(b=>b.onclick=()=>editCatalogProduct(Number(b.dataset.editCatalogPrice),'price'));
 }
 async function editCatalogProduct(id,field){
- if(currentRole()!=='admin'){toast('Редактировать каталог может только администратор.');return}
+ if(!['admin','staff'].includes(currentRole())){toast('Недостаточно прав для изменения товара.');return}
  const p=db.products.find(x=>Number(x.id)===Number(id));if(!p)return;
  if(field==='name'){
   const raw=prompt('Новое название товара:',String(p.name||''));if(raw===null)return;
-  const name=raw.trim();if(!name){toast('Название товара не может быть пустым');return}
+  const name=cleanCatalogDisplayName(raw);if(!name){toast('Название товара не может быть пустым');return}
   if(name.length>120){toast('Название должно быть не длиннее 120 символов');return}
   const old=p.name;
   try{await api(`/api/admin/products/${id}`,{method:'PATCH',body:JSON.stringify({name})});p.name=name;saveLocal();renderAddProductGrid();renderInventory();toast('Название товара сохранено ✅')}
@@ -1770,8 +1843,11 @@ async function openAdd(clientId){
  await loadProducts(); // Refresh the shared catalog so new products and prices appear on other devices.
  addProductCategory='Все';
  $('#addModalCard').innerHTML=`<div class="modal-head"><div><div class="eyebrow">ДОБАВИТЬ ПОКУПКУ</div><h2>Клиент ${c.clientNo} (№${c.room})</h2></div><button class="close" type="button" data-close-add>×</button></div>
- <button class="entry-add" type="button" id="addEntry"><b>🚿 Вход</b><span>300 сом　＋</span></button>
- ${currentRole()==='admin'?`<div class="catalog-create-wrap"><button type="button" class="catalog-create-toggle" id="toggleNewProductForm">＋ Добавить товар в каталог</button>
+ <div class="entry-add-wrap">
+  <button class="entry-add" type="button" id="addEntry"><b>Вход</b><span>300 сом　＋</span></button>
+  <button class="entry-add" type="button" id="addChildEntry"><b>Вход детский</b><span>200 сом　＋</span></button>
+ </div>
+ ${['admin','staff'].includes(currentRole())?`<div class="catalog-create-wrap"><button type="button" class="catalog-create-toggle" id="toggleNewProductForm">＋ Добавить товар в каталог</button>
  <div class="new-product-form" id="newProductForm" hidden>
   <label>Название товара<input id="newProductName" type="text" maxlength="120" placeholder="Например, Мочалка" autocomplete="off" required></label>
   <label>Категория<select id="newProductCategory" required>${ADD_PRODUCT_CATEGORIES.filter(x=>x!=='Все').map(cat=>`<option value="${cat}">${cat}</option>`).join('')}</select></label>
@@ -1784,6 +1860,7 @@ async function openAdd(clientId){
  openModal('#addModal');
  $$('[data-close-add]').forEach(b=>b.onclick=()=>closeModal('#addModal'));
  $('#addEntry').onclick=()=>addPurchase({name:'Вход',price:300,productId:null});
+ $('#addChildEntry').onclick=()=>addPurchase({name:'Вход детский',price:200,productId:null});
  renderAddProductCategories();renderAddProductGrid();
  const toggle=$('#toggleNewProductForm'),form=$('#newProductForm'),cancel=$('#cancelNewProduct'),save=$('#saveNewProduct');
  if(toggle&&form)toggle.onclick=()=>{form.hidden=!form.hidden;if(!form.hidden){form.scrollIntoView({behavior:'smooth',block:'nearest'});$('#newProductName')?.focus()}};
@@ -1791,8 +1868,8 @@ async function openAdd(clientId){
  if(save)save.onclick=createCatalogProduct;
 }
 async function createCatalogProduct(){
- if(currentRole()!=='admin'){toast('Добавлять товары может только администратор.');return}
- const name=$('#newProductName')?.value.trim()||'',category=$('#newProductCategory')?.value||'',priceRaw=$('#newProductPrice')?.value.trim()||'';
+ if(!['admin','staff'].includes(currentRole())){toast('Добавлять товары может только администратор или сотрудник.');return}
+ const name=cleanCatalogDisplayName($('#newProductName')?.value.trim()||''),category=$('#newProductCategory')?.value||'',priceRaw=$('#newProductPrice')?.value.trim()||'';
  if(!name){toast('Введите название товара');$('#newProductName')?.focus();return}
  if(name.length>120){toast('Название должно быть не длиннее 120 символов');return}
  const price=Number(priceRaw);
@@ -1846,10 +1923,10 @@ async function addPurchase({name,price,productId}){
  }finally{if(p)p._stockUpdating=false}
 }
 async function editPrice(id){
- if(currentRole()!=='admin'){toast('Изменять цены может только администратор.');return}
+ if(!['admin','staff'].includes(currentRole())){toast('Недостаточно прав для изменения цены.');return}
  const c=db.clients.find(x=>x.id===currentClientId),i=c?.items.find(x=>x.id===id);if(!i)return;
  const value=prompt('Новая цена (сом):',String(i.price));if(value===null)return;
- const price=Number(value);if(!Number.isFinite(price)||price<0){toast('Введите корректную цену');return}
+ const price=Number(value);if(!Number.isInteger(price)||price<0){toast('Введите целую цену от 0 сом');return}
  const old=i.price;i.price=price;
  try{await persistClient(c);saveLocal();renderClientModal();renderHome();toast('Цена обновлена ✅')}
  catch(e){i.price=old;saveLocal();renderClientModal();toast('Не удалось сохранить цену: '+e.message)}
