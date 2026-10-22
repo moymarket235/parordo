@@ -346,7 +346,7 @@ main{width:min(1180px,100%);padding:13px;margin:auto}.view{display:none}.view.ac
 }
 
 
-/* V48 — real bracelet visual for each bracelet/room card */
+/* V49 — real bracelet visual for each bracelet/room card */
 .room{padding:9px}
 .room-visual{
  position:relative;isolation:isolate;overflow:hidden;
@@ -941,12 +941,34 @@ main{width:min(1180px,100%);padding:13px;margin:auto}.view{display:none}.view.ac
 /* V83 — brand wordmark icons instead of product photos */
 .product-top img,.add-product img{object-fit:contain!important;background:#0c0805!important;border:1px solid #624321;border-radius:13px;padding:0}
 
-/* Staff and administrators may edit catalog prices; stock controls remain admin-only. */
-.stock-price-row{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:9px;padding:8px 9px;border:1px solid #3a291a;border-radius:10px;background:#0c0805}
-.stock-price-label{min-width:0;color:var(--muted);font-size:11px;line-height:1.4}
-.stock-price-label strong{display:block;margin-top:3px;color:#ffdc81;font-size:15px;overflow-wrap:anywhere}
-.stock-price-row .stock-edit-link{flex:0 0 48%;width:auto;max-width:48%;min-height:36px;margin-top:0;padding:6px 7px;font-size:10px;white-space:normal}
-@media(max-width:360px){.stock-price-row{align-items:stretch;flex-direction:column}.stock-price-row .stock-edit-link{width:100%;max-width:none;flex-basis:auto}}
+
+/* V49 — categorized bracelet product picker and catalog editing */
+#addModal .category-filters{display:flex;gap:7px;overflow-x:auto;padding:3px 1px 5px;margin-top:12px;scrollbar-width:thin}
+#addModal .category-chip{flex:0 0 auto;min-height:40px;padding:9px 13px;border:1px solid #51391f;border-radius:12px;background:#160e08;color:#cdb99d;font-size:12px;font-weight:900;white-space:nowrap;touch-action:manipulation}
+#addModal .category-chip.active{color:#201305;background:linear-gradient(135deg,#ffe39a,#c88b35);border-color:#ffdc82;box-shadow:0 3px 12px #c58b352b}
+#addModal .catalog-create-wrap{margin-top:11px}
+#addModal .catalog-create-toggle{width:100%;min-height:48px;display:flex;align-items:center;justify-content:center;gap:8px;border:1px solid #a87831;border-radius:13px;background:linear-gradient(135deg,#422a10,#211408);color:#ffe0a0;font-weight:900;font-size:13px}
+#addModal .new-product-form{display:grid;gap:10px;margin-top:10px;padding:13px;border:1px solid #765125;border-radius:15px;background:#100a05}
+#addModal .new-product-form[hidden]{display:none!important}
+#addModal .new-product-form label{display:grid;gap:5px;color:#dfc9a7;font-size:11px;font-weight:800}
+#addModal .new-product-form input,#addModal .new-product-form select{width:100%;min-height:45px;padding:10px 11px;border:1px solid #5c4227;border-radius:11px;background:#080604;color:#fff1d2;font:inherit;font-size:14px;outline:none}
+#addModal .new-product-form input:focus,#addModal .new-product-form select:focus{border-color:#f1c46e;box-shadow:0 0 0 3px #edbd5b1c}
+#addModal .new-product-form-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+#addModal .new-product-form-actions button{min-height:45px;border-radius:11px;font-size:12px;font-weight:900}
+#addModal .new-product-save{border:1px solid #bb8c3f;background:linear-gradient(135deg,#ffe39a,#c88b35);color:#241606}
+#addModal .new-product-cancel{border:1px solid #49331f;background:#1b120a;color:#e7d3b7}
+#addModal .add-product-tile{min-width:0;overflow:hidden;border:1px solid #604421;border-radius:15px;background:linear-gradient(150deg,#180f08,#0d0805)}
+#addModal .add-product-tile .add-product{width:100%;min-height:76px;border:0!important;border-radius:0;background:transparent;text-align:left;box-shadow:none}
+#addModal .add-product-tile .add-product:hover{background:#211307}
+#addModal .product-edit-actions{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:0 8px 8px}
+#addModal .product-edit-actions button{min-width:0;min-height:36px;padding:6px 4px;border:1px solid #5e482d;border-radius:9px;background:#1a1109;color:#f8d78e;font-size:10px;line-height:1.2;font-weight:800;white-space:normal}
+#addModal .product-edit-actions button:active{background:#35200d;border-color:#e8bb61}
+#addModal .add-products-empty{grid-column:1/-1;padding:17px 12px;border:1px dashed #624a2a;border-radius:13px;color:#c7b393;text-align:center;font-size:12px;line-height:1.5}
+@media(max-width:390px){
+ #addModal .category-chip{min-height:38px;padding:8px 11px;font-size:11px}
+ #addModal .product-edit-actions button{font-size:9px;min-height:38px}
+}
+
 </style>
 <style>/* V82.1 — password visibility control, added without altering panel logic */
 .password-field-wrap{position:relative;display:block;width:100%;min-width:0;box-sizing:border-box}
@@ -1040,6 +1062,8 @@ const db={rooms:{},seq:{},clients:[],archived:[],incoming:{},products:[]};
 let shiftState={isOpen:false,isClosing:false,openedAt:null,openedBy:'',closedAt:null,loaded:false};
 let shiftBusy=false;
 let filterMode='all',currentClientId=null,currentView='homeView',busy=false;
+const ADD_PRODUCT_CATEGORIES=['Все','Напитки','Для бани','Гигиена','Одежда'];
+let addProductCategory='Все';
 
 function loadLocal(){
  try{const old=JSON.parse(localStorage.getItem(DATA_KEY)||'null');if(old&&typeof old==='object')Object.assign(db,old)}catch(e){}
@@ -1272,16 +1296,99 @@ function purchaseCard(i){
  const editButton=currentRole()==='admin'?`<button class="edit-price" type="button" data-edit-price="${i.id}">Изменить цену ✎</button>`:'';
  return `<article class="purchase"><img src="${escapeHtml(img)}" alt="" onerror="this.src='./assets/par-ordo-logo.png'"><div class="purchase-info"><div class="purchase-title">${escapeHtml(i.name)}</div><div class="purchase-price"><span>${money(i.price)} × ${i.qty} = <b>${money(i.price*i.qty)}</b></span>${editButton}</div><div class="quantity"><button type="button" data-qty="${i.id}|-1">−</button><b>${i.qty}</b><button type="button" data-qty="${i.id}|1">＋</button><span style="margin-left:auto;color:var(--muted);font-size:9px">шт.</span></div><div class="pay-methods"><button class="${method==='pending'?methodClass:''}" type="button" data-payment="${i.id}|pending">Ожидает оплаты</button><button class="${method==='cash'?methodClass:''}" type="button" data-payment="${i.id}|cash">Оплачено наличными</button><button class="${method==='transfer'?methodClass:''}" type="button" data-payment="${i.id}|transfer">Оплачено переводом</button></div></div></article>`;
 }
-function openAdd(clientId){
+function productPickerCategory(p){
+ const raw=`${p?.cat||''} ${p?.name||''}`.toLocaleLowerCase('ru-RU');
+ if(/напит|вода|энергет|лимонад|чай|сок|шоро|drink/.test(raw))return 'Напитки';
+ if(/одежд|майк|футбол|трусы|носки|шорт|тапоч|халат|бель[её]/.test(raw))return 'Одежда';
+ if(/гигиен|шампун|дезодорант|мочалк|пилк|мыло|бритв|гель для душа|гигиен/.test(raw))return 'Гигиена';
+ const cat=String(p?.cat||'').trim().toLocaleLowerCase('ru-RU');
+ if(cat==='для бани'||cat==='для бани и сауны')return 'Для бани';
+ return 'Для бани';
+}
+function renderAddProductCategories(){
+ const root=$('#addCategoryTabs');if(!root)return;
+ root.innerHTML=ADD_PRODUCT_CATEGORIES.map(cat=>`<button type="button" class="category-chip ${cat===addProductCategory?'active':''}" data-add-category="${escapeHtml(cat)}" aria-pressed="${cat===addProductCategory?'true':'false'}">${cat==='Все'?'▦ Все':cat==='Напитки'?'🥤 Напитки':cat==='Для бани'?'🧖 Для бани':cat==='Гигиена'?'🧼 Гигиена':'👕 Одежда'}</button>`).join('');
+ $$('[data-add-category]').forEach(b=>b.onclick=()=>{addProductCategory=b.dataset.addCategory;renderAddProductCategories();renderAddProductGrid()});
+}
+function renderAddProductGrid(){
+ const root=$('#addProductGrid');if(!root)return;
+ const list=db.products.filter(p=>addProductCategory==='Все'||productPickerCategory(p)===addProductCategory);
+ if(!list.length){root.innerHTML='<div class="add-products-empty">Бул категорияда азырынча товар жок.<br>Администратор «Добавить товар» аркылуу кошо алат.</div>';return}
+ root.innerHTML=list.map(p=>`<article class="add-product-tile">
+  <button type="button" class="add-product" data-product="${Number(p.id)}"><img src="${escapeHtml(p.img||'./assets/par-ordo-logo.png')}" alt="" onerror="this.src='./assets/par-ordo-logo.png'"><span><b>${escapeHtml(p.name)}</b><small>${p.price==null?'Цена не указана':money(p.price)} · в наличии ${Number(p.available??p.stock??0)} шт.</small></span></button>
+  ${currentRole()==='admin'?`<div class="product-edit-actions"><button type="button" data-edit-catalog-name="${Number(p.id)}">✎ Название</button><button type="button" data-edit-catalog-price="${Number(p.id)}">✎ Цена</button></div>`:''}
+ </article>`).join('');
+ $$('[data-product]').forEach(b=>b.onclick=async()=>{
+  const p=db.products.find(x=>Number(x.id)===Number(b.dataset.product));if(!p)return;
+  let price=p.price;
+  if(price==null){const raw=prompt(`Укажите цену товара «${p.name}» (сом):`,'');if(raw===null)return;if(raw.trim()===''||!Number.isInteger(Number(raw))||Number(raw)<0){toast('Введите целую цену от 0 сом');return}price=Number(raw)}
+  await addPurchase({name:p.name,price:Number(price),productId:Number(p.id)});
+ });
+ $$('[data-edit-catalog-name]').forEach(b=>b.onclick=()=>editCatalogProduct(Number(b.dataset.editCatalogName),'name'));
+ $$('[data-edit-catalog-price]').forEach(b=>b.onclick=()=>editCatalogProduct(Number(b.dataset.editCatalogPrice),'price'));
+}
+async function editCatalogProduct(id,field){
+ if(currentRole()!=='admin'){toast('Редактировать каталог может только администратор.');return}
+ const p=db.products.find(x=>Number(x.id)===Number(id));if(!p)return;
+ if(field==='name'){
+  const raw=prompt('Новое название товара:',String(p.name||''));if(raw===null)return;
+  const name=raw.trim();if(!name){toast('Название товара не может быть пустым');return}
+  if(name.length>120){toast('Название должно быть не длиннее 120 символов');return}
+  const old=p.name;
+  try{await api(`/api/admin/products/${id}`,{method:'PATCH',body:JSON.stringify({name})});p.name=name;saveLocal();renderAddProductGrid();renderInventory();toast('Название товара сохранено ✅')}
+  catch(e){p.name=old;toast('Не удалось изменить название: '+e.message)}
+  return;
+ }
+ const raw=prompt(`Новая цена товара «${p.name}» (сом):`,p.price==null?'':String(p.price));if(raw===null)return;
+ const clean=raw.trim(),price=clean===''?null:Number(clean);
+ if(price!==null&&(!Number.isInteger(price)||price<0)){toast('Введите целую цену от 0 сом или оставьте поле пустым');return}
+ const old=p.price;
+ try{await api(`/api/admin/products/${id}`,{method:'PATCH',body:JSON.stringify({price})});p.price=price;saveLocal();renderAddProductGrid();renderInventory();toast(price===null?'Цена очищена ✅':'Цена товара сохранена ✅')}
+ catch(e){p.price=old;toast('Не удалось изменить цену: '+e.message)}
+}
+async function openAdd(clientId){
  currentClientId=clientId;const c=db.clients.find(x=>x.id===clientId);if(!c)return;
+ await loadProducts(); // Refresh the shared catalog so new products and prices appear on other devices.
+ addProductCategory='Все';
  $('#addModalCard').innerHTML=`<div class="modal-head"><div><div class="eyebrow">ДОБАВИТЬ ПОКУПКУ</div><h2>Клиент ${c.clientNo} (№${c.room})</h2></div><button class="close" type="button" data-close-add>×</button></div>
  <button class="entry-add" type="button" id="addEntry"><b>🚿 Вход</b><span>300 сом　＋</span></button>
- <div class="add-grid">${db.products.map(p=>`<button type="button" class="add-product" data-product="${p.id}"><img src="${escapeHtml(p.img||'./assets/par-ordo-logo.png')}" alt="" onerror="this.src='./assets/par-ordo-logo.png'"><span><b>${escapeHtml(p.name)}</b><small>${p.price==null?'Цена не указана':money(p.price)} · в наличии ${Number(p.available??p.stock??0)}</small></span></button>`).join('')}</div>
+ ${currentRole()==='admin'?`<div class="catalog-create-wrap"><button type="button" class="catalog-create-toggle" id="toggleNewProductForm">＋ Добавить товар в каталог</button>
+ <div class="new-product-form" id="newProductForm" hidden>
+  <label>Название товара<input id="newProductName" type="text" maxlength="120" placeholder="Например, Мочалка" autocomplete="off" required></label>
+  <label>Категория<select id="newProductCategory" required>${ADD_PRODUCT_CATEGORIES.filter(x=>x!=='Все').map(cat=>`<option value="${cat}">${cat}</option>`).join('')}</select></label>
+  <label>Цена, сом<input id="newProductPrice" type="number" min="0" step="1" inputmode="numeric" placeholder="Введите цену" required></label>
+  <div class="new-product-form-actions"><button type="button" class="new-product-save" id="saveNewProduct">Сохранить товар</button><button type="button" class="new-product-cancel" id="cancelNewProduct">Отмена</button></div>
+ </div></div>`:''}
+ <div class="history-meta" style="padding-bottom:2px">Выберите категорию товара</div><div class="category-filters" id="addCategoryTabs"></div>
+ <div class="add-grid" id="addProductGrid"></div>
  <div class="history-meta" style="text-align:center;margin-top:9px">Каждое добавление записывается в чек клиента.</div>`;
  openModal('#addModal');
  $$('[data-close-add]').forEach(b=>b.onclick=()=>closeModal('#addModal'));
  $('#addEntry').onclick=()=>addPurchase({name:'Вход',price:300,productId:null});
- $$('[data-product]').forEach(b=>b.onclick=()=>{const p=db.products.find(x=>Number(x.id)===Number(b.dataset.product));if(p)addPurchase({name:p.name,price:Number(p.price||0),productId:Number(p.id)})});
+ renderAddProductCategories();renderAddProductGrid();
+ const toggle=$('#toggleNewProductForm'),form=$('#newProductForm'),cancel=$('#cancelNewProduct'),save=$('#saveNewProduct');
+ if(toggle&&form)toggle.onclick=()=>{form.hidden=!form.hidden;if(!form.hidden){form.scrollIntoView({behavior:'smooth',block:'nearest'});$('#newProductName')?.focus()}};
+ if(cancel&&form)cancel.onclick=()=>{form.hidden=true;$('#newProductName').value='';$('#newProductPrice').value=''};
+ if(save)save.onclick=createCatalogProduct;
+}
+async function createCatalogProduct(){
+ if(currentRole()!=='admin'){toast('Добавлять товары может только администратор.');return}
+ const name=$('#newProductName')?.value.trim()||'',category=$('#newProductCategory')?.value||'',priceRaw=$('#newProductPrice')?.value.trim()||'';
+ if(!name){toast('Введите название товара');$('#newProductName')?.focus();return}
+ if(name.length>120){toast('Название должно быть не длиннее 120 символов');return}
+ const price=Number(priceRaw);
+ if(priceRaw===''||!Number.isInteger(price)||price<0){toast('Введите корректную цену — целое число от 0 сом');$('#newProductPrice')?.focus();return}
+ const button=$('#saveNewProduct');if(button){button.disabled=true;button.textContent='Сохраняем…'}
+ try{
+  const result=await api('/api/admin/products',{method:'POST',body:JSON.stringify({name,category,price})});
+  if(result?.product){db.products.push(result.product);db.products.sort((a,b)=>Number(a.id)-Number(b.id));saveLocal()}
+  else await loadProducts();
+  addProductCategory=category;renderAddProductCategories();renderAddProductGrid();renderInventory();
+  const form=$('#newProductForm');if(form)form.hidden=true;
+  $('#newProductName').value='';$('#newProductPrice').value='';
+  toast(`Товар «${name}» добавлен в категорию «${category}» ✅`);
+ }catch(e){toast('Не удалось добавить товар: '+e.message)}
+ finally{if(button){button.disabled=false;button.textContent='Сохранить товар'}}
 }
 async function setInventoryStock(p,nextStock){
  const reserved=Number(p.reserved||0);
@@ -1306,7 +1413,7 @@ async function addPurchase({name,price,productId}){
  try{
   if(p){await setInventoryStock(p,Number(p.stock||0)-1);stockChanged=true}
   let targetItemId=null;
-  const existing=productId==null?null:c.items.find(i=>Number(i.productId)===Number(productId)&&i.method==='pending');
+  const existing=productId==null?null:c.items.find(i=>Number(i.productId)===Number(productId)&&i.method==='pending'&&Number(i.price)===Number(price));
   if(existing){existing.qty+=1;existing.stockHeldV41=true;targetItemId=existing.id}
   else {const newItem={id:crypto.randomUUID(),productId:productId==null?null:Number(productId),name,price:Number(price||0),qty:1,method:'pending',createdAt:stamp(),stockHeldV41:productId!=null};c.items.push(newItem);targetItemId=newItem.id}
   await persistClient(c);
@@ -1391,10 +1498,6 @@ async function renderInventory(){
       <strong>+${inc} шт.</strong>
     </div>
   </div>
-  <div class="stock-price-row">
-    <span class="stock-price-label">Цена: <strong>${p.price==null?'не указана':money(p.price)}</strong></span>
-    ${['admin','staff'].includes(currentRole())?`<button type="button" class="stock-edit-link" data-price-edit="${p.id}">✎ Изменить цену</button>`:''}
-  </div>
   ${currentRole()==='admin'?`<button type="button" class="stock-edit-link" data-stock-edit="${p.id}">✎ Изменить остаток</button>
   <div class="add-stock">
     <input type="number" min="1" step="1" inputmode="numeric" id="incoming-${p.id}" placeholder="+ шт." aria-label="Количество поступившего товара">
@@ -1404,20 +1507,6 @@ async function renderInventory(){
  }).join(''):'<div class="empty-state">Товары не загрузились. Нажмите «Обновить».</div>';
  $$('[data-stock-add]').forEach(b=>b.onclick=()=>addStock(Number(b.dataset.stockAdd)));
  $$('[data-stock-edit]').forEach(b=>b.onclick=()=>editStock(Number(b.dataset.stockEdit)));
- $$('[data-price-edit]').forEach(b=>b.onclick=()=>editProductPrice(Number(b.dataset.priceEdit)));
-}
-async function editProductPrice(id){
- if(!['admin','staff'].includes(currentRole())){toast('Нет права изменять цену.');return}
- const p=db.products.find(x=>Number(x.id)===Number(id));if(!p)return;
- const entered=prompt(`Новая цена товара «${p.name}» (сом):`,p.price==null?'':String(p.price));
- if(entered===null)return;
- const raw=entered.trim();
- if(raw!==''&&(!Number.isInteger(Number(raw))||Number(raw)<0)){toast('Введите целую цену от 0 сом или оставьте пустым.');return}
- const price=raw===''?null:Number(raw),oldPrice=p.price;
- try{
-  await api(`/api/admin/products/${id}`,{method:'PATCH',body:JSON.stringify({price})});
-  p.price=price;saveLocal();renderInventory();toast('Цена товара обновлена ✅');
- }catch(e){p.price=oldPrice;toast('Не удалось изменить цену: '+e.message)}
 }
 async function editStock(id){
  const p=db.products.find(x=>Number(x.id)===Number(id));if(!p)return;
