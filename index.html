@@ -1057,14 +1057,14 @@ main{width:min(1180px,100%);padding:13px;margin:auto}.view{display:none}.view.ac
 .manager-section-title{margin:20px 2px 10px}.manager-section-title .eyebrow{margin-bottom:5px}.manager-section-title h2{font:700 22px Georgia,serif;margin:0;color:#fff0d0}
 .manager-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
 .manager-action{display:flex;align-items:center;gap:10px;min-height:82px;text-align:left;padding:12px;border:1px solid #634522;border-radius:16px;background:linear-gradient(145deg,#1b1007,#0d0805);color:#f9e9cb;box-shadow:inset 0 1px 0 #ffe2a20a}
-.manager-action-icon{flex:0 0 37px;width:37px;height:37px;display:grid;place-items:center;border:1px solid #8f652d;border-radius:12px;background:#211508;color:#ffda83;font-size:18px}
+.manager-action-icon{flex:0 0 42px;width:42px;height:42px;display:grid;place-items:center;border:1px solid #a87932;border-radius:13px;background:linear-gradient(145deg,#2b1a09,#140c06);color:#ffda83;box-shadow:inset 0 1px 0 #ffe6a51c,0 3px 10px #0004}.manager-action-icon svg{display:block;width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 4px #ffda8320)}.manager-action:active .manager-action-icon{background:linear-gradient(145deg,#41280d,#1b1007);border-color:#ffd77d}
 .manager-action-copy{min-width:0}.manager-action-copy strong{display:block;font-size:11px;font-weight:950;line-height:1.35}.manager-action-copy small{display:block;margin-top:4px;color:#bba382;font-size:9px;line-height:1.4}
 .manager-top-products{display:grid;gap:7px}.manager-top-product{display:grid;grid-template-columns:33px minmax(0,1fr) auto;align-items:center;gap:9px;padding:10px;border:1px solid #473019;border-radius:13px;background:#100904}.manager-top-rank{width:30px;height:30px;display:grid;place-items:center;border:1px solid #8b6227;border-radius:9px;background:#201406;color:#ffd978;font-weight:950;font-size:12px}.manager-top-copy{min-width:0}.manager-top-copy strong{display:block;color:#fff0d1;font-size:11px;font-weight:900;line-height:1.35;overflow-wrap:anywhere}.manager-top-copy small{display:block;color:#bda681;font-size:9px;margin-top:3px}.manager-top-sold{color:#ffdc81;font-size:10px;font-weight:950;white-space:nowrap}
 .manager-empty{padding:14px;border:1px dashed #573c20;border-radius:13px;color:#bda681;font-size:10px;line-height:1.5}
 body.manager-portal #headerReport{border-color:#916629;color:#ffdb83}
 body.manager-portal .bottom-nav{display:none!important}
 @media(min-width:760px){.manager-kpis{grid-template-columns:repeat(4,minmax(0,1fr))}.manager-actions{grid-template-columns:repeat(3,minmax(0,1fr))}.manager-hero{padding:23px}.manager-hero-row{align-items:center}.manager-exit-control{width:auto;min-width:245px}.manager-top-products{grid-template-columns:repeat(2,minmax(0,1fr))}.manager-section-title h2{font-size:25px}}
-@media(max-width:390px){.manager-hero{padding:14px}.manager-kpi{padding:10px 9px}.manager-action{padding:9px;gap:7px;min-height:76px}.manager-action-icon{width:32px;height:32px;flex-basis:32px;font-size:15px}.manager-action-copy strong{font-size:10px}.manager-role-pill{font-size:8px;padding:6px 7px}}
+@media(max-width:390px){.manager-hero{padding:14px}.manager-kpi{padding:10px 9px}.manager-action{padding:9px;gap:7px;min-height:76px}.manager-action-icon{width:36px;height:36px;flex-basis:36px}.manager-action-icon svg{width:19px;height:19px}.manager-action-copy strong{font-size:10px}.manager-role-pill{font-size:8px;padding:6px 7px}}
 
 </style>
 <style>/* V82.1 — password visibility control, added without altering panel logic */
@@ -1461,7 +1461,7 @@ body.manager-portal .bottom-nav{display:none!important}
 <div id="appView" class="hidden">
  <header class="header">
   <button id="menuButton" class="icon-btn" aria-label="Меню">☰</button>
-  <div class="brand"><img src="./assets/par-ordo-logo.png" alt="" onerror="this.style.display='none'"><div><b>ПАР ОРДО</b><small>CONTROL · V86</small></div></div>
+  <div class="brand"><img src="./assets/par-ordo-logo.png" alt="" onerror="this.style.display='none'"><div><b>ПАР ОРДО</b><small>CONTROL · V87</small></div></div>
   <button id="headerReport" class="icon-btn" aria-label="Отчёт">▥</button>
  </header>
  <main>
@@ -1475,12 +1475,12 @@ body.manager-portal .bottom-nav{display:none!important}
    </div>
    <div class="manager-section-title"><div class="eyebrow">БЫСТРЫЙ ДОСТУП</div><h2>Управление и отчёты</h2></div>
    <div class="manager-actions">
-    <button type="button" class="manager-action" data-manager-open="customers"><span class="manager-action-icon">♙</span><span class="manager-action-copy"><strong>База клиентов</strong><small>Поиск, история посещений и бонусы</small></span></button>
-    <button type="button" class="manager-action" data-manager-open="productStats"><span class="manager-action-icon">↗</span><span class="manager-action-copy"><strong>Статистика товаров</strong><small>Рейтинг продаж: 1, 2, 3…</small></span></button>
-    <button type="button" class="manager-action" data-manager-open="expensesView"><span class="manager-action-icon">₸</span><span class="manager-action-copy"><strong>Расходы бани</strong><small>Затраты за день и месяц</small></span></button>
-    <button type="button" class="manager-action" data-manager-open="reportView"><span class="manager-action-icon">▥</span><span class="manager-action-copy"><strong>Касса и отчёты</strong><small>Итоги смены и оплата</small></span></button>
-    <button type="button" class="manager-action" data-manager-open="productsView"><span class="manager-action-icon">▦</span><span class="manager-action-copy"><strong>Товары и склад</strong><small>Наличие и поступления</small></span></button>
-    <button type="button" class="manager-action" data-manager-open="historyView"><span class="manager-action-icon">◷</span><span class="manager-action-copy"><strong>История клиентов</strong><small>Завершённые посещения</small></span></button>
+    <button type="button" class="manager-action" data-manager-open="customers"><span class="manager-action-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="7.5" r="3.5"/><path d="M5 20v-1.8a5.2 5.2 0 0 1 5.2-5.2h3.6a5.2 5.2 0 0 1 5.2 5.2V20z"/></svg></span><span class="manager-action-copy"><strong>База клиентов</strong><small>Поиск, история посещений и бонусы</small></span></button>
+    <button type="button" class="manager-action" data-manager-open="productStats"><span class="manager-action-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3.5 19.5h17"/><path d="M5.5 16.5 10 12l3.2 2.8 5.3-7.3"/><path d="M13.8 7.5h4.7v4.7"/><path d="M5.5 19.5v-3M10 19.5v-7.5M13.2 19.5v-4.7M18.5 19.5V7.5"/></svg></span><span class="manager-action-copy"><strong>Статистика товаров</strong><small>Рейтинг продаж: 1, 2, 3…</small></span></button>
+    <button type="button" class="manager-action" data-manager-open="expensesView"><span class="manager-action-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="14" rx="2.5"/><path d="M7.5 9h9M12 9v7M9.5 16h5"/><path d="M3.5 8h17"/></svg></span><span class="manager-action-copy"><strong>Расходы бани</strong><small>Затраты за день и месяц</small></span></button>
+    <button type="button" class="manager-action" data-manager-open="reportView"><span class="manager-action-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 3.5h9l3 3V20a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4.5a1 1 0 0 1 1-1z"/><path d="M14.5 3.5v4h4M8 16v-3M12 16v-5M16 16v-2"/></svg></span><span class="manager-action-copy"><strong>Касса и отчёты</strong><small>Итоги смены и оплата</small></span></button>
+    <button type="button" class="manager-action" data-manager-open="productsView"><span class="manager-action-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m12 3 8 4.2v9.6L12 21l-8-4.2V7.2L12 3z"/><path d="m4.4 7.3 7.6 4 7.6-4M12 11.5V21M8 5.1l8 4.2"/></svg></span><span class="manager-action-copy"><strong>Товары и склад</strong><small>Наличие и поступления</small></span></button>
+    <button type="button" class="manager-action" data-manager-open="historyView"><span class="manager-action-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7v5l3.5 2"/><path d="M4.7 4.7 3.5 6M19.3 4.7 20.5 6"/></svg></span><span class="manager-action-copy"><strong>История клиентов</strong><small>Завершённые посещения</small></span></button>
    </div>
    <div class="manager-section-title"><div class="eyebrow">ТОП ПРОДАЖ</div><h2>Популярные товары</h2></div>
    <div id="managerTopProducts" class="manager-top-products"><div class="manager-empty">Загружаем статистику продаж…</div></div>
@@ -1698,7 +1698,7 @@ function renderCustomerBaseList(){
   const bonusHistory=Number(c.bonusCount||0)>0?`Использовано бонусов всего: ${Number(c.bonusCount||0)} · `:'';
   const bonusControl=canEditBase&&Number(c.bonusUsedThisMonth||0)===0&&c.bonusEligible?`<button type="button" class="customer-bonus-control ${c.bonusActive?'stop':''}" data-customer-bonus="${escapeHtml(c.id)}" data-bonus-status="${c.bonusActive?'stopped':'active'}" ${c.bonusActive?'aria-label="Остановить бонус"':'aria-label="Активировать бонус"'}>${c.bonusActive?'■ Остановить':'✓ Активировать'}</button>`:'';
   return `<article class="customer-base-entry"><div class="customer-base-entry-avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M4.5 20v-1.8a5 5 0 0 1 5-5h5a5 5 0 0 1 5 5V20"/></svg></div><div class="customer-base-entry-main"><strong>${escapeHtml(c.name)}</strong><small>${c.phone?`Телефон: ${escapeHtml(c.phone)}`:'Телефон не указан'} · Добавлен: ${escapeHtml(fmtDate(c.createdAt))}</small><div class="customer-base-customer-stats"><span>Посещений всего: <b>${Number(c.visitsTotal||0)}</b></span><span>В этом месяце: <b>${Number(c.visitsThisMonth||0)}</b></span><span>Общая сумма: <b>${money(c.totalSpent||0)}</b></span></div><div class="customer-base-bonus ${c.bonusActive&&Number(c.bonusUsedThisMonth||0)===0?'available':''}"><span>${escapeHtml(bonusHistory+bonusStatus)}</span>${bonusControl}</div>${c.note?`<div class="customer-base-entry-note">${escapeHtml(c.note)}</div>`:''}${canEditBase?`<div class="customer-base-entry-actions"><button type="button" data-edit-base-customer="${escapeHtml(c.id)}">✎ Изменить</button></div>`:''}</div></article>`;
- }).join(''):(customerBaseTab==='bonuses'?'<div class="customer-base-empty">Бонус алгандар азырынча жок.<br>Бонус алган кардарлар бул жерде өзүнчө көрсөтүлөт.</div>':'<div class="customer-base-empty">Клиентов не найдено.<br>Заполните форму выше, чтобы зарегистрировать первого клиента.</div>');
+ }).join(''):(customerBaseTab==='bonuses'?'<div class="customer-base-empty">Пока нет клиентов, получивших бонус.<br>Клиенты, использовавшие бонус, будут отображаться здесь отдельно.</div>':'<div class="customer-base-empty">Клиентов не найдено.<br>Заполните форму выше, чтобы зарегистрировать первого клиента.</div>');
  $$('[data-edit-base-customer]').forEach(b=>b.onclick=()=>editCustomerBaseEntry(b.dataset.editBaseCustomer));
  $$('[data-customer-bonus]').forEach(b=>b.onclick=()=>setCustomerBonus(b.dataset.customerBonus,b.dataset.bonusStatus,b));
 }
@@ -2009,7 +2009,7 @@ function bindVisitCustomerLink(c){
 function renderVisitCustomerMatches(){
  const root=$('#visitCustomerMatches');if(!root)return;
  const q=String($('#visitCustomerSearch')?.value||'').trim().toLocaleLowerCase('ru-RU');
- if(q.length<2){root.innerHTML='<div class="visit-customer-hint">Аты-жөнүн же телефонун жазып издеңиз.</div>';return}
+ if(q.length<2){root.innerHTML='<div class="visit-customer-hint">Введите имя или номер телефона для поиска.</div>';return}
  const matches=customerBaseEntries.filter(c=>[c.name,c.phone].some(v=>String(v||'').toLocaleLowerCase('ru-RU').includes(q))).slice(0,8);
  root.innerHTML=matches.length?matches.map(c=>`<button type="button" class="visit-customer-result" data-link-visit-customer="${escapeHtml(c.id)}"><span><b>${escapeHtml(c.name)}</b><small>${escapeHtml(c.phone||'Телефон не указан')} · Посещений в этом месяце: ${Number(c.visitsThisMonth||0)}</small></span><strong>Привязать →</strong></button>`).join(''):'<div class="visit-customer-hint">Клиент не найден в базе.</div><button type="button" class="visit-register-customer" id="registerVisitCustomer">＋ Зарегистрировать клиента</button>';
  $$('[data-link-visit-customer]').forEach(b=>b.onclick=()=>attachCustomerToVisit(b.dataset.linkVisitCustomer));
@@ -2079,7 +2079,7 @@ function renderAddProductCategories(){
 function renderAddProductGrid(){
  const root=$('#addProductGrid');if(!root)return;
  const list=db.products.filter(p=>addProductCategory==='Все'||productPickerCategory(p)===addProductCategory);
- if(!list.length){root.innerHTML='<div class="add-products-empty">Бул категорияда азырынча товар жок.<br>Администратор «Добавить товар» аркылуу кошо алат.</div>';return}
+ if(!list.length){root.innerHTML='<div class="add-products-empty">В этой категории пока нет товаров.<br>Администратор может добавить товары через кнопку «Добавить товар».</div>';return}
  root.innerHTML=list.map(p=>`<article class="add-product-tile">
   <button type="button" class="add-product" data-product="${Number(p.id)}"><img src="${escapeHtml(p.img||'./assets/par-ordo-logo.png')}" alt="" onerror="this.src='./assets/par-ordo-logo.png'"><span><b>${escapeHtml(p.name)}</b><small>${p.price==null?'Цена не указана':money(p.price)} · в наличии ${Number(p.available??p.stock??0)} шт.</small></span></button>
   ${['admin','staff'].includes(currentRole())?`<div class="product-edit-actions"><button type="button" data-edit-catalog-name="${Number(p.id)}">✎ Название</button><button type="button" data-edit-catalog-price="${Number(p.id)}">✎ Цена</button></div>`:''}
