@@ -1444,12 +1444,34 @@ body.manager-portal .bottom-nav{display:none!important}
 @media(min-width:850px){#expensesView .expense-layout{grid-template-columns:minmax(320px,.85fr) minmax(0,1.15fr);align-items:start}.expense-summary-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:390px){.customer-bonus-control{padding:7px 8px;font-size:9px}.expense-form-card,.expense-summary-card{padding:11px}.expense-summary-tile{padding:9px}.expense-summary-tile strong{font-size:17px}}
 </style>
+<style id="manager-profit-v67">
+.manager-profit-title{margin-top:22px}
+.manager-profit-panel{display:block;width:100%;min-width:0;padding:13px;border:1px solid #8b612d;border-radius:20px;background:radial-gradient(ellipse at 100% 0,#56391335,transparent 45%),linear-gradient(145deg,#1b1108,#0b0705);box-shadow:0 12px 32px #0005}
+.manager-profit-head{display:flex;flex-direction:column;gap:10px;padding:2px 1px 12px;border-bottom:1px solid #3f2b19}
+.manager-profit-head p{margin:0;color:#d2bd99;font-size:11px;line-height:1.55}
+.manager-profit-head label{display:grid;gap:5px;color:#ffdf91;font-size:10px;font-weight:950;text-transform:uppercase;letter-spacing:.04em}
+.manager-profit-head input{width:100%;min-height:42px;padding:9px 11px;border:1px solid #765328;border-radius:10px;background:#fff8e9;color:#211509;font:inherit;font-size:13px;font-weight:800}
+.manager-profit-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:11px}
+.manager-profit-metric{min-width:0;min-height:91px;padding:11px 10px;border:1px solid #4d351f;border-radius:13px;background:linear-gradient(145deg,#170f08,#0b0705)}
+.manager-profit-metric small{display:block;color:#cdb48e;font-size:9px;font-weight:850;line-height:1.4;overflow-wrap:anywhere}
+.manager-profit-metric strong{display:block;margin-top:8px;color:#ffdc81;font-size:clamp(16px,4.2vw,22px);font-weight:950;line-height:1.15;overflow-wrap:anywhere}
+.manager-profit-metric.green strong{color:#75efab}.manager-profit-metric.blue strong{color:#8bbaff}.manager-profit-metric.red strong{color:#ffad9c}.manager-profit-metric.highlight{border-color:#a77935;background:linear-gradient(145deg,#30200b,#110a05);box-shadow:inset 0 1px 0 #ffdd8e0d}
+.manager-profit-entry-split{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:8px}
+.manager-profit-entry-split span{display:flex;justify-content:space-between;gap:6px;padding:8px 9px;border:1px solid #392719;border-radius:10px;background:#0d0805;color:#cbb38f;font-size:10px}
+.manager-profit-entry-split b{color:#fff0cb;white-space:nowrap}
+.manager-profit-details{margin-top:9px;padding:10px;border:1px solid #604321;border-radius:12px;background:#100904;color:#cdb793;font-size:10px;line-height:1.55;overflow-wrap:anywhere}
+.manager-profit-details strong{color:#ffdb86}.manager-profit-details.warning{border-color:#8c642d;background:#211505;color:#f0d8a8}.manager-profit-details.error{border-color:#78382f;background:#200d09;color:#ffd0c7}
+.manager-profit-missing-list{margin:6px 0 0;padding-left:17px}.manager-profit-missing-list li{margin:3px 0}
+@media(min-width:620px){.manager-profit-panel{padding:17px}.manager-profit-head{flex-direction:row;align-items:center;justify-content:space-between}.manager-profit-head p{max-width:650px}.manager-profit-head label{width:190px;flex:0 0 190px}.manager-profit-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.manager-profit-metric{min-height:105px;padding:13px}.manager-profit-metric small{font-size:10px}.manager-profit-metric strong{font-size:clamp(18px,2vw,25px)}}
+@media(min-width:1100px){.manager-profit-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.manager-profit-metric{min-height:112px}}
+@media(max-width:390px){.manager-profit-panel{padding:10px}.manager-profit-grid{gap:6px}.manager-profit-metric{min-height:84px;padding:9px 8px}.manager-profit-metric small{font-size:8px}.manager-profit-metric strong{font-size:16px}.manager-profit-entry-split span{font-size:9px;padding:7px}}
+</style>
 </head>
 <body>
 <div id="loginView" class="login-view">
  <form id="loginForm" class="login-card">
   <img class="login-logo" src="./assets/par-ordo-logo.png" alt="ПАР ОРДО" onerror="this.style.display='none'">
-  <div class="eyebrow">ПАР ОРДО · CONTROL V86</div>
+  <div class="eyebrow">ПАР ОРДО · CONTROL V88</div>
   <h1>Управление баней</h1><p>Номера · клиенты · покупки · касса · отчёты</p>
   <input id="loginUser" autocomplete="username" placeholder="Логин администратора" required>
   <input id="loginPass" type="password" autocomplete="current-password" placeholder="Пароль" required>
@@ -1461,7 +1483,7 @@ body.manager-portal .bottom-nav{display:none!important}
 <div id="appView" class="hidden">
  <header class="header">
   <button id="menuButton" class="icon-btn" aria-label="Меню">☰</button>
-  <div class="brand"><img src="./assets/par-ordo-logo.png" alt="" onerror="this.style.display='none'"><div><b>ПАР ОРДО</b><small>CONTROL · V87</small></div></div>
+  <div class="brand"><img src="./assets/par-ordo-logo.png" alt="" onerror="this.style.display='none'"><div><b>ПАР ОРДО</b><small>CONTROL · V88</small></div></div>
   <button id="headerReport" class="icon-btn" aria-label="Отчёт">▥</button>
  </header>
  <main>
@@ -1484,6 +1506,12 @@ body.manager-portal .bottom-nav{display:none!important}
    </div>
    <div class="manager-section-title"><div class="eyebrow">ТОП ПРОДАЖ</div><h2>Популярные товары</h2></div>
    <div id="managerTopProducts" class="manager-top-products"><div class="manager-empty">Загружаем статистику продаж…</div></div>
+   <div class="manager-section-title manager-profit-title"><div class="eyebrow">ФИНАНСОВЫЙ РЕЗУЛЬТАТ</div><h2>Прибыль</h2></div>
+   <section id="managerProfitPanel" class="manager-profit-panel" aria-label="Расчёт прибыли за месяц">
+    <div class="manager-profit-head"><p>Доход от входов + продажи товаров − закупочная стоимость − расходы.</p><label for="profitMonth">Месяц расчёта<input id="profitMonth" type="month" autocomplete="off"></label></div>
+    <div id="managerProfitContent" class="manager-profit-grid"><div class="manager-empty">Загружаем расчёт прибыли…</div></div>
+    <div id="managerProfitDetails" class="manager-profit-details"></div>
+   </section>
   </section>
   <section id="homeView" class="view active">
    <div class="hero"><div><div class="eyebrow">УПРАВЛЕНИЕ СЕГОДНЯ</div><h1>Номера и клиенты</h1><p>Быстро выдавайте браслет, добавляйте покупки и отмечайте оплату.</p></div><div class="live-badge"><strong id="activeCount">0</strong><span>активных</span></div></div>
@@ -1811,19 +1839,51 @@ function syncManagerPortalChrome(){
  const btn=$('#headerReport');if(btn){btn.textContent=active?'♙':'▥';btn.setAttribute('aria-label',active?'Панель руководителя':'Отчёт')}
  const who=$('#managerDashboardUser');if(who)who.textContent=(sessionStorage.getItem(USER_KEY)||'admin').toUpperCase();
 }
+function renderManagerProfit(data){
+ const root=$('#managerProfitContent'),details=$('#managerProfitDetails');if(!root||!details)return;
+ const s=data?.summary;
+ if(!s){root.innerHTML='<div class="manager-empty">Не удалось загрузить расчёт прибыли. Проверьте Worker API и доступ к финансовым данным.</div>';details.className='manager-profit-details error';details.textContent='Данные прибыли недоступны. Обновите Worker API из пакета и повторите попытку.';return}
+ const item=(label,value,cls='')=>`<div class="manager-profit-metric ${cls}"><small>${label}</small><strong>${value}</strong></div>`;
+ const costComplete=Boolean(s.costComplete);
+ root.innerHTML=[
+  item('Доход от входов',money(s.entryRevenue||0),'green'),
+  item('Выручка от товаров',money(s.productRevenue||0),'blue'),
+  item('Закупочная стоимость проданных товаров',costComplete?money(s.productCost||0):'Не указана',''),
+  item('Прибыль от товаров',costComplete?money(s.productGrossProfit||0):'Не рассчитана',costComplete?'green':'red'),
+  item('Расходы за месяц',money(s.expenses||0),'red'),
+  item('Прибыль после расходов',costComplete?money(s.netProfit||0):'Не рассчитана',costComplete?'highlight green':'red')
+ ].join('')+`<div class="manager-profit-entry-split" style="grid-column:1/-1"><span>Взрослый вход <b>${money(s.adultEntryRevenue||0)}</b></span><span>Детский вход <b>${money(s.childEntryRevenue||0)}</b></span></div>`;
+ if(Number(s.missingCostQty||0)>0){
+  const missing=Array.isArray(s.missingCostProducts)?s.missingCostProducts:[];
+  details.className='manager-profit-details warning';
+  details.innerHTML=`<strong>Нужно указать закупочную цену.</strong> У ${Number(s.missingCostQty)} проданных шт. нет известной себестоимости. Итоговая прибыль пока не показывается, чтобы не завысить результат.${missing.length?`<ul class="manager-profit-missing-list">${missing.map(p=>`<li>${escapeHtml(p.name)} — ${Number(p.qty)} шт.</li>`).join('')}</ul>`:''}<div style="margin-top:6px">Откройте «Товары и склад» под учётной записью администратора и нажмите «Закупочная цена» у каждого товара.</div>`;
+ }else{
+  details.className='manager-profit-details';
+  details.innerHTML=`Период: <strong>${escapeHtml(s.month||data.month||'')}</strong>. Учитываются только оплаченные входы и товары (наличные/перевод), минус закупочная стоимость и записанные расходы. Бонусный вход стоимостью 0 сом не считается доходом. Себестоимость рассчитывается по сохранённой закупочной цене товара.`;
+ }
+}
 async function loadManagerDashboard(){
- const metrics=$('#managerKpis'),top=$('#managerTopProducts');
+ const metrics=$('#managerKpis'),top=$('#managerTopProducts'),monthInput=$('#profitMonth');
+ if(monthInput&&!monthInput.value)monthInput.value=localISODate().slice(0,7);
+ const month=monthInput?.value||localISODate().slice(0,7);
  if(metrics)metrics.innerHTML='<div class="manager-kpi"><small>Клиентов в базе</small><strong>Загрузка…</strong></div><div class="manager-kpi"><small>Посещений всего</small><strong>Загрузка…</strong></div><div class="manager-kpi green"><small>Потрачено клиентами</small><strong>Загрузка…</strong></div><div class="manager-kpi blue"><small>Расходы за месяц</small><strong>Загрузка…</strong></div>';
  if(top)top.innerHTML='<div class="manager-empty">Загружаем статистику продаж…</div>';
- const [customers,expenses,analytics]=await Promise.allSettled([
-  api('/api/admin/control/customer-base'),api('/api/admin/control/expenses'),api('/api/admin/control/analytics')
+ const profitContent=$('#managerProfitContent'),profitDetails=$('#managerProfitDetails');
+ if(profitContent)profitContent.innerHTML='<div class="manager-empty">Рассчитываем входы, продажи, закупочную стоимость и расходы…</div>';
+ if(profitDetails)profitDetails.textContent='';
+ const [customers,expenses,analytics,profit]=await Promise.allSettled([
+  api('/api/admin/control/customer-base'),
+  api(`/api/admin/control/expenses?month=${encodeURIComponent(month)}`),
+  api('/api/admin/control/analytics'),
+  api(`/api/admin/control/profit?month=${encodeURIComponent(month)}`)
  ]);
  const c=customers.status==='fulfilled'?customers.value:null,e=expenses.status==='fulfilled'?expenses.value:null,a=analytics.status==='fulfilled'?analytics.value:null;
  const cs=c?.summary||{},es=e?.summary||{};
  if(metrics)metrics.innerHTML=`<div class="manager-kpi"><small>Клиентов в базе</small><strong>${Number(cs.customers??(Array.isArray(c?.customers)?c.customers.length:0))}</strong></div><div class="manager-kpi"><small>Посещений всего</small><strong>${Number(cs.completedVisits||0)}</strong></div><div class="manager-kpi green"><small>Потрачено клиентами</small><strong>${money(cs.customerRevenue||0)}</strong></div><div class="manager-kpi blue"><small>Расходы за месяц</small><strong>${money(es.monthTotal||0)}</strong></div>`;
  const ps=Array.isArray(a?.products)?a.products:[];
  if(top)top.innerHTML=ps.length?ps.slice(0,6).map((p,i)=>`<article class="manager-top-product"><span class="manager-top-rank">${Number(p.rank)||i+1}</span><span class="manager-top-copy"><strong>${escapeHtml(p.name||'Товар')}</strong><small>${escapeHtml(p.category||'Товар')} · Выручка ${money(p.revenue||0)}</small></span><span class="manager-top-sold">${Number(p.soldQty||0)} шт.</span></article>`).join(''):'<div class="manager-empty">Рейтинг пока пуст или не удалось загрузить данные статистики товаров.</div>';
- const failures=[customers,expenses,analytics].filter(x=>x.status==='rejected');
+ if(profit.status==='fulfilled')renderManagerProfit(profit.value);else renderManagerProfit(null);
+ const failures=[customers,expenses,analytics,profit].filter(x=>x.status==='rejected');
  if(failures.length)toast('Панель открыта. Часть статистики недоступна — проверьте API и права доступа.');
  syncManagerPortalChrome();
 }
@@ -1876,7 +1936,7 @@ async function migrateLegacyPendingStock(){
  if(missed)toast(`Внимание: ${missed} позиций старых клиентов не удалось списать со склада. Проверьте остатки.`);
 }
 async function loadProducts(){
- try{const d=await api('/api/products');db.products=d.products||[];saveLocal()}
+ try{const d=currentRole()==='admin'&&token()?await api('/api/admin/products/catalog'):await api('/api/products');db.products=d.products||[];saveLocal()}
  catch(e){toast('Не удалось загрузить товары: '+e.message)}
 }
 function navigate(view){
@@ -2082,7 +2142,7 @@ function renderAddProductGrid(){
  if(!list.length){root.innerHTML='<div class="add-products-empty">В этой категории пока нет товаров.<br>Администратор может добавить товары через кнопку «Добавить товар».</div>';return}
  root.innerHTML=list.map(p=>`<article class="add-product-tile">
   <button type="button" class="add-product" data-product="${Number(p.id)}"><img src="${escapeHtml(p.img||'./assets/par-ordo-logo.png')}" alt="" onerror="this.src='./assets/par-ordo-logo.png'"><span><b>${escapeHtml(p.name)}</b><small>${p.price==null?'Цена не указана':money(p.price)} · в наличии ${Number(p.available??p.stock??0)} шт.</small></span></button>
-  ${['admin','staff'].includes(currentRole())?`<div class="product-edit-actions"><button type="button" data-edit-catalog-name="${Number(p.id)}">✎ Название</button><button type="button" data-edit-catalog-price="${Number(p.id)}">✎ Цена</button></div>`:''}
+  ${['admin','staff'].includes(currentRole())?`<div class="product-edit-actions"><button type="button" data-edit-catalog-name="${Number(p.id)}">✎ Название</button><button type="button" data-edit-catalog-price="${Number(p.id)}">✎ Цена продажи</button>${currentRole()==='admin'?`<button type="button" data-edit-catalog-cost="${Number(p.id)}">✎ Закупочная цена</button>`:''}</div>`:''}
  </article>`).join('');
  $$('[data-product]').forEach(b=>b.onclick=async()=>{
   const p=db.products.find(x=>Number(x.id)===Number(b.dataset.product));if(!p)return;
@@ -2092,10 +2152,21 @@ function renderAddProductGrid(){
  });
  $$('[data-edit-catalog-name]').forEach(b=>b.onclick=()=>editCatalogProduct(Number(b.dataset.editCatalogName),'name'));
  $$('[data-edit-catalog-price]').forEach(b=>b.onclick=()=>editCatalogProduct(Number(b.dataset.editCatalogPrice),'price'));
+ $$('[data-edit-catalog-cost]').forEach(b=>b.onclick=()=>editCatalogProduct(Number(b.dataset.editCatalogCost),'costPrice'));
 }
 async function editCatalogProduct(id,field){
  if(!['admin','staff'].includes(currentRole())){toast('Недостаточно прав для изменения товара.');return}
  const p=db.products.find(x=>Number(x.id)===Number(id));if(!p)return;
+ if(field==='costPrice'){
+  if(currentRole()!=='admin'){toast('Закупочную цену может менять только администратор.');return}
+  const raw=prompt(`Закупочная цена товара «${p.name}» (сом):`,p.costPrice==null?'':String(p.costPrice));if(raw===null)return;
+  const clean=raw.trim(),costPrice=clean===''?null:Number(clean);
+  if(costPrice!==null&&(!Number.isInteger(costPrice)||costPrice<0)){toast('Введите целую закупочную цену от 0 сом или оставьте поле пустым');return}
+  const old=p.costPrice;
+  try{await api(`/api/admin/products/${id}`,{method:'PATCH',body:JSON.stringify({costPrice})});p.costPrice=costPrice;saveLocal();renderAddProductGrid();renderInventory();toast(costPrice===null?'Закупочная цена очищена':'Закупочная цена сохранена ✅')}
+  catch(e){p.costPrice=old;toast('Не удалось изменить закупочную цену: '+e.message)}
+  return;
+ }
  if(field==='name'){
   const raw=prompt('Новое название товара:',String(p.name||''));if(raw===null)return;
   const name=cleanCatalogDisplayName(raw);if(!name){toast('Название товара не может быть пустым');return}
@@ -2125,7 +2196,8 @@ async function openAdd(clientId){
  <div class="new-product-form" id="newProductForm" hidden>
   <label>Название товара<input id="newProductName" type="text" maxlength="120" placeholder="Например, Мочалка" autocomplete="off" required></label>
   <label>Категория<select id="newProductCategory" required>${ADD_PRODUCT_CATEGORIES.filter(x=>x!=='Все').map(cat=>`<option value="${cat}">${cat}</option>`).join('')}</select></label>
-  <label>Цена, сом<input id="newProductPrice" type="number" min="0" step="1" inputmode="numeric" placeholder="Введите цену" required></label>
+  <label>Цена продажи, сом<input id="newProductPrice" type="number" min="0" step="1" inputmode="numeric" placeholder="Введите цену продажи" required></label>
+  ${currentRole()==='admin'?`<label>Закупочная цена, сом<input id="newProductCostPrice" type="number" min="0" step="1" inputmode="numeric" placeholder="Сколько стоит закупка (необязательно)"></label>`:''}
   <div class="new-product-form-actions"><button type="button" class="new-product-save" id="saveNewProduct">Сохранить товар</button><button type="button" class="new-product-cancel" id="cancelNewProduct">Отмена</button></div>
  </div></div>`:''}
  <div class="history-meta" style="padding-bottom:2px">Выберите категорию товара</div><div class="category-filters" id="addCategoryTabs"></div>
@@ -2141,24 +2213,27 @@ async function openAdd(clientId){
  renderAddProductCategories();renderAddProductGrid();
  const toggle=$('#toggleNewProductForm'),form=$('#newProductForm'),cancel=$('#cancelNewProduct'),save=$('#saveNewProduct');
  if(toggle&&form)toggle.onclick=()=>{form.hidden=!form.hidden;if(!form.hidden){form.scrollIntoView({behavior:'smooth',block:'nearest'});$('#newProductName')?.focus()}};
- if(cancel&&form)cancel.onclick=()=>{form.hidden=true;$('#newProductName').value='';$('#newProductPrice').value=''};
+ if(cancel&&form)cancel.onclick=()=>{form.hidden=true;$('#newProductName').value='';$('#newProductPrice').value='';if($('#newProductCostPrice'))$('#newProductCostPrice').value=''};
  if(save)save.onclick=createCatalogProduct;
 }
 async function createCatalogProduct(){
  if(!['admin','staff'].includes(currentRole())){toast('Добавлять товары может только администратор или сотрудник.');return}
  const name=cleanCatalogDisplayName($('#newProductName')?.value.trim()||''),category=$('#newProductCategory')?.value||'',priceRaw=$('#newProductPrice')?.value.trim()||'';
+ const costRaw=currentRole()==='admin'?($('#newProductCostPrice')?.value.trim()||''):'';
  if(!name){toast('Введите название товара');$('#newProductName')?.focus();return}
  if(name.length>120){toast('Название должно быть не длиннее 120 символов');return}
- const price=Number(priceRaw);
- if(priceRaw===''||!Number.isInteger(price)||price<0){toast('Введите корректную цену — целое число от 0 сом');$('#newProductPrice')?.focus();return}
+ const price=Number(priceRaw),costPrice=costRaw===''?null:Number(costRaw);
+ if(priceRaw===''||!Number.isInteger(price)||price<0){toast('Введите корректную цену продажи — целое число от 0 сом');$('#newProductPrice')?.focus();return}
+ if(costRaw!==''&&(!Number.isInteger(costPrice)||costPrice<0)){toast('Введите корректную закупочную цену или оставьте поле пустым');$('#newProductCostPrice')?.focus();return}
  const button=$('#saveNewProduct');if(button){button.disabled=true;button.textContent='Сохраняем…'}
  try{
-  const result=await api('/api/admin/products',{method:'POST',body:JSON.stringify({name,category,price})});
+  const payload={name,category,price};if(currentRole()==='admin')payload.costPrice=costPrice;
+  const result=await api('/api/admin/products',{method:'POST',body:JSON.stringify(payload)});
   if(result?.product){db.products.push(result.product);db.products.sort((a,b)=>Number(a.id)-Number(b.id));saveLocal()}
   else await loadProducts();
   addProductCategory=category;renderAddProductCategories();renderAddProductGrid();renderInventory();
   const form=$('#newProductForm');if(form)form.hidden=true;
-  $('#newProductName').value='';$('#newProductPrice').value='';
+  $('#newProductName').value='';$('#newProductPrice').value='';if($('#newProductCostPrice'))$('#newProductCostPrice').value='';
   toast(`Товар «${name}» добавлен в категорию «${category}» ✅`);
  }catch(e){toast('Не удалось добавить товар: '+e.message)}
  finally{if(button){button.disabled=false;button.textContent='Сохранить товар'}}
@@ -2271,7 +2346,8 @@ async function renderInventory(){
       <strong>+${inc} шт.</strong>
     </div>
   </div>
-  ${currentRole()==='admin'?`<button type="button" class="stock-edit-link" data-stock-edit="${p.id}">✎ Изменить остаток</button>
+  ${currentRole()==='admin'?`<button type="button" class="stock-edit-link" data-stock-cost="${p.id}">✎ Закупочная цена: ${p.costPrice==null?'не задана':escapeHtml(money(p.costPrice))}</button>
+  <button type="button" class="stock-edit-link" data-stock-edit="${p.id}">✎ Изменить остаток</button>
   <div class="add-stock">
     <input type="number" min="1" step="1" inputmode="numeric" id="incoming-${p.id}" placeholder="+ шт." aria-label="Количество поступившего товара">
     <button type="button" data-stock-add="${p.id}">＋ Поступление</button>
@@ -2283,6 +2359,7 @@ async function renderInventory(){
  }).join(''):'<div class="empty-state">Товары не загрузились. Нажмите «Обновить».</div>';
  $$('[data-stock-add]').forEach(b=>b.onclick=()=>addStock(Number(b.dataset.stockAdd)));
  $$('[data-stock-edit]').forEach(b=>b.onclick=()=>editStock(Number(b.dataset.stockEdit)));
+ $$('[data-stock-cost]').forEach(b=>b.onclick=()=>editCatalogProduct(Number(b.dataset.stockCost),'costPrice'));
 }
 async function editStock(id){
  const p=db.products.find(x=>Number(x.id)===Number(id));if(!p)return;
@@ -2357,6 +2434,7 @@ $$('[data-drawer-view]').forEach(b=>b.onclick=()=>navigate(b.dataset.drawerView)
 $('#loginForm').addEventListener('submit',loginHandler);
 $('#menuButton').onclick=()=>$('#drawer').classList.add('open');$('#closeDrawer').onclick=()=>$('#drawer').classList.remove('open');
 $('#headerReport').onclick=()=>navigate(managerPortalActive()?'managerView':'reportView');
+$('#profitMonth')?.addEventListener('change',()=>loadManagerDashboard());
 $('#managerExitToControl').onclick=()=>{sessionStorage.removeItem(MANAGER_PORTAL_KEY);syncManagerPortalChrome();navigate('homeView');toast('Управление баней ✅')};
 document.addEventListener('click',async e=>{const b=e.target.closest('[data-manager-open]');if(!b)return;const target=b.dataset.managerOpen;if(target==='customers'){await openCustomerBase();return}if(target==='productStats'){await openCustomerBase();setCustomerBaseTab('products');return}if(['expensesView','reportView','productsView','historyView'].includes(target)){navigate(target);return}});
 $('#logoutButton').onclick=logout;
