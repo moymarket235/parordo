@@ -1040,6 +1040,32 @@ main{width:min(1180px,100%);padding:13px;margin:auto}.view{display:none}.view.ac
  .customer-base-entry-avatar{width:34px;height:34px;flex-basis:34px}
 }
 
+
+/* V64 — a real, separate manager dashboard after successful manager-panel login */
+.manager-view{padding-bottom:18px}
+.manager-hero{position:relative;overflow:hidden;padding:18px;border:1px solid #8e632b;border-radius:23px;background:radial-gradient(ellipse at 100% 0,#61401655,transparent 50%),linear-gradient(145deg,#211407,#0c0805);box-shadow:0 14px 34px #0006}
+.manager-hero h1{font:700 clamp(27px,6vw,36px)/1.08 Georgia,serif;margin:7px 0 8px;color:#fff0d0}
+.manager-hero p{margin:0;color:#cbb38d;font-size:12px;line-height:1.6;max-width:580px}
+.manager-hero-row{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.manager-role-pill{flex:0 0 auto;padding:7px 10px;border:1px solid #8b642d;border-radius:999px;background:#1a1007;color:#ffdc8c;font-size:9px;font-weight:950;letter-spacing:.06em}
+.manager-exit-control{width:100%;min-height:46px;margin-top:14px;border:1px solid #6d512b;border-radius:13px;background:#100a05;color:#f6d694;font-size:11px;font-weight:950}
+.manager-kpis{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:11px 0}
+.manager-kpi{min-width:0;padding:13px 11px;border:1px solid #54391e;border-radius:16px;background:linear-gradient(145deg,#171008,#0c0805)}
+.manager-kpi small{display:block;color:#c9b28e;font-size:9px;font-weight:850;line-height:1.4;letter-spacing:.045em;text-transform:uppercase}
+.manager-kpi strong{display:block;margin-top:7px;color:#ffdc81;font-size:clamp(18px,4.4vw,25px);line-height:1.15;font-weight:950;overflow-wrap:anywhere}
+.manager-kpi.green strong{color:#66ec9e}.manager-kpi.blue strong{color:#7eb5ff}
+.manager-section-title{margin:20px 2px 10px}.manager-section-title .eyebrow{margin-bottom:5px}.manager-section-title h2{font:700 22px Georgia,serif;margin:0;color:#fff0d0}
+.manager-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.manager-action{display:flex;align-items:center;gap:10px;min-height:82px;text-align:left;padding:12px;border:1px solid #634522;border-radius:16px;background:linear-gradient(145deg,#1b1007,#0d0805);color:#f9e9cb;box-shadow:inset 0 1px 0 #ffe2a20a}
+.manager-action-icon{flex:0 0 37px;width:37px;height:37px;display:grid;place-items:center;border:1px solid #8f652d;border-radius:12px;background:#211508;color:#ffda83;font-size:18px}
+.manager-action-copy{min-width:0}.manager-action-copy strong{display:block;font-size:11px;font-weight:950;line-height:1.35}.manager-action-copy small{display:block;margin-top:4px;color:#bba382;font-size:9px;line-height:1.4}
+.manager-top-products{display:grid;gap:7px}.manager-top-product{display:grid;grid-template-columns:33px minmax(0,1fr) auto;align-items:center;gap:9px;padding:10px;border:1px solid #473019;border-radius:13px;background:#100904}.manager-top-rank{width:30px;height:30px;display:grid;place-items:center;border:1px solid #8b6227;border-radius:9px;background:#201406;color:#ffd978;font-weight:950;font-size:12px}.manager-top-copy{min-width:0}.manager-top-copy strong{display:block;color:#fff0d1;font-size:11px;font-weight:900;line-height:1.35;overflow-wrap:anywhere}.manager-top-copy small{display:block;color:#bda681;font-size:9px;margin-top:3px}.manager-top-sold{color:#ffdc81;font-size:10px;font-weight:950;white-space:nowrap}
+.manager-empty{padding:14px;border:1px dashed #573c20;border-radius:13px;color:#bda681;font-size:10px;line-height:1.5}
+body.manager-portal #headerReport{border-color:#916629;color:#ffdb83}
+body.manager-portal .bottom-nav{display:none!important}
+@media(min-width:760px){.manager-kpis{grid-template-columns:repeat(4,minmax(0,1fr))}.manager-actions{grid-template-columns:repeat(3,minmax(0,1fr))}.manager-hero{padding:23px}.manager-hero-row{align-items:center}.manager-exit-control{width:auto;min-width:245px}.manager-top-products{grid-template-columns:repeat(2,minmax(0,1fr))}.manager-section-title h2{font-size:25px}}
+@media(max-width:390px){.manager-hero{padding:14px}.manager-kpi{padding:10px 9px}.manager-action{padding:9px;gap:7px;min-height:76px}.manager-action-icon{width:32px;height:32px;flex-basis:32px;font-size:15px}.manager-action-copy strong{font-size:10px}.manager-role-pill{font-size:8px;padding:6px 7px}}
+
 </style>
 <style>/* V82.1 — password visibility control, added without altering panel logic */
 .password-field-wrap{position:relative;display:block;width:100%;min-width:0;box-sizing:border-box}
@@ -1423,7 +1449,7 @@ main{width:min(1180px,100%);padding:13px;margin:auto}.view{display:none}.view.ac
 <div id="loginView" class="login-view">
  <form id="loginForm" class="login-card">
   <img class="login-logo" src="./assets/par-ordo-logo.png" alt="ПАР ОРДО" onerror="this.style.display='none'">
-  <div class="eyebrow">ПАР ОРДО · CONTROL V83</div>
+  <div class="eyebrow">ПАР ОРДО · CONTROL V85</div>
   <h1>Управление баней</h1><p>Номера · клиенты · покупки · касса · отчёты</p>
   <input id="loginUser" autocomplete="username" placeholder="Логин администратора" required>
   <input id="loginPass" type="password" autocomplete="current-password" placeholder="Пароль" required>
@@ -1435,10 +1461,30 @@ main{width:min(1180px,100%);padding:13px;margin:auto}.view{display:none}.view.ac
 <div id="appView" class="hidden">
  <header class="header">
   <button id="menuButton" class="icon-btn" aria-label="Меню">☰</button>
-  <div class="brand"><img src="./assets/par-ordo-logo.png" alt="" onerror="this.style.display='none'"><div><b>ПАР ОРДО</b><small>CONTROL · V84</small></div></div>
+  <div class="brand"><img src="./assets/par-ordo-logo.png" alt="" onerror="this.style.display='none'"><div><b>ПАР ОРДО</b><small>CONTROL · V85</small></div></div>
   <button id="headerReport" class="icon-btn" aria-label="Отчёт">▥</button>
  </header>
  <main>
+  <section id="managerView" class="view manager-view">
+   <div class="manager-hero">
+    <div class="manager-hero-row"><div><div class="eyebrow">ПАР ОРДО · ОБЩИЙ КОНТРОЛЬ</div><h1>Руководитель панели</h1><p>Общая статистика, клиентская база, бонусы, расходы и продажи в одном месте.</p></div><span class="manager-role-pill">ДОСТУП: <span id="managerDashboardUser">ADMIN</span></span></div>
+    <button id="managerExitToControl" class="manager-exit-control" type="button">← Вернуться в «Управление баней»</button>
+   </div>
+   <div class="manager-kpis" id="managerKpis">
+    <div class="manager-kpi"><small>Клиентов в базе</small><strong>—</strong></div><div class="manager-kpi"><small>Посещений всего</small><strong>—</strong></div><div class="manager-kpi green"><small>Потрачено клиентами</small><strong>—</strong></div><div class="manager-kpi blue"><small>Расходы за месяц</small><strong>—</strong></div>
+   </div>
+   <div class="manager-section-title"><div class="eyebrow">БЫСТРЫЙ ДОСТУП</div><h2>Управление и отчёты</h2></div>
+   <div class="manager-actions">
+    <button type="button" class="manager-action" data-manager-open="customers"><span class="manager-action-icon">♙</span><span class="manager-action-copy"><strong>База клиентов</strong><small>Поиск, история посещений и бонусы</small></span></button>
+    <button type="button" class="manager-action" data-manager-open="productStats"><span class="manager-action-icon">↗</span><span class="manager-action-copy"><strong>Статистика товаров</strong><small>Рейтинг продаж: 1, 2, 3…</small></span></button>
+    <button type="button" class="manager-action" data-manager-open="expensesView"><span class="manager-action-icon">₸</span><span class="manager-action-copy"><strong>Расходы бани</strong><small>Затраты за день и месяц</small></span></button>
+    <button type="button" class="manager-action" data-manager-open="reportView"><span class="manager-action-icon">▥</span><span class="manager-action-copy"><strong>Касса и отчёты</strong><small>Итоги смены и оплата</small></span></button>
+    <button type="button" class="manager-action" data-manager-open="productsView"><span class="manager-action-icon">▦</span><span class="manager-action-copy"><strong>Товары и склад</strong><small>Наличие и поступления</small></span></button>
+    <button type="button" class="manager-action" data-manager-open="historyView"><span class="manager-action-icon">◷</span><span class="manager-action-copy"><strong>История клиентов</strong><small>Завершённые посещения</small></span></button>
+   </div>
+   <div class="manager-section-title"><div class="eyebrow">ТОП ПРОДАЖ</div><h2>Популярные товары</h2></div>
+   <div id="managerTopProducts" class="manager-top-products"><div class="manager-empty">Загружаем статистику продаж…</div></div>
+  </section>
   <section id="homeView" class="view active">
    <div class="hero"><div><div class="eyebrow">УПРАВЛЕНИЕ СЕГОДНЯ</div><h1>Номера и клиенты</h1><p>Быстро выдавайте браслет, добавляйте покупки и отмечайте оплату.</p></div><div class="live-badge"><strong id="activeCount">0</strong><span>активных</span></div></div>
    <div id="shiftControl" class="shift-control-slot" aria-live="polite"></div>
@@ -1596,7 +1642,7 @@ async function loginHandler(event){
  $('#loginError').textContent='';busy=true;$('#loginButton').disabled=true;
  try{
   const d=await api('/api/admin/login',{method:'POST',body:JSON.stringify({username,password})});
-  sessionStorage.setItem(TOKEN_KEY,d.token);sessionStorage.setItem(USER_KEY,username);sessionStorage.setItem(ROLE_KEY,d.role||'admin');
+  sessionStorage.setItem(TOKEN_KEY,d.token);sessionStorage.setItem(USER_KEY,username);sessionStorage.setItem(ROLE_KEY,d.role||'admin');sessionStorage.removeItem(MANAGER_PORTAL_KEY);syncManagerPortalChrome();
   $('#loggedUser').textContent=`${username} · доступ персонала`;showApp();await bootApp();
  }catch(e){$('#loginError').textContent=e.message}
  finally{busy=false;$('#loginButton').disabled=false}
@@ -1757,6 +1803,30 @@ function initExpensesView(){
  loadExpenses();
 }
 
+const MANAGER_PORTAL_KEY='parordo_manager_portal_active';
+function managerPortalActive(){return sessionStorage.getItem(MANAGER_PORTAL_KEY)==='1'}
+function syncManagerPortalChrome(){
+ const active=managerPortalActive();document.body.classList.toggle('manager-portal',active);
+ const btn=$('#headerReport');if(btn){btn.textContent=active?'♙':'▥';btn.setAttribute('aria-label',active?'Панель руководителя':'Отчёт')}
+ const who=$('#managerDashboardUser');if(who)who.textContent=(sessionStorage.getItem(USER_KEY)||'admin').toUpperCase();
+}
+async function loadManagerDashboard(){
+ const metrics=$('#managerKpis'),top=$('#managerTopProducts');
+ if(metrics)metrics.innerHTML='<div class="manager-kpi"><small>Клиентов в базе</small><strong>Загрузка…</strong></div><div class="manager-kpi"><small>Посещений всего</small><strong>Загрузка…</strong></div><div class="manager-kpi green"><small>Потрачено клиентами</small><strong>Загрузка…</strong></div><div class="manager-kpi blue"><small>Расходы за месяц</small><strong>Загрузка…</strong></div>';
+ if(top)top.innerHTML='<div class="manager-empty">Загружаем статистику продаж…</div>';
+ const [customers,expenses,analytics]=await Promise.allSettled([
+  api('/api/admin/control/customer-base'),api('/api/admin/control/expenses'),api('/api/admin/control/analytics')
+ ]);
+ const c=customers.status==='fulfilled'?customers.value:null,e=expenses.status==='fulfilled'?expenses.value:null,a=analytics.status==='fulfilled'?analytics.value:null;
+ const cs=c?.summary||{},es=e?.summary||{};
+ if(metrics)metrics.innerHTML=`<div class="manager-kpi"><small>Клиентов в базе</small><strong>${Number(cs.customers??(Array.isArray(c?.customers)?c.customers.length:0))}</strong></div><div class="manager-kpi"><small>Посещений всего</small><strong>${Number(cs.completedVisits||0)}</strong></div><div class="manager-kpi green"><small>Потрачено клиентами</small><strong>${money(cs.customerRevenue||0)}</strong></div><div class="manager-kpi blue"><small>Расходы за месяц</small><strong>${money(es.monthTotal||0)}</strong></div>`;
+ const ps=Array.isArray(a?.products)?a.products:[];
+ if(top)top.innerHTML=ps.length?ps.slice(0,6).map((p,i)=>`<article class="manager-top-product"><span class="manager-top-rank">${Number(p.rank)||i+1}</span><span class="manager-top-copy"><strong>${escapeHtml(p.name||'Товар')}</strong><small>${escapeHtml(p.category||'Товар')} · Выручка ${money(p.revenue||0)}</small></span><span class="manager-top-sold">${Number(p.soldQty||0)} шт.</span></article>`).join(''):'<div class="manager-empty">Рейтинг пока пуст или не удалось загрузить данные статистики товаров.</div>';
+ const failures=[customers,expenses,analytics].filter(x=>x.status==='rejected');
+ if(failures.length)toast('Панель открыта. Часть статистики недоступна — проверьте API и права доступа.');
+ syncManagerPortalChrome();
+}
+
 async function bootApp(){
  loadLocal();$('#loggedUser').textContent=`${sessionStorage.getItem(USER_KEY)||'admin'} · доступ персонала`;
  await loadProducts();
@@ -1811,8 +1881,9 @@ async function loadProducts(){
 function navigate(view){
  currentView=view;$$('.view').forEach(v=>v.classList.toggle('active',v.id===view));
  $$('.nav-item').forEach(b=>b.classList.toggle('active',b.dataset.view===view));
+ $('.bottom-nav')?.classList.toggle('hidden',view==='managerView');syncManagerPortalChrome();
  $('#drawer').classList.remove('open');
- if(view==='homeView')renderHome();if(view==='productsView')renderInventory();
+ if(view==='managerView')loadManagerDashboard();if(view==='homeView')renderHome();if(view==='productsView')renderInventory();
  if(view==='historyView')renderHistory();if(view==='archiveView')renderArchive();if(view==='reportView')renderReport();if(view==='expensesView')initExpensesView();
  window.scrollTo({top:0,behavior:'smooth'});
 }
@@ -2270,7 +2341,7 @@ function confirmAction(title,description,okLabel,action){
 }
 function logout(){
  const t=token();if(t)fetch(API+'/api/admin/logout',{method:'POST',headers:{Authorization:`Bearer ${t}`}}).catch(()=>{});
- sessionStorage.removeItem(TOKEN_KEY);sessionStorage.removeItem(USER_KEY);sessionStorage.removeItem(ROLE_KEY);showLogin();
+ sessionStorage.removeItem(TOKEN_KEY);sessionStorage.removeItem(USER_KEY);sessionStorage.removeItem(ROLE_KEY);sessionStorage.removeItem(MANAGER_PORTAL_KEY);syncManagerPortalChrome();showLogin();
 }
 document.addEventListener('click',e=>{
  const openShiftBtn=e.target.closest('[data-open-shift]');if(openShiftBtn){e.preventDefault();requestOpenShift();return}
@@ -2284,7 +2355,9 @@ $$('[data-view]').forEach(b=>b.onclick=()=>navigate(b.dataset.view));
 $$('[data-drawer-view]').forEach(b=>b.onclick=()=>navigate(b.dataset.drawerView));
 $('#loginForm').addEventListener('submit',loginHandler);
 $('#menuButton').onclick=()=>$('#drawer').classList.add('open');$('#closeDrawer').onclick=()=>$('#drawer').classList.remove('open');
-$('#headerReport').onclick=()=>navigate('reportView');
+$('#headerReport').onclick=()=>navigate(managerPortalActive()?'managerView':'reportView');
+$('#managerExitToControl').onclick=()=>{sessionStorage.removeItem(MANAGER_PORTAL_KEY);syncManagerPortalChrome();navigate('homeView');toast('Управление баней ✅')};
+document.addEventListener('click',async e=>{const b=e.target.closest('[data-manager-open]');if(!b)return;const target=b.dataset.managerOpen;if(target==='customers'){await openCustomerBase();return}if(target==='productStats'){await openCustomerBase();setCustomerBaseTab('products');return}if(['expensesView','reportView','productsView','historyView'].includes(target)){navigate(target);return}});
 $('#logoutButton').onclick=logout;
 $('#openCustomerBase').onclick=openCustomerBase;
 $('#openManagerLogin').onclick=()=>{ $('#drawer').classList.remove('open');$('#managerLoginError').textContent='';$('#managerLoginPass').value='';openModal('#managerLoginModal');$('#managerLoginUser').focus({preventScroll:true}); };
@@ -2306,7 +2379,7 @@ async function managerPanelLogin(event){
   const grantedRole=String(result.role);
   sessionStorage.setItem(TOKEN_KEY,result.token);sessionStorage.setItem(USER_KEY,username);sessionStorage.setItem(ROLE_KEY,grantedRole);
   closeModal('#managerLoginModal');$('#drawer').classList.remove('open');$('#loggedUser').textContent=grantedRole==='admin'?`${username} · администратор`:`${username} · руководитель`;
-  showApp();await bootApp();navigate('homeView');toast(grantedRole==='admin'?'Вход admin1 выполнен ✅':'Вход руководителя выполнен ✅');
+  sessionStorage.setItem(MANAGER_PORTAL_KEY,'1');showApp();await bootApp();navigate('managerView');toast('Панель руководителя открыта ✅');
  }catch(e){if(error)error.textContent=e.message}
  finally{button.disabled=false}
 }
@@ -2421,7 +2494,10 @@ setInterval(async()=>{
   });
   wrap.appendChild(button);
  }
-})();</script>
+})();
+// V64: initialize manager portal header state after DOM is ready.
+syncManagerPortalChrome();
+</script>
 
 <style id="v60-client-price-edit-and-modal-scroll-fix">
 /* V60: staff and admin can adjust the price on any bracelet line, including a marked payment. */
