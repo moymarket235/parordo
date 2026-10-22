@@ -1507,7 +1507,7 @@ main{width:min(1180px,100%);padding:13px;margin:auto}.view{display:none}.view.ac
 <div id="customerBaseModal" class="modal"><div id="customerBaseModalCard" class="modal-card customer-base-modal"></div></div>
 <div id="addModal" class="modal"><div id="addModalCard" class="modal-card"></div></div>
 <div id="confirmModal" class="modal"><div id="confirmModalCard" class="modal-card"></div></div>
-<div id="managerLoginModal" class="modal"><form id="managerLoginForm" class="modal-card manager-login-card" style="padding:18px"><div class="modal-head"><div><div class="eyebrow">ПАР ОРДО · БЕЗОПАСНЫЙ ВХОД</div><h2>Руководитель панели</h2><div class="history-meta">Введите логин и пароль руководителя</div></div><button class="close" id="closeManagerLogin" type="button">×</button></div><div class="customer-base-form"><div class="customer-base-field"><label for="managerLoginUser">ЛОГИН</label><input id="managerLoginUser" autocomplete="username" value="manager" required></div><div class="customer-base-field"><label for="managerLoginPass">ПАРОЛЬ</label><input id="managerLoginPass" type="password" autocomplete="current-password" required></div><div id="managerLoginError" class="login-error"></div><button id="managerLoginSubmit" class="primary" type="submit">Войти в панель руководителя →</button></div></form></div>
+<div id="managerLoginModal" class="modal"><form id="managerLoginForm" class="modal-card manager-login-card" style="padding:18px"><div class="modal-head"><div><div class="eyebrow">ПАР ОРДО · БЕЗОПАСНЫЙ ВХОД</div><h2>Руководитель панели</h2><div class="history-meta">Введите логин и пароль руководителя</div></div><button class="close" id="closeManagerLogin" type="button">×</button></div><div class="customer-base-form"><div class="customer-base-field"><label for="managerLoginUser">ЛОГИН</label><input id="managerLoginUser" autocomplete="username" value="admin1" required></div><div class="customer-base-field"><label for="managerLoginPass">ПАРОЛЬ</label><input id="managerLoginPass" type="password" autocomplete="current-password" required></div><div id="managerLoginError" class="login-error"></div><button id="managerLoginSubmit" class="primary" type="submit">Войти в панель руководителя →</button></div></form></div>
 
 <script>
 'use strict';
@@ -2300,10 +2300,13 @@ async function managerPanelLogin(event){
  const error=$('#managerLoginError'),button=$('#managerLoginSubmit');if(error)error.textContent='';button.disabled=true;
  try{
   const result=await api('/api/admin/login',{method:'POST',body:JSON.stringify({username,password})});
-  if(result.role!=='manager')throw new Error('Этот логин не имеет роли руководителя. Проверьте MANAGER_USERNAME и MANAGER_PASSWORD в Cloudflare.');
-  sessionStorage.setItem(TOKEN_KEY,result.token);sessionStorage.setItem(USER_KEY,username);sessionStorage.setItem(ROLE_KEY,'manager');
-  closeModal('#managerLoginModal');$('#drawer').classList.remove('open');$('#loggedUser').textContent=`${username} · руководитель`;
-  showApp();await bootApp();navigate('homeView');toast('Вход руководителя выполнен ✅');
+  // admin1-admin5 authenticate as role=admin; allow them through this entry point
+  // while preserving their full administrator permissions. The manager account remains restricted.
+  if(!['admin','manager'].includes(result.role))throw new Error('У этой учётной записи нет доступа к панели руководителя.');
+  const actualRole=result.role;
+  sessionStorage.setItem(TOKEN_KEY,result.token);sessionStorage.setItem(USER_KEY,username);sessionStorage.setItem(ROLE_KEY,actualRole);
+  closeModal('#managerLoginModal');$('#drawer').classList.remove('open');$('#loggedUser').textContent=`${username} · ${actualRole==='admin'?'администратор':'руководитель'}`;
+  showApp();await bootApp();navigate('homeView');toast(actualRole==='admin'?'Вход администратора выполнен ✅':'Вход руководителя выполнен ✅');
  }catch(e){if(error)error.textContent=e.message}
  finally{button.disabled=false}
 }
