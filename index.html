@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#080604"><title>ПАР ОРДО CONTROL V92</title>
+<meta name="theme-color" content="#080604"><title>ПАР ОРДО CONTROL V93</title>
 <link rel="icon" href="./assets/par-ordo-logo.png">
 <style>
 :root{--bg:#070604;--panel:#100b07;--panel2:#171009;--gold:#f6bd47;--gold2:#ffe5a1;--line:#4d351e;--muted:#b2a18a;--green:#2df082;--red:#ff554b;--blue:#76a8ff}
@@ -1499,7 +1499,7 @@ body.manager-portal .bottom-nav{display:none!important}
 <div id="appView" class="hidden">
  <header class="header">
   <button id="menuButton" class="icon-btn" aria-label="Меню">☰</button>
-  <div class="brand"><img src="./assets/par-ordo-logo.png" alt="" onerror="this.style.display='none'"><div><b>ПАР ОРДО</b><small>CONTROL · V92</small></div></div>
+  <div class="brand"><img src="./assets/par-ordo-logo.png" alt="" onerror="this.style.display='none'"><div><b>ПАР ОРДО</b><small>CONTROL · V93</small></div></div>
   <button id="headerReport" class="icon-btn" aria-label="Отчёт">▥</button>
  </header>
  <main>
@@ -2220,7 +2220,7 @@ function categoryIcon(cat){
 function renderAddProductCategories(){
  const root=$('#addCategoryTabs');if(!root)return;
  root.innerHTML=ADD_PRODUCT_CATEGORIES.map(cat=>`<button type="button" class="category-chip ${cat===addProductCategory?'active':''}" data-add-category="${escapeHtml(cat)}" aria-pressed="${cat===addProductCategory?'true':'false'}">${categoryIcon(cat)}<span>${escapeHtml(cat)}</span></button>`).join('');
- $$('[data-add-category]').forEach(b=>b.onclick=()=>{addProductCategory=b.dataset.addCategory;renderAddProductCategories();renderAddProductGrid()});
+ $$('[data-add-category]').forEach(b=>b.onclick=()=>{addProductCategory=b.dataset.addCategory;renderAddProductCategories();renderAddProductGrid();const card=$('#addModalCard');if(card)card.scrollTop=Math.max(0,card.scrollTop);});
 }
 function renderAddProductGrid(){
  const root=$('#addProductGrid');if(!root)return;
@@ -2722,7 +2722,7 @@ syncManagerPortalChrome();
 
 
 <style id="v92-clean-professional-product-cards">
-/* V92: cleaner selector grid, one-frame SVG icons, legible names, balanced edit actions. */
+/* V93: fix blank scroll area and tighten product picker cards. */
 #addModal #addProductGrid.add-grid{
   grid-template-columns:repeat(2,minmax(0,1fr))!important;
   align-items:stretch!important;
@@ -2796,6 +2796,175 @@ syncManagerPortalChrome();
   #addModal .add-product-tile .add-product small{font-size:11px!important}
   #addModal .product-edit-actions button{font-size:10px!important;min-height:34px!important}
 }
+</style>
+
+
+<style id="v93-fix-picker-scroll-and-card-spacing">
+/* V93: Prevent percentage-height grid items from creating a huge empty scroll area. */
+#addModal #addModalCard{
+  display:block!important;
+  box-sizing:border-box!important;
+  height:auto!important;
+  min-height:0!important;
+  flex:0 1 auto!important;
+  overflow-x:hidden!important;
+  overflow-y:auto!important;
+  overscroll-behavior-y:contain!important;
+  -webkit-overflow-scrolling:touch!important;
+  touch-action:pan-y!important;
+}
+#addModal #addProductGrid.add-grid{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  grid-auto-rows:max-content!important;
+  align-items:start!important;
+  align-content:start!important;
+  justify-content:stretch!important;
+  gap:9px!important;
+  width:100%!important;
+  height:auto!important;
+  min-height:0!important;
+  max-height:none!important;
+  margin-top:9px!important;
+  overflow:visible!important;
+  flex:0 0 auto!important;
+}
+#addModal #addProductGrid .add-product-tile{
+  min-width:0!important;
+  width:100%!important;
+  height:auto!important;
+  min-height:0!important;
+  max-height:none!important;
+  align-self:start!important;
+  justify-self:stretch!important;
+  flex:0 0 auto!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:flex-start!important;
+  overflow:hidden!important;
+  border:1.5px solid #806039!important;
+  border-radius:13px!important;
+  background:linear-gradient(145deg,#1b1209 0%,#120b06 62%,#0b0705 100%)!important;
+  box-shadow:inset 0 1px 0 #ffdf8718,0 3px 8px #0005!important;
+}
+#addModal #addProductGrid .add-product-tile:nth-child(odd){border-left:2px solid #b68a43!important}
+#addModal #addProductGrid .add-product-tile:nth-child(even){border-left:2px solid #6b4d2c!important}
+#addModal #addProductGrid .add-product-tile .add-product{
+  box-sizing:border-box!important;
+  width:100%!important;
+  height:auto!important;
+  min-height:0!important;
+  max-height:none!important;
+  flex:0 0 auto!important;
+  display:flex!important;
+  flex-direction:row!important;
+  align-items:flex-start!important;
+  justify-content:flex-start!important;
+  gap:7px!important;
+  padding:9px 8px 7px!important;
+  margin:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  text-align:left!important;
+  touch-action:manipulation!important;
+}
+#addModal #addProductGrid .add-product-tile .add-product .product-icon-wrap{
+  flex:0 0 32px!important;
+  width:32px!important;
+  height:32px!important;
+  align-self:flex-start!important;
+  margin-top:1px!important;
+  padding:1px!important;
+  border:1px solid #95703a!important;
+  border-radius:8px!important;
+  background:radial-gradient(circle at 50% 25%,#30200e,#0c0805 80%)!important;
+  box-shadow:none!important;
+}
+#addModal #addProductGrid .add-product-tile .add-product > span:last-child{
+  display:block!important;
+  min-width:0!important;
+  width:auto!important;
+  flex:1 1 auto!important;
+  text-align:left!important;
+  overflow-wrap:anywhere!important;
+}
+#addModal #addProductGrid .add-product-tile .add-product b{
+  display:-webkit-box!important;
+  -webkit-box-orient:vertical!important;
+  -webkit-line-clamp:4!important;
+  overflow:hidden!important;
+  min-height:0!important;
+  max-height:none!important;
+  margin:0!important;
+  color:#fff6e5!important;
+  font-size:11.5px!important;
+  font-weight:900!important;
+  line-height:1.25!important;
+  letter-spacing:0!important;
+  overflow-wrap:anywhere!important;
+  word-break:normal!important;
+  hyphens:none!important;
+}
+#addModal #addProductGrid .add-product-tile .add-product small{
+  display:block!important;
+  min-height:0!important;
+  max-height:3.9em!important;
+  margin-top:5px!important;
+  padding-top:5px!important;
+  border-top:1px solid #49351f!important;
+  color:#e4cda6!important;
+  font-size:9.5px!important;
+  font-weight:750!important;
+  line-height:1.3!important;
+  overflow:hidden!important;
+  overflow-wrap:anywhere!important;
+  word-break:normal!important;
+}
+#addModal #addProductGrid .product-edit-actions{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:5px!important;
+  margin:0!important;
+  padding:0 7px 7px!important;
+  align-content:start!important;
+}
+#addModal #addProductGrid .product-edit-actions button{
+  box-sizing:border-box!important;
+  min-width:0!important;
+  min-height:29px!important;
+  height:auto!important;
+  padding:5px 3px!important;
+  border:1px solid #6f522e!important;
+  border-radius:8px!important;
+  background:#21160b!important;
+  color:#f5d79a!important;
+  font-size:9px!important;
+  font-weight:850!important;
+  line-height:1.18!important;
+  white-space:normal!important;
+  overflow-wrap:anywhere!important;
+}
+#addModal #addProductGrid .product-edit-actions button[data-edit-catalog-cost]{grid-column:1/-1!important}
+#addModal #addProductGrid .add-product-tile .add-product:active{background:#211507!important}
+@media(max-width:390px){
+  #addModal #addProductGrid.add-grid{gap:7px!important}
+  #addModal #addProductGrid .add-product-tile .add-product{gap:6px!important;padding:8px 7px 6px!important}
+  #addModal #addProductGrid .add-product-tile .add-product .product-icon-wrap{width:29px!important;height:29px!important;flex-basis:29px!important}
+  #addModal #addProductGrid .add-product-tile .add-product b{font-size:11px!important;line-height:1.24!important}
+  #addModal #addProductGrid .add-product-tile .add-product small{font-size:9px!important;line-height:1.28!important}
+  #addModal #addProductGrid .product-edit-actions{gap:4px!important;padding:0 6px 6px!important}
+  #addModal #addProductGrid .product-edit-actions button{min-height:27px!important;font-size:8.5px!important;padding:4px 2px!important}
+}
+@media(min-width:601px){
+  #addModal #addProductGrid .add-product-tile .add-product{padding:10px!important;gap:9px!important}
+  #addModal #addProductGrid .add-product-tile .add-product .product-icon-wrap{width:38px!important;height:38px!important;flex-basis:38px!important}
+  #addModal #addProductGrid .add-product-tile .add-product b{font-size:13px!important}
+  #addModal #addProductGrid .add-product-tile .add-product small{font-size:10px!important}
+}
+/* Reset both scrolling surfaces whenever the picker is opened or category changes. */
+#addModal.modal.open{overscroll-behavior:none!important}
 </style>
 
 </body></html>
