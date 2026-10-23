@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#080604"><title>ПАР ОРДО CONTROL V95</title>
+<meta name="theme-color" content="#080604"><title>ПАР ОРДО CONTROL V96</title>
 <link rel="icon" href="./assets/par-ordo-logo.png">
 <style>
 :root{--bg:#070604;--panel:#100b07;--panel2:#171009;--gold:#f6bd47;--gold2:#ffe5a1;--line:#4d351e;--muted:#b2a18a;--green:#2df082;--red:#ff554b;--blue:#76a8ff}
@@ -1500,7 +1500,7 @@ body.manager-portal .bottom-nav{display:none!important}
 <div id="appView" class="hidden">
  <header class="header">
   <button id="menuButton" class="icon-btn" aria-label="Меню">☰</button>
-  <div class="brand"><img src="./assets/par-ordo-logo.png" alt="" onerror="this.style.display='none'"><div><b>ПАР ОРДО</b><small>CONTROL · V95</small></div></div>
+  <div class="brand"><img src="./assets/par-ordo-logo.png" alt="" onerror="this.style.display='none'"><div><b>ПАР ОРДО</b><small>CONTROL · V96</small></div></div>
   <button id="headerReport" class="icon-btn" aria-label="Отчёт">▥</button>
  </header>
  <main>
@@ -2221,16 +2221,43 @@ function categoryIcon(cat){
 function renderAddProductCategories(){
  const root=$('#addCategoryTabs');if(!root)return;
  root.innerHTML=ADD_PRODUCT_CATEGORIES.map(cat=>`<button type="button" class="category-chip ${cat===addProductCategory?'active':''}" data-add-category="${escapeHtml(cat)}" aria-pressed="${cat===addProductCategory?'true':'false'}">${categoryIcon(cat)}<span>${escapeHtml(cat)}</span></button>`).join('');
- $$('[data-add-category]').forEach(b=>b.onclick=()=>{addProductCategory=b.dataset.addCategory;renderAddProductCategories();renderAddProductGrid();const modal=$('#addModal'),card=$('#addModalCard'),grid=$('#addProductGrid');if(modal)modal.scrollTop=0;if(card)card.scrollTop=0;if(grid)grid.scrollTop=0;});
+ $$('[data-add-category]').forEach(b=>b.onclick=()=>{addProductCategory=b.dataset.addCategory;renderAddProductCategories();renderAddProductGrid();const card=$('#addModalCard');if(card)card.scrollTop=0;normalizeAddProductPickerLayout(true);});
+}
+function normalizeAddProductPickerLayout(resetScroll=false){
+ const modal=$('#addModal'),card=$('#addModalCard'),grid=$('#addProductGrid');
+ // Use the card as the only vertical scroller. Never let the grid reserve a viewport-sized empty track.
+ if(modal){modal.scrollTop=0;modal.style.setProperty('overflow-y','hidden','important');}
+ if(card){
+  card.style.setProperty('height','auto','important');
+  card.style.setProperty('min-height','0','important');
+  card.style.setProperty('max-height','calc(100dvh - max(8px, env(safe-area-inset-top)) - 10px - env(safe-area-inset-bottom))','important');
+  card.style.setProperty('overflow-x','hidden','important');
+  card.style.setProperty('overflow-y','auto','important');
+  card.style.setProperty('flex','0 1 auto','important');
+  if(resetScroll) card.scrollTop=0;
+ }
+ if(grid){
+  grid.style.setProperty('display','grid','important');
+  grid.style.setProperty('height','auto','important');
+  grid.style.setProperty('min-height','0','important');
+  grid.style.setProperty('max-height','none','important');
+  grid.style.setProperty('flex','0 0 auto','important');
+  grid.style.setProperty('grid-auto-rows','max-content','important');
+  grid.style.setProperty('align-content','start','important');
+  grid.style.setProperty('align-items','start','important');
+  grid.style.setProperty('overflow','visible','important');
+  if(resetScroll) grid.scrollTop=0;
+ }
 }
 function renderAddProductGrid(){
  const root=$('#addProductGrid');if(!root)return;
  const list=db.products.filter(p=>addProductCategory==='Все'||productPickerCategory(p)===addProductCategory);
- if(!list.length){root.innerHTML='<div class="add-products-empty">В этой категории пока нет товаров.<br>Администратор может добавить товары через кнопку «Добавить товар».</div>';return}
+ if(!list.length){root.innerHTML='<div class="add-products-empty">В этой категории пока нет товаров.<br>Администратор может добавить товары через кнопку «Добавить товар».</div>';normalizeAddProductPickerLayout(false);return}
  root.innerHTML=list.map(p=>`<article class="add-product-tile">
   <button type="button" class="add-product" data-product="${Number(p.id)}">${productPhotoMarkup(p,'picker-photo')}<span><b>${escapeHtml(p.name)}</b><small>${p.price==null?'Цена не указана':money(p.price)} · в наличии ${Number(p.available??p.stock??0)} шт.</small></span></button>
   ${['admin','staff'].includes(currentRole())?`<div class="product-edit-actions"><button type="button" data-edit-catalog-name="${Number(p.id)}">✎ Название</button><button type="button" data-edit-catalog-price="${Number(p.id)}">✎ Цена</button>${currentRole()==='admin'?`<button type="button" data-edit-catalog-cost="${Number(p.id)}">✎ Закупка</button>`:''}</div>`:''}
  </article>`).join('');
+ normalizeAddProductPickerLayout(false);
  $$('[data-product]').forEach(b=>b.onclick=async()=>{
   const p=db.products.find(x=>Number(x.id)===Number(b.dataset.product));if(!p)return;
   let price=p.price;
@@ -2292,13 +2319,13 @@ async function openAdd(clientId){
  <div class="history-meta" style="text-align:center;margin-top:9px">Каждое добавление записывается в чек клиента.</div>`;
  openModal('#addModal');
  const addModalRoot=$('#addModal'),addModalCard=$('#addModalCard');
- if(addModalRoot)addModalRoot.scrollTop=0;
+ if(addModalRoot){addModalRoot.scrollTop=0;addModalRoot.style.setProperty('overflow-y','hidden','important');}
  if(addModalCard)addModalCard.scrollTop=0;
  $$('[data-close-add]').forEach(b=>b.onclick=()=>closeModal('#addModal'));
  $('#addEntry').onclick=()=>addPurchase({name:'Вход',price:300,productId:null});
  $('#addChildEntry').onclick=()=>addPurchase({name:'Вход детский',price:200,productId:null});
  renderAddProductCategories();renderAddProductGrid();
- requestAnimationFrame(()=>{if(addModalRoot)addModalRoot.scrollTop=0;if(addModalCard)addModalCard.scrollTop=0;const grid=$('#addProductGrid');if(grid)grid.scrollTop=0;});
+ requestAnimationFrame(()=>{if(addModalCard)addModalCard.scrollTop=0;normalizeAddProductPickerLayout(true);});
  const toggle=$('#toggleNewProductForm'),form=$('#newProductForm'),cancel=$('#cancelNewProduct'),save=$('#saveNewProduct');
  if(toggle&&form)toggle.onclick=()=>{form.hidden=!form.hidden;if(!form.hidden){form.scrollIntoView({behavior:'smooth',block:'nearest'});$('#newProductName')?.focus()}};
  if(cancel&&form)cancel.onclick=()=>{form.hidden=true;$('#newProductName').value='';$('#newProductPrice').value='';if($('#newProductCostPrice'))$('#newProductCostPrice').value=''};
@@ -3221,4 +3248,57 @@ syncManagerPortalChrome();
   #addModal #addProductGrid.add-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:12px!important}
 }
 </style>
+
+<style id="v96-single-card-scroll-natural-grid">
+/* V96: One vertical scroller only (the modal card). The overlay and product grid never reserve empty height. */
+html body #addModal.modal.open{
+  position:fixed!important;inset:0!important;display:flex!important;
+  flex-direction:column!important;align-items:center!important;justify-content:flex-start!important;
+  width:100%!important;height:100dvh!important;max-height:100dvh!important;
+  overflow:hidden!important;overscroll-behavior:none!important;
+  box-sizing:border-box!important;
+  padding:max(8px,env(safe-area-inset-top)) 9px calc(10px + env(safe-area-inset-bottom))!important;
+  touch-action:pan-y!important;
+}
+html body #addModal #addModalCard{
+  display:block!important;position:relative!important;box-sizing:border-box!important;
+  width:min(100%,720px)!important;max-width:720px!important;
+  height:auto!important;min-height:0!important;
+  max-height:calc(100dvh - max(8px,env(safe-area-inset-top)) - 10px - env(safe-area-inset-bottom))!important;
+  flex:0 1 auto!important;align-self:center!important;margin:0 auto!important;
+  overflow-x:hidden!important;overflow-y:auto!important;
+  overscroll-behavior-y:contain!important;-webkit-overflow-scrolling:touch!important;
+  touch-action:pan-y!important;scrollbar-gutter:auto!important;
+  padding:13px 12px calc(18px + env(safe-area-inset-bottom))!important;
+}
+html body #addModal #addProductGrid.add-grid{
+  display:grid!important;position:static!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  grid-template-rows:none!important;grid-auto-flow:row!important;grid-auto-rows:max-content!important;
+  align-content:start!important;align-items:start!important;justify-content:stretch!important;
+  width:100%!important;height:auto!important;min-height:0!important;max-height:none!important;
+  flex:0 0 auto!important;overflow:visible!important;
+  gap:8px!important;margin:9px 0 0!important;padding:0 1px!important;
+  contain:none!important;content-visibility:visible!important;
+}
+html body #addModal #addProductGrid > .add-product-tile{
+  display:flex!important;position:relative!important;flex-direction:column!important;
+  align-self:start!important;justify-self:stretch!important;
+  box-sizing:border-box!important;width:100%!important;height:auto!important;
+  min-height:0!important;max-height:none!important;flex:none!important;margin:0!important;
+  overflow:hidden!important;
+}
+html body #addModal #addProductGrid > .add-product-tile > .add-product{
+  display:flex!important;flex:0 0 auto!important;width:100%!important;
+  height:auto!important;min-height:0!important;max-height:none!important;
+}
+@media(min-width:900px){
+  html body #addModal #addProductGrid.add-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:12px!important}
+  html body #addModal #addModalCard{width:96vw!important;max-width:none!important}
+}
+@media(max-height:620px){
+  html body #addModal #addProductGrid.add-grid{min-height:0!important;height:auto!important}
+}
+</style>
+
 </body></html>
