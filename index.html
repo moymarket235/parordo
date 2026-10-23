@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#080604"><title>ПАР ОРДО CONTROL V94</title>
+<meta name="theme-color" content="#080604"><title>ПАР ОРДО CONTROL V95</title>
 <link rel="icon" href="./assets/par-ordo-logo.png">
 <style>
 :root{--bg:#070604;--panel:#100b07;--panel2:#171009;--gold:#f6bd47;--gold2:#ffe5a1;--line:#4d351e;--muted:#b2a18a;--green:#2df082;--red:#ff554b;--blue:#76a8ff}
@@ -1482,6 +1482,7 @@ body.manager-portal .bottom-nav{display:none!important}
 @media(min-width:900px){.product-top .product-photo-wrap{width:76px;height:76px;flex-basis:76px}}
 
 </style>
+
 </head>
 <body>
 <div id="loginView" class="login-view">
@@ -1499,7 +1500,7 @@ body.manager-portal .bottom-nav{display:none!important}
 <div id="appView" class="hidden">
  <header class="header">
   <button id="menuButton" class="icon-btn" aria-label="Меню">☰</button>
-  <div class="brand"><img src="./assets/par-ordo-logo.png" alt="" onerror="this.style.display='none'"><div><b>ПАР ОРДО</b><small>CONTROL · V93</small></div></div>
+  <div class="brand"><img src="./assets/par-ordo-logo.png" alt="" onerror="this.style.display='none'"><div><b>ПАР ОРДО</b><small>CONTROL · V95</small></div></div>
   <button id="headerReport" class="icon-btn" aria-label="Отчёт">▥</button>
  </header>
  <main>
@@ -2220,7 +2221,7 @@ function categoryIcon(cat){
 function renderAddProductCategories(){
  const root=$('#addCategoryTabs');if(!root)return;
  root.innerHTML=ADD_PRODUCT_CATEGORIES.map(cat=>`<button type="button" class="category-chip ${cat===addProductCategory?'active':''}" data-add-category="${escapeHtml(cat)}" aria-pressed="${cat===addProductCategory?'true':'false'}">${categoryIcon(cat)}<span>${escapeHtml(cat)}</span></button>`).join('');
- $$('[data-add-category]').forEach(b=>b.onclick=()=>{addProductCategory=b.dataset.addCategory;renderAddProductCategories();renderAddProductGrid();const grid=$('#addProductGrid');if(grid)grid.scrollTop=0;});
+ $$('[data-add-category]').forEach(b=>b.onclick=()=>{addProductCategory=b.dataset.addCategory;renderAddProductCategories();renderAddProductGrid();const modal=$('#addModal'),card=$('#addModalCard'),grid=$('#addProductGrid');if(modal)modal.scrollTop=0;if(card)card.scrollTop=0;if(grid)grid.scrollTop=0;});
 }
 function renderAddProductGrid(){
  const root=$('#addProductGrid');if(!root)return;
@@ -3173,4 +3174,51 @@ syncManagerPortalChrome();
 @media(prefers-reduced-motion:reduce){#addModal #addProductGrid{scroll-behavior:auto!important}}
 </style>
 
+<style id="v95-single-scroll-no-blank-space">
+/* V95: Remove the nested flex/scroll layout that pushed products into the bottom half of the modal.
+   The modal overlay is now the single vertical scroller; the card and grid follow natural content height. */
+#addModal.modal.open{
+  position:fixed!important;inset:0!important;display:block!important;
+  width:100%!important;height:100%!important;max-height:none!important;
+  overflow-x:hidden!important;overflow-y:auto!important;
+  overscroll-behavior-y:contain!important;-webkit-overflow-scrolling:touch!important;
+  box-sizing:border-box!important;
+  padding:max(8px,env(safe-area-inset-top)) 9px calc(12px + env(safe-area-inset-bottom))!important;
+  touch-action:pan-y!important;
+}
+#addModal #addModalCard{
+  display:block!important;position:relative!important;
+  box-sizing:border-box!important;width:min(100%,720px)!important;max-width:720px!important;
+  height:auto!important;min-height:0!important;max-height:none!important;
+  flex:none!important;align-self:auto!important;margin:0 auto!important;
+  overflow:visible!important;overscroll-behavior:initial!important;
+  -webkit-overflow-scrolling:auto!important;
+  padding:13px 12px calc(18px + env(safe-area-inset-bottom))!important;
+}
+#addModal #addProductGrid.add-grid{
+  display:grid!important;position:static!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  grid-auto-flow:row!important;grid-auto-rows:max-content!important;
+  align-content:start!important;align-items:start!important;justify-content:stretch!important;
+  width:100%!important;height:auto!important;min-height:0!important;max-height:none!important;
+  flex:none!important;overflow:visible!important;
+  gap:8px!important;margin:9px 0 0!important;padding:0 1px!important;
+  touch-action:pan-y!important;scrollbar-gutter:auto!important;
+}
+#addModal #addProductGrid .add-product-tile{
+  display:flex!important;position:relative!important;flex-direction:column!important;
+  align-self:start!important;justify-self:stretch!important;
+  box-sizing:border-box!important;width:100%!important;height:auto!important;
+  min-height:0!important;max-height:none!important;flex:none!important;margin:0!important;
+  overflow:hidden!important;
+}
+#addModal #addProductGrid .add-product-tile .add-product{
+  flex:0 0 auto!important;width:100%!important;height:auto!important;min-height:0!important;
+}
+@media(min-width:900px){
+  #addModal.modal.open{padding:14px 18px calc(18px + env(safe-area-inset-bottom))!important}
+  #addModal #addModalCard{width:96vw!important;max-width:none!important;padding:20px 22px 12px!important}
+  #addModal #addProductGrid.add-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:12px!important}
+}
+</style>
 </body></html>
