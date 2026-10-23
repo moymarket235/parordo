@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#080604"><title>ПАР ОРДО CONTROL V98</title>
+<meta name="theme-color" content="#080604"><title>ПАР ОРДО CONTROL V99</title>
 <link rel="icon" href="./assets/par-ordo-logo.png">
 <style>
 :root{--bg:#070604;--panel:#100b07;--panel2:#171009;--gold:#f6bd47;--gold2:#ffe5a1;--line:#4d351e;--muted:#b2a18a;--green:#2df082;--red:#ff554b;--blue:#76a8ff}
@@ -1067,6 +1067,32 @@ body.manager-portal .bottom-nav{display:none!important}
 @media(min-width:760px){.manager-kpis{grid-template-columns:repeat(4,minmax(0,1fr))}.manager-actions{grid-template-columns:repeat(3,minmax(0,1fr))}.manager-hero{padding:23px}.manager-hero-row{align-items:center}.manager-exit-control{width:auto;min-width:245px}.manager-top-products{grid-template-columns:repeat(2,minmax(0,1fr))}.manager-section-title h2{font-size:25px}}
 @media(max-width:390px){.manager-hero{padding:14px}.manager-kpi{padding:10px 9px}.manager-action{padding:9px;gap:7px;min-height:76px}.manager-action-icon{width:36px;height:36px;flex-basis:36px}.manager-action-icon svg{width:19px;height:19px}.manager-action-copy strong{font-size:10px}.manager-role-pill{font-size:8px;padding:6px 7px}}
 
+
+/* V99 — unified professional gold-line navigation icons */
+.ui-icon{display:block;width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}
+.ui-icon-header{width:24px;height:24px;stroke-width:1.8}
+.icon-btn{font-size:0!important;transition:border-color .18s ease,background .18s ease,transform .18s ease}
+.icon-btn .ui-icon{color:currentColor}
+.icon-btn:active{transform:scale(.96)}
+.bottom-nav{height:78px;padding-bottom:env(safe-area-inset-bottom);grid-template-columns:repeat(5,minmax(0,1fr));}
+.nav-item{min-width:0;gap:4px;padding:5px 1px 4px;font-size:initial;color:#97866f;}
+.nav-item .nav-icon{display:grid;place-items:center;width:31px;height:27px;border-radius:9px;transition:background .18s ease,box-shadow .18s ease,color .18s ease;}
+.nav-item .ui-icon{width:21px;height:21px;stroke-width:1.65}
+.nav-item small{display:block;font-size:9px;line-height:1.1;letter-spacing:.01em;color:inherit;white-space:nowrap;font-weight:600}
+.nav-item.active{color:#ffdb7d}
+.nav-item.active .nav-icon{background:linear-gradient(145deg,#3a260e80,#160d0580);box-shadow:inset 0 0 0 1px #9a702f80,0 0 12px #d59d3522}
+.nav-item.active .ui-icon{stroke-width:2}
+.drawer-links{gap:8px;margin-top:14px}
+.drawer-links button{display:flex;align-items:center;gap:11px;min-height:51px;padding:8px 11px;font-size:12px;font-weight:650;letter-spacing:.005em;transition:background .18s ease,border-color .18s ease}
+.drawer-links button>span:nth-child(2){flex:1;min-width:0}
+.drawer-link-icon{display:grid;place-items:center;flex:0 0 34px;width:34px;height:34px;border:1px solid #76552b;border-radius:10px;color:#f6d27e;background:linear-gradient(145deg,#2a1a0a,#100a05)}
+.drawer-link-icon .ui-icon{width:19px;height:19px;stroke-width:1.7}
+.drawer-chevron{width:15px;height:15px;flex:0 0 15px;fill:none;stroke:#94724a;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.drawer-links button:active,.drawer-links button:focus-visible{background:#261808;border-color:#b98735;outline:none}
+.drawer-links .logout .drawer-link-icon{color:#ffaaa3;border-color:#713a31;background:#21100d}
+.drawer-close{font-size:0!important}
+@media(min-width:700px){.bottom-nav{height:82px}.nav-item .ui-icon{width:23px;height:23px}.nav-item small{font-size:10px}.drawer-links button{font-size:13px}}
+
 </style>
 <style>/* V82.1 — password visibility control, added without altering panel logic */
 .password-field-wrap{position:relative;display:block;width:100%;min-width:0;box-sizing:border-box}
@@ -1499,9 +1525,9 @@ body.manager-portal .bottom-nav{display:none!important}
 
 <div id="appView" class="hidden">
  <header class="header">
-  <button id="menuButton" class="icon-btn" aria-label="Меню">☰</button>
-  <div class="brand"><img src="./assets/par-ordo-logo.png" alt="" onerror="this.style.display='none'"><div><b>ПАР ОРДО</b><small>CONTROL · V98</small></div></div>
-  <button id="headerReport" class="icon-btn" aria-label="Отчёт">▥</button>
+  <button id="menuButton" class="icon-btn" aria-label="Открыть меню" title="Меню"><svg class="ui-icon ui-icon-header" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6.5h16M4 12h16M4 17.5h16"/></svg></button>
+  <div class="brand"><img src="./assets/par-ordo-logo.png" alt="" onerror="this.style.display='none'"><div><b>ПАР ОРДО</b><small>CONTROL · V99</small></div></div>
+  <button id="headerReport" class="icon-btn" aria-label="Отчёт" title="Отчёт"><svg class="ui-icon ui-icon-header" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3.75h8l3 3V20a.75.75 0 0 1-.75.75h-10.5A.75.75 0 0 1 6 20V4.5a.75.75 0 0 1 .75-.75Z"/><path d="M14.5 3.75V7h3.25M9 11h6M9 14.5h6M9 18h3"/></svg></button>
  </header>
  <main>
   <section id="managerView" class="view manager-view">
@@ -1578,20 +1604,29 @@ body.manager-portal .bottom-nav{display:none!important}
    </div>
   </section>
  </main>
- <nav class="bottom-nav">
-  <button class="nav-item active" data-view="homeView"><span>⌂</span><small>Номера</small></button>
-  <button class="nav-item" data-view="productsView"><span>▦</span><small>Товары</small></button>
-  <button class="nav-item" data-view="historyView"><span>◷</span><small>История</small></button>
-  <button class="nav-item" data-view="archiveView"><span>▤</span><small>Архив</small></button>
-  <button class="nav-item" data-view="reportView"><span>▥</span><small>Итог</small></button>
+ <nav class="bottom-nav" aria-label="Основная навигация">
+  <button class="nav-item active" data-view="homeView" aria-label="Номера"><span class="nav-icon"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 10.2 12 3.5l8.5 6.7"/><path d="M5.8 9.2v10.3h12.4V9.2M9.3 19.5v-6.3h5.4v6.3"/></svg></span><small>Номера</small></button>
+  <button class="nav-item" data-view="productsView" aria-label="Товары"><span class="nav-icon"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 8 4.2v9.6L12 21l-8-4.2V7.2L12 3Z"/><path d="m4.4 7.3 7.6 4 7.6-4M12 11.3V21"/></svg></span><small>Товары</small></button>
+  <button class="nav-item" data-view="historyView" aria-label="История"><span class="nav-icon"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.6"/><path d="M12 7v5l3.4 2"/><path d="M4.7 5.5 3.5 7"/></svg></span><small>История</small></button>
+  <button class="nav-item" data-view="archiveView" aria-label="Архив"><span class="nav-icon"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16v13H4zM3 4h18v3H3z"/><path d="M9 11h6"/></svg></span><small>Архив</small></button>
+  <button class="nav-item" data-view="reportView" aria-label="Итог"><span class="nav-icon"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 3.5h11v17h-11z"/><path d="M9 8h6M9 12h6M9 16h3"/><path d="M9 3.5v-1h6v1"/></svg></span><small>Итог</small></button>
  </nav>
 </div>
 
 <div id="drawer" class="drawer"><div class="drawer-panel">
- <button id="closeDrawer" class="icon-btn" style="float:right">×</button>
+ <button id="closeDrawer" class="icon-btn drawer-close" style="float:right" aria-label="Закрыть меню" title="Закрыть"><svg class="ui-icon ui-icon-header" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
  <div class="drawer-brand"><img src="./assets/par-ordo-logo.png" alt="" onerror="this.style.display='none'"><h2>ПАР ОРДО</h2><small>CONTROL</small></div>
  <div id="loggedUser" class="user-caption"></div>
- <div class="drawer-links"><button data-drawer-view="homeView">⌂ Номера 1—36</button><button data-drawer-view="productsView">▦ В наличии / Поступило</button><button data-drawer-view="historyView">◷ История клиентов</button><button data-drawer-view="archiveView">▤ Архив</button><button data-drawer-view="reportView">▥ Отчёт / Завершить работу</button><button data-drawer-view="expensesView">₸ Расходы бани</button><button id="openManagerLogin" type="button">♙ Руководитель панели</button><button id="logoutButton" class="logout">↪ Выйти</button></div>
+ <div class="drawer-links">
+  <button data-drawer-view="homeView"><span class="drawer-link-icon"><svg class="ui-icon" viewBox="0 0 24 24"><path d="M3.5 10.2 12 3.5l8.5 6.7M5.8 9.2v10.3h12.4V9.2M9.3 19.5v-6.3h5.4v6.3"/></svg></span><span>Номера 1—36</span><svg class="drawer-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg></button>
+  <button data-drawer-view="productsView"><span class="drawer-link-icon"><svg class="ui-icon" viewBox="0 0 24 24"><path d="m12 3 8 4.2v9.6L12 21l-8-4.2V7.2L12 3Z"/><path d="m4.4 7.3 7.6 4 7.6-4M12 11.3V21"/></svg></span><span>Товары и поступления</span><svg class="drawer-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg></button>
+  <button data-drawer-view="historyView"><span class="drawer-link-icon"><svg class="ui-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.6"/><path d="M12 7v5l3.4 2"/></svg></span><span>История клиентов</span><svg class="drawer-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg></button>
+  <button data-drawer-view="archiveView"><span class="drawer-link-icon"><svg class="ui-icon" viewBox="0 0 24 24"><path d="M4 7h16v13H4zM3 4h18v3H3zM9 11h6"/></svg></span><span>Архив</span><svg class="drawer-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg></button>
+  <button data-drawer-view="reportView"><span class="drawer-link-icon"><svg class="ui-icon" viewBox="0 0 24 24"><path d="M6.5 3.5h11v17h-11zM9 8h6M9 12h6M9 16h3"/></svg></span><span>Отчёт и завершение смены</span><svg class="drawer-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg></button>
+  <button data-drawer-view="expensesView"><span class="drawer-link-icon"><svg class="ui-icon" viewBox="0 0 24 24"><rect x="3.5" y="5.5" width="17" height="14" rx="2"/><path d="M7 9h10M8 14h.01M12 14h4"/></svg></span><span>Расходы бани</span><svg class="drawer-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg></button>
+  <button id="openManagerLogin" type="button"><span class="drawer-link-icon"><svg class="ui-icon" viewBox="0 0 24 24"><circle cx="12" cy="7.5" r="3.2"/><path d="M5.3 20a6.7 6.7 0 0 1 13.4 0M18.3 4.5l1.1 1.1 2-2"/></svg></span><span>Руководитель панели</span><svg class="drawer-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg></button>
+  <button id="logoutButton" class="logout"><span class="drawer-link-icon"><svg class="ui-icon" viewBox="0 0 24 24"><path d="M10 4H5.5A1.5 1.5 0 0 0 4 5.5v13A1.5 1.5 0 0 0 5.5 20H10M14 8l4 4-4 4M8.5 12H18"/></svg></span><span>Выйти</span></button>
+ </div>
  </div></div>
 
 <div id="clientModal" class="modal"><div id="clientModalCard" class="modal-card"></div></div>
@@ -1875,7 +1910,7 @@ const MANAGER_PORTAL_KEY='parordo_manager_portal_active';
 function managerPortalActive(){return sessionStorage.getItem(MANAGER_PORTAL_KEY)==='1'}
 function syncManagerPortalChrome(){
  const active=managerPortalActive();document.body.classList.toggle('manager-portal',active);
- const btn=$('#headerReport');if(btn){btn.textContent=active?'♙':'▥';btn.setAttribute('aria-label',active?'Панель руководителя':'Отчёт')}
+ const btn=$('#headerReport');if(btn){btn.innerHTML=active?'<svg class="ui-icon ui-icon-header" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="7.5" r="3.2"/><path d="M5.3 20a6.7 6.7 0 0 1 13.4 0M18.3 4.5l1.1 1.1 2-2"/></svg>':'<svg class="ui-icon ui-icon-header" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3.75h8l3 3V20a.75.75 0 0 1-.75.75h-10.5A.75.75 0 0 1 6 20V4.5a.75.75 0 0 1 .75-.75Z"/><path d="M14.5 3.75V7h3.25M9 11h6M9 14.5h6M9 18h3"/></svg>';btn.setAttribute('aria-label',active?'Панель руководителя':'Отчёт');btn.setAttribute('title',active?'Панель руководителя':'Отчёт')}
  const who=$('#managerDashboardUser');if(who)who.textContent=(sessionStorage.getItem(USER_KEY)||'admin').toUpperCase();
 }
 function renderManagerProfit(data){
