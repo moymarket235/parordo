@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#080604"><title>ПАР ОРДО CONTROL V96</title>
+<meta name="theme-color" content="#080604"><title>ПАР ОРДО CONTROL V97</title>
 <link rel="icon" href="./assets/par-ordo-logo.png">
 <style>
 :root{--bg:#070604;--panel:#100b07;--panel2:#171009;--gold:#f6bd47;--gold2:#ffe5a1;--line:#4d351e;--muted:#b2a18a;--green:#2df082;--red:#ff554b;--blue:#76a8ff}
@@ -1488,7 +1488,7 @@ body.manager-portal .bottom-nav{display:none!important}
 <div id="loginView" class="login-view">
  <form id="loginForm" class="login-card">
   <img class="login-logo" src="./assets/par-ordo-logo.png" alt="ПАР ОРДО" onerror="this.style.display='none'">
-  <div class="eyebrow">ПАР ОРДО · CONTROL V91</div>
+  <div class="eyebrow">ПАР ОРДО · CONTROL V97</div>
   <h1>Управление баней</h1><p>Номера · клиенты · покупки · касса · отчёты</p>
   <input id="loginUser" autocomplete="username" placeholder="Логин администратора" required>
   <input id="loginPass" type="password" autocomplete="current-password" placeholder="Пароль" required>
@@ -1500,7 +1500,7 @@ body.manager-portal .bottom-nav{display:none!important}
 <div id="appView" class="hidden">
  <header class="header">
   <button id="menuButton" class="icon-btn" aria-label="Меню">☰</button>
-  <div class="brand"><img src="./assets/par-ordo-logo.png" alt="" onerror="this.style.display='none'"><div><b>ПАР ОРДО</b><small>CONTROL · V96</small></div></div>
+  <div class="brand"><img src="./assets/par-ordo-logo.png" alt="" onerror="this.style.display='none'"><div><b>ПАР ОРДО</b><small>CONTROL · V97</small></div></div>
   <button id="headerReport" class="icon-btn" aria-label="Отчёт">▥</button>
  </header>
  <main>
@@ -2225,9 +2225,14 @@ function renderAddProductCategories(){
 }
 function normalizeAddProductPickerLayout(resetScroll=false){
  const modal=$('#addModal'),card=$('#addModalCard'),grid=$('#addProductGrid');
- // Use the card as the only vertical scroller. Never let the grid reserve a viewport-sized empty track.
- if(modal){modal.scrollTop=0;modal.style.setProperty('overflow-y','hidden','important');}
+ // V97: one stable scroller (the modal card); grid height follows only its items.
+ if(modal){
+  modal.scrollTop=0;
+  modal.style.setProperty('overflow-x','hidden','important');
+  modal.style.setProperty('overflow-y','hidden','important');
+ }
  if(card){
+  card.style.setProperty('display','block','important');
   card.style.setProperty('height','auto','important');
   card.style.setProperty('min-height','0','important');
   card.style.setProperty('max-height','calc(100dvh - max(8px, env(safe-area-inset-top)) - 10px - env(safe-area-inset-bottom))','important');
@@ -2238,14 +2243,20 @@ function normalizeAddProductPickerLayout(resetScroll=false){
  }
  if(grid){
   grid.style.setProperty('display','grid','important');
-  grid.style.setProperty('height','auto','important');
-  grid.style.setProperty('min-height','0','important');
-  grid.style.setProperty('max-height','none','important');
-  grid.style.setProperty('flex','0 0 auto','important');
+  grid.style.setProperty('position','static','important');
+  grid.style.setProperty('grid-template-columns','repeat(2,minmax(0,1fr))','important');
+  grid.style.setProperty('grid-template-rows','none','important');
+  grid.style.setProperty('grid-auto-flow','row','important');
   grid.style.setProperty('grid-auto-rows','max-content','important');
   grid.style.setProperty('align-content','start','important');
   grid.style.setProperty('align-items','start','important');
+  grid.style.setProperty('justify-content','stretch','important');
+  grid.style.setProperty('height','auto','important');
+  grid.style.setProperty('min-height','0','important');
+  grid.style.setProperty('max-height','none','important');
+  grid.style.setProperty('flex','none','important');
   grid.style.setProperty('overflow','visible','important');
+  grid.style.setProperty('margin-top','9px','important');
   if(resetScroll) grid.scrollTop=0;
  }
 }
@@ -2750,554 +2761,51 @@ syncManagerPortalChrome();
 </style>
 
 
-<style id="v92-clean-professional-product-cards">
-/* V93: fix blank scroll area and tighten product picker cards. */
-#addModal #addProductGrid.add-grid{
-  grid-template-columns:repeat(2,minmax(0,1fr))!important;
-  align-items:stretch!important;
-  gap:8px!important;
-}
-#addModal .add-product-tile{
-  min-width:0!important; height:100%!important; min-height:0!important;
-  display:flex!important; flex-direction:column!important; align-self:stretch!important;
-  border:1px solid #6a4b29!important; border-radius:14px!important;
-  background:linear-gradient(155deg,#191108 0%,#100a06 72%,#0a0705 100%)!important;
-  box-shadow:inset 0 1px 0 #ffdc7a0c,0 3px 9px #0003!important;
-}
-#addModal .add-product-tile .add-product{
-  width:100%!important; min-width:0!important; min-height:0!important; height:auto!important;
-  flex:1 1 auto!important; display:flex!important; flex-direction:column!important;
-  align-items:stretch!important; justify-content:flex-start!important; gap:7px!important;
-  padding:10px 10px 8px!important; border:0!important; border-radius:13px 13px 0 0!important;
-  background:transparent!important; text-align:left!important; box-shadow:none!important;
-}
-#addModal .add-product-tile .add-product .product-icon-wrap{
-  align-self:center!important; width:39px!important; height:39px!important; flex:0 0 39px!important;
-  border:1px solid #8d642f!important; border-radius:10px!important;
-  background:radial-gradient(circle at 50% 30%,#281a0d,#100a06 80%)!important;
-  box-shadow:inset 0 1px 0 #f7d07b16!important; padding:2px!important;
-}
-#addModal .add-product-tile .add-product .product-photo-icon{width:100%!important;height:100%!important;min-width:0!important;min-height:0!important}
-#addModal .add-product-tile .add-product > span:last-child{
-  display:block!important; width:100%!important; min-width:0!important; flex:1 1 auto!important;
-  text-align:left!important; overflow-wrap:break-word!important; word-break:normal!important; hyphens:none!important;
-}
-#addModal .add-product-tile .add-product b{
-  display:-webkit-box!important; -webkit-box-orient:vertical!important; -webkit-line-clamp:3!important;
-  overflow:hidden!important; min-height:2.4em; color:#fff7e7!important; font-size:12px!important;
-  font-weight:850!important; line-height:1.22!important; letter-spacing:0!important;
-  overflow-wrap:break-word!important; word-break:normal!important; hyphens:none!important;
-}
-#addModal .add-product-tile .add-product small{
-  display:block!important; margin-top:5px!important; padding-top:6px!important;
-  border-top:1px solid #3d2b19!important; min-height:32px; color:#d9c29e!important;
-  font-size:10px!important; font-weight:700!important; line-height:1.3!important;
-  overflow-wrap:break-word!important; word-break:normal!important;
-}
-#addModal .product-edit-actions{
-  display:grid!important; grid-template-columns:repeat(2,minmax(0,1fr))!important;
-  gap:5px!important; margin-top:auto!important; padding:0 8px 8px!important;
-}
-#addModal .product-edit-actions button{
-  min-width:0!important; min-height:31px!important; padding:5px 3px!important;
-  border:1px solid #614725!important; border-radius:9px!important;
-  background:#1b1209!important; color:#f3d294!important; font-size:9px!important;
-  font-weight:800!important; line-height:1.15!important; white-space:normal!important;
-}
-#addModal .product-edit-actions button[data-edit-catalog-cost]{grid-column:1/-1!important}
-#addModal .product-edit-actions button:active{background:#3a250d!important;border-color:#d6a54c!important}
-/* Inventory cards use the same simple icon with no nested decorative frame. */
-.product-photo-wrap.product-icon-wrap{box-shadow:none!important;padding:2px!important}
-.product-photo-wrap.product-icon-wrap .product-photo-icon{overflow:visible}
-@media(max-width:390px){
-  #addModal #addProductGrid.add-grid{gap:7px!important}
-  #addModal .add-product-tile .add-product{padding:8px 8px 7px!important;gap:6px!important}
-  #addModal .add-product-tile .add-product .product-icon-wrap{width:35px!important;height:35px!important;flex-basis:35px!important}
-  #addModal .add-product-tile .add-product b{font-size:11.5px!important;min-height:2.35em}
-  #addModal .add-product-tile .add-product small{font-size:9.5px!important;min-height:30px}
-  #addModal .product-edit-actions{gap:4px!important;padding:0 6px 6px!important}
-  #addModal .product-edit-actions button{font-size:8.5px!important;min-height:29px!important;padding:4px 2px!important}
-}
-@media(min-width:601px){
-  #addModal .add-product-tile .add-product{padding:12px!important;gap:9px!important}
-  #addModal .add-product-tile .add-product .product-icon-wrap{width:44px!important;height:44px!important;flex-basis:44px!important}
-  #addModal .add-product-tile .add-product b{font-size:13px!important}
-  #addModal .add-product-tile .add-product small{font-size:11px!important}
-  #addModal .product-edit-actions button{font-size:10px!important;min-height:34px!important}
-}
-</style>
 
-
-<style id="v93-fix-picker-scroll-and-card-spacing">
-/* V93: Prevent percentage-height grid items from creating a huge empty scroll area. */
-#addModal #addModalCard{
-  display:block!important;
-  box-sizing:border-box!important;
-  height:auto!important;
-  min-height:0!important;
-  flex:0 1 auto!important;
-  overflow-x:hidden!important;
-  overflow-y:auto!important;
-  overscroll-behavior-y:contain!important;
-  -webkit-overflow-scrolling:touch!important;
-  touch-action:pan-y!important;
-}
-#addModal #addProductGrid.add-grid{
-  display:grid!important;
-  grid-template-columns:repeat(2,minmax(0,1fr))!important;
-  grid-auto-rows:max-content!important;
-  align-items:start!important;
-  align-content:start!important;
-  justify-content:stretch!important;
-  gap:9px!important;
-  width:100%!important;
-  height:auto!important;
-  min-height:0!important;
-  max-height:none!important;
-  margin-top:9px!important;
-  overflow:visible!important;
-  flex:0 0 auto!important;
-}
-#addModal #addProductGrid .add-product-tile{
-  min-width:0!important;
-  width:100%!important;
-  height:auto!important;
-  min-height:0!important;
-  max-height:none!important;
-  align-self:start!important;
-  justify-self:stretch!important;
-  flex:0 0 auto!important;
-  display:flex!important;
-  flex-direction:column!important;
-  justify-content:flex-start!important;
-  overflow:hidden!important;
-  border:1.5px solid #806039!important;
-  border-radius:13px!important;
-  background:linear-gradient(145deg,#1b1209 0%,#120b06 62%,#0b0705 100%)!important;
-  box-shadow:inset 0 1px 0 #ffdf8718,0 3px 8px #0005!important;
-}
-#addModal #addProductGrid .add-product-tile:nth-child(odd){border-left:2px solid #b68a43!important}
-#addModal #addProductGrid .add-product-tile:nth-child(even){border-left:2px solid #6b4d2c!important}
-#addModal #addProductGrid .add-product-tile .add-product{
-  box-sizing:border-box!important;
-  width:100%!important;
-  height:auto!important;
-  min-height:0!important;
-  max-height:none!important;
-  flex:0 0 auto!important;
-  display:flex!important;
-  flex-direction:row!important;
-  align-items:flex-start!important;
-  justify-content:flex-start!important;
-  gap:7px!important;
-  padding:9px 8px 7px!important;
-  margin:0!important;
-  border:0!important;
-  border-radius:0!important;
-  background:transparent!important;
-  box-shadow:none!important;
-  text-align:left!important;
-  touch-action:manipulation!important;
-}
-#addModal #addProductGrid .add-product-tile .add-product .product-icon-wrap{
-  flex:0 0 32px!important;
-  width:32px!important;
-  height:32px!important;
-  align-self:flex-start!important;
-  margin-top:1px!important;
-  padding:1px!important;
-  border:1px solid #95703a!important;
-  border-radius:8px!important;
-  background:radial-gradient(circle at 50% 25%,#30200e,#0c0805 80%)!important;
-  box-shadow:none!important;
-}
-#addModal #addProductGrid .add-product-tile .add-product > span:last-child{
-  display:block!important;
-  min-width:0!important;
-  width:auto!important;
-  flex:1 1 auto!important;
-  text-align:left!important;
-  overflow-wrap:anywhere!important;
-}
-#addModal #addProductGrid .add-product-tile .add-product b{
-  display:-webkit-box!important;
-  -webkit-box-orient:vertical!important;
-  -webkit-line-clamp:4!important;
-  overflow:hidden!important;
-  min-height:0!important;
-  max-height:none!important;
-  margin:0!important;
-  color:#fff6e5!important;
-  font-size:11.5px!important;
-  font-weight:900!important;
-  line-height:1.25!important;
-  letter-spacing:0!important;
-  overflow-wrap:anywhere!important;
-  word-break:normal!important;
-  hyphens:none!important;
-}
-#addModal #addProductGrid .add-product-tile .add-product small{
-  display:block!important;
-  min-height:0!important;
-  max-height:3.9em!important;
-  margin-top:5px!important;
-  padding-top:5px!important;
-  border-top:1px solid #49351f!important;
-  color:#e4cda6!important;
-  font-size:9.5px!important;
-  font-weight:750!important;
-  line-height:1.3!important;
-  overflow:hidden!important;
-  overflow-wrap:anywhere!important;
-  word-break:normal!important;
-}
-#addModal #addProductGrid .product-edit-actions{
-  display:grid!important;
-  grid-template-columns:repeat(2,minmax(0,1fr))!important;
-  gap:5px!important;
-  margin:0!important;
-  padding:0 7px 7px!important;
-  align-content:start!important;
-}
-#addModal #addProductGrid .product-edit-actions button{
-  box-sizing:border-box!important;
-  min-width:0!important;
-  min-height:29px!important;
-  height:auto!important;
-  padding:5px 3px!important;
-  border:1px solid #6f522e!important;
-  border-radius:8px!important;
-  background:#21160b!important;
-  color:#f5d79a!important;
-  font-size:9px!important;
-  font-weight:850!important;
-  line-height:1.18!important;
-  white-space:normal!important;
-  overflow-wrap:anywhere!important;
-}
-#addModal #addProductGrid .product-edit-actions button[data-edit-catalog-cost]{grid-column:1/-1!important}
-#addModal #addProductGrid .add-product-tile .add-product:active{background:#211507!important}
-@media(max-width:390px){
-  #addModal #addProductGrid.add-grid{gap:7px!important}
-  #addModal #addProductGrid .add-product-tile .add-product{gap:6px!important;padding:8px 7px 6px!important}
-  #addModal #addProductGrid .add-product-tile .add-product .product-icon-wrap{width:29px!important;height:29px!important;flex-basis:29px!important}
-  #addModal #addProductGrid .add-product-tile .add-product b{font-size:11px!important;line-height:1.24!important}
-  #addModal #addProductGrid .add-product-tile .add-product small{font-size:9px!important;line-height:1.28!important}
-  #addModal #addProductGrid .product-edit-actions{gap:4px!important;padding:0 6px 6px!important}
-  #addModal #addProductGrid .product-edit-actions button{min-height:27px!important;font-size:8.5px!important;padding:4px 2px!important}
-}
-@media(min-width:601px){
-  #addModal #addProductGrid .add-product-tile .add-product{padding:10px!important;gap:9px!important}
-  #addModal #addProductGrid .add-product-tile .add-product .product-icon-wrap{width:38px!important;height:38px!important;flex-basis:38px!important}
-  #addModal #addProductGrid .add-product-tile .add-product b{font-size:13px!important}
-  #addModal #addProductGrid .add-product-tile .add-product small{font-size:10px!important}
-}
-/* Reset both scrolling surfaces whenever the picker is opened or category changes. */
-#addModal.modal.open{overscroll-behavior:none!important}
-</style>
-
-
-<style id="v94-stable-picker-scroll-layout">
-/* V94: stable mobile picker — keep controls at the top and scroll only the catalog grid. */
-#addModal.modal.open{
-  position:fixed!important;
-  inset:0!important;
-  display:flex!important;
-  flex-direction:row!important;
-  align-items:stretch!important;
-  justify-content:center!important;
-  overflow:hidden!important;
-  overscroll-behavior:none!important;
-  padding:max(8px,env(safe-area-inset-top)) 9px calc(8px + env(safe-area-inset-bottom))!important;
-  touch-action:pan-y!important;
-}
-#addModal #addModalCard{
-  display:flex!important;
-  flex-direction:column!important;
-  align-self:stretch!important;
-  flex:1 1 auto!important;
-  width:min(100%,720px)!important;
-  max-width:720px!important;
-  height:100%!important;
-  min-height:0!important;
-  max-height:none!important;
-  margin:0 auto!important;
-  overflow:hidden!important;
-  overscroll-behavior:none!important;
-  -webkit-overflow-scrolling:touch!important;
-  padding:13px 12px 10px!important;
-  border-radius:20px!important;
-}
-#addModal #addModalCard > .modal-head,
-#addModal #addModalCard > .entry-add-wrap,
-#addModal #addModalCard > .catalog-create-wrap,
-#addModal #addModalCard > .history-meta,
-#addModal #addModalCard > #addCategoryTabs{
-  flex:0 0 auto!important;
-  min-height:0!important;
-}
-#addModal #addModalCard > .modal-head{margin-bottom:2px!important}
-#addModal #addModalCard > .entry-add-wrap{margin-top:8px!important}
-#addModal #addModalCard > .catalog-create-wrap{margin-top:8px!important}
-#addModal #addModalCard > .history-meta{padding-top:5px!important;padding-bottom:3px!important}
-#addModal #addModalCard > #addCategoryTabs{
-  flex-wrap:nowrap!important;
-  overflow-x:auto!important;
-  overflow-y:hidden!important;
-  white-space:nowrap!important;
-  min-height:43px!important;
-  padding:3px 1px 7px!important;
-  margin-top:2px!important;
-  -webkit-overflow-scrolling:touch!important;
-  overscroll-behavior-x:contain!important;
-  touch-action:pan-x!important;
-}
-#addModal #addProductGrid.add-grid{
-  display:grid!important;
-  grid-template-columns:repeat(2,minmax(0,1fr))!important;
-  grid-auto-rows:max-content!important;
-  align-content:start!important;
-  align-items:start!important;
-  justify-content:stretch!important;
-  gap:9px!important;
-  flex:1 1 0!important;
-  width:100%!important;
-  height:0!important;
-  min-height:130px!important;
-  max-height:none!important;
-  margin:4px 0 0!important;
-  padding:1px 2px calc(12px + env(safe-area-inset-bottom)) 1px!important;
-  overflow-x:hidden!important;
-  overflow-y:auto!important;
-  overscroll-behavior-y:contain!important;
-  -webkit-overflow-scrolling:touch!important;
-  scrollbar-width:thin!important;
-  touch-action:pan-y!important;
-}
-#addModal #addProductGrid .add-product-tile{
-  display:flex!important;
-  flex-direction:column!important;
-  justify-content:flex-start!important;
-  align-self:start!important;
-  min-width:0!important;
-  width:100%!important;
-  height:auto!important;
-  min-height:0!important;
-  max-height:none!important;
-  overflow:hidden!important;
-  border:1px solid #72512d!important;
-  border-radius:13px!important;
-  background:linear-gradient(145deg,#1b1209,#100a06 70%,#0b0705)!important;
-  box-shadow:inset 0 1px 0 #ffdf8712,0 3px 8px #0004!important;
-}
-#addModal #addProductGrid .add-product-tile .add-product{
-  display:flex!important;
-  flex:0 0 auto!important;
-  align-items:flex-start!important;
-  gap:7px!important;
-  width:100%!important;
-  min-width:0!important;
-  min-height:0!important;
-  height:auto!important;
-  padding:9px 8px 7px!important;
-  margin:0!important;
-  border:0!important;
-  border-radius:0!important;
-  background:transparent!important;
-  box-shadow:none!important;
-  text-align:left!important;
-}
-#addModal #addProductGrid .add-product-tile .add-product .product-icon-wrap{
-  flex:0 0 31px!important;
-  width:31px!important;
-  height:31px!important;
-  min-width:31px!important;
-  min-height:31px!important;
-  padding:1px!important;
-  margin:1px 0 0!important;
-  border:1px solid #8b6737!important;
-  border-radius:8px!important;
-  background:#171006!important;
-  box-shadow:none!important;
-}
-#addModal #addProductGrid .add-product-tile .add-product > span:last-child{
-  display:block!important;
-  flex:1 1 auto!important;
-  width:auto!important;
-  min-width:0!important;
-  overflow-wrap:anywhere!important;
-  text-align:left!important;
-}
-#addModal #addProductGrid .add-product-tile .add-product b{
-  display:-webkit-box!important;
-  -webkit-box-orient:vertical!important;
-  -webkit-line-clamp:3!important;
-  overflow:hidden!important;
-  max-height:4.05em!important;
-  min-height:0!important;
-  margin:0!important;
-  color:#fff4df!important;
-  font-size:11.5px!important;
-  font-weight:900!important;
-  line-height:1.3!important;
-  overflow-wrap:anywhere!important;
-  word-break:normal!important;
-}
-#addModal #addProductGrid .add-product-tile .add-product small{
-  display:block!important;
-  max-height:2.7em!important;
-  min-height:0!important;
-  overflow:hidden!important;
-  margin-top:5px!important;
-  padding-top:5px!important;
-  border-top:1px solid #3b2a19!important;
-  color:#d9c29e!important;
-  font-size:9px!important;
-  font-weight:750!important;
-  line-height:1.3!important;
-  overflow-wrap:anywhere!important;
-}
-#addModal #addProductGrid .product-edit-actions{
-  display:grid!important;
-  grid-template-columns:repeat(2,minmax(0,1fr))!important;
-  gap:4px!important;
-  margin:0!important;
-  padding:0 6px 6px!important;
-  align-content:start!important;
-}
-#addModal #addProductGrid .product-edit-actions button{
-  min-width:0!important;
-  min-height:29px!important;
-  height:auto!important;
-  padding:4px 3px!important;
-  border:1px solid #624829!important;
-  border-radius:8px!important;
-  background:#1c1209!important;
-  color:#f4d294!important;
-  font-size:8.5px!important;
-  font-weight:850!important;
-  line-height:1.18!important;
-  white-space:normal!important;
-  overflow-wrap:anywhere!important;
-}
-#addModal #addProductGrid .product-edit-actions button[data-edit-catalog-cost]{grid-column:1/-1!important}
-#addModal #addModalCard > .history-meta:last-child{padding-bottom:3px!important;text-align:center!important}
-@media(min-width:900px){
-  #addModal.modal.open{padding:14px 18px!important;align-items:stretch!important}
-  #addModal #addModalCard{width:96vw!important;max-width:none!important;border-radius:22px!important;padding:20px 22px 12px!important}
-  #addModal #addProductGrid.add-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:12px!important}
-  #addModal #addProductGrid .add-product-tile .add-product .product-icon-wrap{width:38px!important;height:38px!important;flex-basis:38px!important}
-  #addModal #addProductGrid .add-product-tile .add-product b{font-size:13px!important}
-  #addModal #addProductGrid .add-product-tile .add-product small{font-size:10px!important}
-  #addModal #addProductGrid .product-edit-actions button{font-size:10px!important;min-height:32px!important}
-}
-@media(max-height:620px){
-  #addModal #addModalCard{padding-top:8px!important;padding-bottom:6px!important}
-  #addModal #addModalCard > .entry-add-wrap .entry-add{min-height:43px!important;padding:7px!important}
-  #addModal #addModalCard > .catalog-create-wrap .catalog-create-toggle{min-height:40px!important}
-  #addModal #addModalCard > #addCategoryTabs{min-height:37px!important;padding-bottom:4px!important}
-  #addModal #addProductGrid.add-grid{min-height:100px!important}
-}
-@media(prefers-reduced-motion:reduce){#addModal #addProductGrid{scroll-behavior:auto!important}}
-</style>
-
-<style id="v95-single-scroll-no-blank-space">
-/* V95: Remove the nested flex/scroll layout that pushed products into the bottom half of the modal.
-   The modal overlay is now the single vertical scroller; the card and grid follow natural content height. */
-#addModal.modal.open{
-  position:fixed!important;inset:0!important;display:block!important;
-  width:100%!important;height:100%!important;max-height:none!important;
-  overflow-x:hidden!important;overflow-y:auto!important;
-  overscroll-behavior-y:contain!important;-webkit-overflow-scrolling:touch!important;
-  box-sizing:border-box!important;
-  padding:max(8px,env(safe-area-inset-top)) 9px calc(12px + env(safe-area-inset-bottom))!important;
-  touch-action:pan-y!important;
-}
-#addModal #addModalCard{
-  display:block!important;position:relative!important;
-  box-sizing:border-box!important;width:min(100%,720px)!important;max-width:720px!important;
-  height:auto!important;min-height:0!important;max-height:none!important;
-  flex:none!important;align-self:auto!important;margin:0 auto!important;
-  overflow:visible!important;overscroll-behavior:initial!important;
-  -webkit-overflow-scrolling:auto!important;
-  padding:13px 12px calc(18px + env(safe-area-inset-bottom))!important;
-}
-#addModal #addProductGrid.add-grid{
-  display:grid!important;position:static!important;
-  grid-template-columns:repeat(2,minmax(0,1fr))!important;
-  grid-auto-flow:row!important;grid-auto-rows:max-content!important;
-  align-content:start!important;align-items:start!important;justify-content:stretch!important;
-  width:100%!important;height:auto!important;min-height:0!important;max-height:none!important;
-  flex:none!important;overflow:visible!important;
-  gap:8px!important;margin:9px 0 0!important;padding:0 1px!important;
-  touch-action:pan-y!important;scrollbar-gutter:auto!important;
-}
-#addModal #addProductGrid .add-product-tile{
-  display:flex!important;position:relative!important;flex-direction:column!important;
-  align-self:start!important;justify-self:stretch!important;
-  box-sizing:border-box!important;width:100%!important;height:auto!important;
-  min-height:0!important;max-height:none!important;flex:none!important;margin:0!important;
-  overflow:hidden!important;
-}
-#addModal #addProductGrid .add-product-tile .add-product{
-  flex:0 0 auto!important;width:100%!important;height:auto!important;min-height:0!important;
-}
-@media(min-width:900px){
-  #addModal.modal.open{padding:14px 18px calc(18px + env(safe-area-inset-bottom))!important}
-  #addModal #addModalCard{width:96vw!important;max-width:none!important;padding:20px 22px 12px!important}
-  #addModal #addProductGrid.add-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:12px!important}
-}
-</style>
-
-<style id="v96-single-card-scroll-natural-grid">
-/* V96: One vertical scroller only (the modal card). The overlay and product grid never reserve empty height. */
+<style id="v97-stable-picker-layout">
+/* V97: remove conflicting old grid/flex height rules. Never stretch cards to the modal height. */
 html body #addModal.modal.open{
-  position:fixed!important;inset:0!important;display:flex!important;
-  flex-direction:column!important;align-items:center!important;justify-content:flex-start!important;
-  width:100%!important;height:100dvh!important;max-height:100dvh!important;
-  overflow:hidden!important;overscroll-behavior:none!important;
-  box-sizing:border-box!important;
+  position:fixed!important; inset:0!important; display:flex!important;
+  align-items:flex-start!important; justify-content:center!important;
+  overflow:hidden!important; box-sizing:border-box!important;
   padding:max(8px,env(safe-area-inset-top)) 9px calc(10px + env(safe-area-inset-bottom))!important;
-  touch-action:pan-y!important;
+  overscroll-behavior:none!important;
 }
 html body #addModal #addModalCard{
-  display:block!important;position:relative!important;box-sizing:border-box!important;
-  width:min(100%,720px)!important;max-width:720px!important;
-  height:auto!important;min-height:0!important;
+  display:block!important; position:relative!important; flex:0 1 auto!important;
+  width:min(100%,720px)!important; max-width:720px!important;
+  height:auto!important; min-height:0!important;
   max-height:calc(100dvh - max(8px,env(safe-area-inset-top)) - 10px - env(safe-area-inset-bottom))!important;
-  flex:0 1 auto!important;align-self:center!important;margin:0 auto!important;
-  overflow-x:hidden!important;overflow-y:auto!important;
-  overscroll-behavior-y:contain!important;-webkit-overflow-scrolling:touch!important;
-  touch-action:pan-y!important;scrollbar-gutter:auto!important;
-  padding:13px 12px calc(18px + env(safe-area-inset-bottom))!important;
+  overflow-x:hidden!important; overflow-y:auto!important;
+  margin:0 auto!important; box-sizing:border-box!important;
+  -webkit-overflow-scrolling:touch!important; overscroll-behavior-y:contain!important;
 }
-html body #addModal #addProductGrid.add-grid{
-  display:grid!important;position:static!important;
+html body #addModal #addModalCard > #addProductGrid.add-grid{
+  display:grid!important; position:static!important;
   grid-template-columns:repeat(2,minmax(0,1fr))!important;
-  grid-template-rows:none!important;grid-auto-flow:row!important;grid-auto-rows:max-content!important;
-  align-content:start!important;align-items:start!important;justify-content:stretch!important;
-  width:100%!important;height:auto!important;min-height:0!important;max-height:none!important;
-  flex:0 0 auto!important;overflow:visible!important;
-  gap:8px!important;margin:9px 0 0!important;padding:0 1px!important;
-  contain:none!important;content-visibility:visible!important;
+  grid-template-rows:none!important; grid-auto-flow:row!important; grid-auto-rows:max-content!important;
+  align-content:start!important; align-items:start!important; justify-content:stretch!important;
+  width:100%!important; height:auto!important; min-height:0!important; max-height:none!important;
+  flex:none!important; overflow:visible!important; gap:8px!important;
+  margin:9px 0 0!important; padding:0 1px!important;
 }
 html body #addModal #addProductGrid > .add-product-tile{
-  display:flex!important;position:relative!important;flex-direction:column!important;
-  align-self:start!important;justify-self:stretch!important;
-  box-sizing:border-box!important;width:100%!important;height:auto!important;
-  min-height:0!important;max-height:none!important;flex:none!important;margin:0!important;
-  overflow:hidden!important;
+  display:flex!important; flex-direction:column!important; align-self:start!important; justify-self:stretch!important;
+  width:100%!important; height:auto!important; min-height:0!important; max-height:none!important;
+  flex:none!important; margin:0!important; overflow:hidden!important;
 }
 html body #addModal #addProductGrid > .add-product-tile > .add-product{
-  display:flex!important;flex:0 0 auto!important;width:100%!important;
-  height:auto!important;min-height:0!important;max-height:none!important;
+  display:flex!important; flex:0 0 auto!important; width:100%!important;
+  height:auto!important; min-height:0!important; align-items:flex-start!important;
+}
+html body #addModal #addCategoryTabs{
+  flex-wrap:nowrap!important; max-width:100%!important; overflow-x:auto!important; overflow-y:hidden!important;
+  -webkit-overflow-scrolling:touch!important; overscroll-behavior-x:contain!important;
 }
 @media(min-width:900px){
-  html body #addModal #addProductGrid.add-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:12px!important}
-  html body #addModal #addModalCard{width:96vw!important;max-width:none!important}
-}
-@media(max-height:620px){
-  html body #addModal #addProductGrid.add-grid{min-height:0!important;height:auto!important}
+  html body #addModal.modal.open{padding:14px 18px!important;align-items:flex-start!important}
+  html body #addModal #addModalCard{width:96vw!important;max-width:none!important;padding:20px 22px 12px!important}
+  html body #addModal #addModalCard > #addProductGrid.add-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:12px!important}
 }
 </style>
 
