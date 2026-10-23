@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#080604"><title>ПАР ОРДО CONTROL V91</title>
+<meta name="theme-color" content="#080604"><title>ПАР ОРДО CONTROL V92</title>
 <link rel="icon" href="./assets/par-ordo-logo.png">
 <style>
 :root{--bg:#070604;--panel:#100b07;--panel2:#171009;--gold:#f6bd47;--gold2:#ffe5a1;--line:#4d351e;--muted:#b2a18a;--green:#2df082;--red:#ff554b;--blue:#76a8ff}
@@ -1499,7 +1499,7 @@ body.manager-portal .bottom-nav{display:none!important}
 <div id="appView" class="hidden">
  <header class="header">
   <button id="menuButton" class="icon-btn" aria-label="Меню">☰</button>
-  <div class="brand"><img src="./assets/par-ordo-logo.png" alt="" onerror="this.style.display='none'"><div><b>ПАР ОРДО</b><small>CONTROL · V91</small></div></div>
+  <div class="brand"><img src="./assets/par-ordo-logo.png" alt="" onerror="this.style.display='none'"><div><b>ПАР ОРДО</b><small>CONTROL · V92</small></div></div>
   <button id="headerReport" class="icon-btn" aria-label="Отчёт">▥</button>
  </header>
  <main>
@@ -2183,7 +2183,7 @@ function productPhotoMarkup(p,extraClass=''){
   product:`<path d="M21 24 36 15l17 9v23l-17 10-15-10z"/><path d="m21 24 15 9 17-9M36 33v24M29 20l17 10"/><path d="M27 39h6M27 44h6"/>`
  };
  const label=escapeHtml(name);
- return `<span class="product-photo-wrap product-icon-wrap ${escapeHtml(extraClass)}" role="img" aria-label="${label}" title="${label}"><svg class="product-photo-icon" viewBox="0 0 72 72" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><rect x="1.5" y="1.5" width="69" height="69" rx="13" fill="#100a05" stroke="#7b5527" stroke-width="1.2"/><circle cx="36" cy="36" r="25.5" fill="#211406" stroke="#4c351b" stroke-width="1"/><path d="M12 36h5M55 36h5M36 12v4M36 56v4" stroke="#8f652c" stroke-width="1.2" stroke-linecap="round"/><g fill="none" stroke="#f6cd72" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">${shapes[kind]||shapes.product}</g><path d="M21 61h30" stroke="#8b6028" stroke-width="1.3" stroke-linecap="round"/></svg></span>`;
+ return `<span class="product-photo-wrap product-icon-wrap ${escapeHtml(extraClass)}" role="img" aria-label="${label}" title="${label}"><svg class="product-photo-icon" viewBox="0 0 72 72" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><g fill="none" stroke="#f6cd72" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">${shapes[kind]||shapes.product}</g></svg></span>`;
 }
 
 function purchaseCard(i){
@@ -2228,7 +2228,7 @@ function renderAddProductGrid(){
  if(!list.length){root.innerHTML='<div class="add-products-empty">В этой категории пока нет товаров.<br>Администратор может добавить товары через кнопку «Добавить товар».</div>';return}
  root.innerHTML=list.map(p=>`<article class="add-product-tile">
   <button type="button" class="add-product" data-product="${Number(p.id)}">${productPhotoMarkup(p,'picker-photo')}<span><b>${escapeHtml(p.name)}</b><small>${p.price==null?'Цена не указана':money(p.price)} · в наличии ${Number(p.available??p.stock??0)} шт.</small></span></button>
-  ${['admin','staff'].includes(currentRole())?`<div class="product-edit-actions"><button type="button" data-edit-catalog-name="${Number(p.id)}">✎ Название</button><button type="button" data-edit-catalog-price="${Number(p.id)}">✎ Цена продажи</button>${currentRole()==='admin'?`<button type="button" data-edit-catalog-cost="${Number(p.id)}">✎ Закупочная цена</button>`:''}</div>`:''}
+  ${['admin','staff'].includes(currentRole())?`<div class="product-edit-actions"><button type="button" data-edit-catalog-name="${Number(p.id)}">✎ Название</button><button type="button" data-edit-catalog-price="${Number(p.id)}">✎ Цена</button>${currentRole()==='admin'?`<button type="button" data-edit-catalog-cost="${Number(p.id)}">✎ Закупка</button>`:''}</div>`:''}
  </article>`).join('');
  $$('[data-product]').forEach(b=>b.onclick=async()=>{
   const p=db.products.find(x=>Number(x.id)===Number(b.dataset.product));if(!p)return;
@@ -2718,6 +2718,84 @@ syncManagerPortalChrome();
 .purchase .product-icon-wrap{width:49px;height:49px;flex:0 0 49px;border-radius:11px}
 @media(max-width:390px){.product-top .product-icon-wrap{width:60px;height:60px;flex-basis:60px}}
 @media(min-width:900px){.product-top .product-icon-wrap{width:76px;height:76px;flex-basis:76px}}
+</style>
+
+
+<style id="v92-clean-professional-product-cards">
+/* V92: cleaner selector grid, one-frame SVG icons, legible names, balanced edit actions. */
+#addModal #addProductGrid.add-grid{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  align-items:stretch!important;
+  gap:8px!important;
+}
+#addModal .add-product-tile{
+  min-width:0!important; height:100%!important; min-height:0!important;
+  display:flex!important; flex-direction:column!important; align-self:stretch!important;
+  border:1px solid #6a4b29!important; border-radius:14px!important;
+  background:linear-gradient(155deg,#191108 0%,#100a06 72%,#0a0705 100%)!important;
+  box-shadow:inset 0 1px 0 #ffdc7a0c,0 3px 9px #0003!important;
+}
+#addModal .add-product-tile .add-product{
+  width:100%!important; min-width:0!important; min-height:0!important; height:auto!important;
+  flex:1 1 auto!important; display:flex!important; flex-direction:column!important;
+  align-items:stretch!important; justify-content:flex-start!important; gap:7px!important;
+  padding:10px 10px 8px!important; border:0!important; border-radius:13px 13px 0 0!important;
+  background:transparent!important; text-align:left!important; box-shadow:none!important;
+}
+#addModal .add-product-tile .add-product .product-icon-wrap{
+  align-self:center!important; width:39px!important; height:39px!important; flex:0 0 39px!important;
+  border:1px solid #8d642f!important; border-radius:10px!important;
+  background:radial-gradient(circle at 50% 30%,#281a0d,#100a06 80%)!important;
+  box-shadow:inset 0 1px 0 #f7d07b16!important; padding:2px!important;
+}
+#addModal .add-product-tile .add-product .product-photo-icon{width:100%!important;height:100%!important;min-width:0!important;min-height:0!important}
+#addModal .add-product-tile .add-product > span:last-child{
+  display:block!important; width:100%!important; min-width:0!important; flex:1 1 auto!important;
+  text-align:left!important; overflow-wrap:break-word!important; word-break:normal!important; hyphens:none!important;
+}
+#addModal .add-product-tile .add-product b{
+  display:-webkit-box!important; -webkit-box-orient:vertical!important; -webkit-line-clamp:3!important;
+  overflow:hidden!important; min-height:2.4em; color:#fff7e7!important; font-size:12px!important;
+  font-weight:850!important; line-height:1.22!important; letter-spacing:0!important;
+  overflow-wrap:break-word!important; word-break:normal!important; hyphens:none!important;
+}
+#addModal .add-product-tile .add-product small{
+  display:block!important; margin-top:5px!important; padding-top:6px!important;
+  border-top:1px solid #3d2b19!important; min-height:32px; color:#d9c29e!important;
+  font-size:10px!important; font-weight:700!important; line-height:1.3!important;
+  overflow-wrap:break-word!important; word-break:normal!important;
+}
+#addModal .product-edit-actions{
+  display:grid!important; grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:5px!important; margin-top:auto!important; padding:0 8px 8px!important;
+}
+#addModal .product-edit-actions button{
+  min-width:0!important; min-height:31px!important; padding:5px 3px!important;
+  border:1px solid #614725!important; border-radius:9px!important;
+  background:#1b1209!important; color:#f3d294!important; font-size:9px!important;
+  font-weight:800!important; line-height:1.15!important; white-space:normal!important;
+}
+#addModal .product-edit-actions button[data-edit-catalog-cost]{grid-column:1/-1!important}
+#addModal .product-edit-actions button:active{background:#3a250d!important;border-color:#d6a54c!important}
+/* Inventory cards use the same simple icon with no nested decorative frame. */
+.product-photo-wrap.product-icon-wrap{box-shadow:none!important;padding:2px!important}
+.product-photo-wrap.product-icon-wrap .product-photo-icon{overflow:visible}
+@media(max-width:390px){
+  #addModal #addProductGrid.add-grid{gap:7px!important}
+  #addModal .add-product-tile .add-product{padding:8px 8px 7px!important;gap:6px!important}
+  #addModal .add-product-tile .add-product .product-icon-wrap{width:35px!important;height:35px!important;flex-basis:35px!important}
+  #addModal .add-product-tile .add-product b{font-size:11.5px!important;min-height:2.35em}
+  #addModal .add-product-tile .add-product small{font-size:9.5px!important;min-height:30px}
+  #addModal .product-edit-actions{gap:4px!important;padding:0 6px 6px!important}
+  #addModal .product-edit-actions button{font-size:8.5px!important;min-height:29px!important;padding:4px 2px!important}
+}
+@media(min-width:601px){
+  #addModal .add-product-tile .add-product{padding:12px!important;gap:9px!important}
+  #addModal .add-product-tile .add-product .product-icon-wrap{width:44px!important;height:44px!important;flex-basis:44px!important}
+  #addModal .add-product-tile .add-product b{font-size:13px!important}
+  #addModal .add-product-tile .add-product small{font-size:11px!important}
+  #addModal .product-edit-actions button{font-size:10px!important;min-height:34px!important}
+}
 </style>
 
 </body></html>
