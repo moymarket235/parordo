@@ -997,6 +997,7 @@ main{width:min(1180px,100%);padding:13px;margin:auto}.view{display:none}.view.ac
 .customer-base-launch-arrow{width:22px;height:22px;flex:0 0 22px;color:#f7c968}
 .customer-base-launch-arrow svg{width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .customer-base-modal{max-height:92dvh}
+.product-stats-modal{width:min(100%,860px);max-height:92dvh}.product-stats-modal .customer-base-list{display:grid;gap:8px;margin-top:12px}.product-stats-modal .product-ranking-summary{margin-bottom:2px}
 .customer-base-form{display:grid;gap:10px;margin-top:12px;padding:13px;border:1px solid #5b3d20;border-radius:17px;background:#100904}
 .customer-base-form-heading{font-size:12px;font-weight:950;color:#ffda81;line-height:1.35}.customer-base-field{display:grid;gap:5px}
 .customer-base-field label{font-size:10px;font-weight:900;letter-spacing:.04em;color:#e6cfaa}
@@ -1483,7 +1484,7 @@ body.manager-portal .bottom-nav{display:none!important}
 <div id="appView" class="hidden">
  <header class="header">
   <button id="menuButton" class="icon-btn" aria-label="Меню">☰</button>
-  <div class="brand"><img src="./assets/par-ordo-logo.png" alt="" onerror="this.style.display='none'"><div><b>ПАР ОРДО</b><small>CONTROL · V88</small></div></div>
+  <div class="brand"><img src="./assets/par-ordo-logo.png" alt="" onerror="this.style.display='none'"><div><b>ПАР ОРДО</b><small>CONTROL · V89</small></div></div>
   <button id="headerReport" class="icon-btn" aria-label="Отчёт">▥</button>
  </header>
  <main>
@@ -1579,6 +1580,7 @@ body.manager-portal .bottom-nav{display:none!important}
 
 <div id="clientModal" class="modal"><div id="clientModalCard" class="modal-card"></div></div>
 <div id="customerBaseModal" class="modal"><div id="customerBaseModalCard" class="modal-card customer-base-modal"></div></div>
+<div id="productStatsModal" class="modal"><div id="productStatsModalCard" class="modal-card customer-base-modal product-stats-modal"></div></div>
 <div id="addModal" class="modal"><div id="addModalCard" class="modal-card"></div></div>
 <div id="confirmModal" class="modal"><div id="confirmModalCard" class="modal-card"></div></div>
 <div id="managerLoginModal" class="modal"><form id="managerLoginForm" class="modal-card manager-login-card" style="padding:18px"><div class="modal-head"><div><div class="eyebrow">ПАР ОРДО · БЕЗОПАСНЫЙ ВХОД</div><h2>Руководитель панели</h2><div class="history-meta">Введите логин и пароль руководителя</div></div><button class="close" id="closeManagerLogin" type="button">×</button></div><div class="customer-base-form"><div class="customer-base-field"><label for="managerLoginUser">ЛОГИН</label><input id="managerLoginUser" autocomplete="username" value="admin1" required></div><div class="customer-base-field"><label for="managerLoginPass">ПАРОЛЬ</label><input id="managerLoginPass" type="password" autocomplete="current-password" required></div><div id="managerLoginError" class="login-error"></div><button id="managerLoginSubmit" class="primary" type="submit">Войти в панель руководителя →</button></div></form></div>
@@ -1706,12 +1708,33 @@ function setCustomerBaseTab(tab){
  const count=$('#customerBaseCount');if(count)count.classList.toggle('hidden',tab==='products');
  renderCustomerBaseList();
 }
-function renderProductSalesRanking(){
- const list=$('#customerBaseList');if(!list)return;
+function renderProductSalesRanking(targetSelector='#customerBaseList'){
+ const list=$(targetSelector);if(!list)return;
  const analytics=customerBusinessAnalytics;
- if(!analytics||!Array.isArray(analytics.products)){list.innerHTML='<div class="customer-base-empty">Не удалось загрузить статистику товаров. Проверьте Worker API V10.7 и доступ роли.</div>';return}
+ if(!analytics||!Array.isArray(analytics.products)){list.innerHTML='<div class="customer-base-empty">Не удалось загрузить статистику товаров. Проверьте соединение с Worker API и права доступа.</div>';return}
  const rows=analytics.products;
- list.innerHTML=rows.length?`<div class="product-ranking-summary"><b>Рейтинг всех товаров</b><span>Сначала отображаются товары с наибольшим количеством продаж. Ранг 1 — самый продаваемый товар.</span></div>`+rows.map(p=>`<article class="product-rank-card ${p.rank<=3?'top-rank':''}"><div class="product-rank-number">${Number(p.rank)===1?'1':Number(p.rank)===2?'2':Number(p.rank)===3?'3':Number(p.rank)}</div><div class="product-rank-main"><strong>${escapeHtml(p.name)}</strong><small>${escapeHtml(p.category||'Товар')} · Продано: ${Number(p.soldQty||0)} шт.</small></div><div class="product-rank-revenue"><strong>${money(p.revenue||0)}</strong><small>Выручка</small></div></article>`).join(''):'<div class="customer-base-empty">Каталог товаров пока пуст.</div>';
+ list.innerHTML=rows.length?`<div class="product-ranking-summary"><b>Рейтинг всех товаров</b><span>Товары отсортированы по количеству продаж: место № 1 — самый продаваемый товар. При одинаковом количестве учитывается выручка.</span></div>`+rows.map(p=>`<article class="product-rank-card ${p.rank<=3?'top-rank':''}"><div class="product-rank-number">${Number(p.rank)===1?'1':Number(p.rank)===2?'2':Number(p.rank)===3?'3':Number(p.rank)}</div><div class="product-rank-main"><strong>${escapeHtml(p.name)}</strong><small>${escapeHtml(p.category||'Товар')} · Продано: ${Number(p.soldQty||0)} шт.</small></div><div class="product-rank-revenue"><strong>${money(p.revenue||0)}</strong><small>Выручка</small></div></article>`).join(''):'<div class="customer-base-empty">Каталог товаров пока пуст.</div>';
+}
+function renderProductStatsModal(){
+ const card=$('#productStatsModalCard');if(!card)return;
+ card.innerHTML=`<div class="modal-head"><div><div class="eyebrow">ПАР ОРДО · АНАЛИТИКА</div><h2>Статистика товаров</h2><div class="history-meta">Рейтинг продаж всех товаров по количеству и выручке</div></div><button class="close" id="closeProductStats" type="button" aria-label="Закрыть статистику товаров">×</button></div><div class="customer-base-overview"><div class="customer-base-metrics" id="productStatsMetrics"><div class="customer-base-metric"><small>Товаров в рейтинге</small><strong>Загрузка…</strong></div><div class="customer-base-metric"><small>Продано единиц</small><strong>—</strong></div><div class="customer-base-metric"><small>Выручка товаров</small><strong>—</strong></div><div class="customer-base-metric"><small>Лидер продаж</small><strong>—</strong></div></div></div><div id="productStatsList" class="customer-base-list"><div class="customer-base-empty">Загружаем статистику товаров…</div></div>`;
+ $('#closeProductStats').onclick=()=>closeModal('#productStatsModal');
+}
+async function openProductStats(){
+ renderProductStatsModal();
+ openModal('#productStatsModal');
+ const list=$('#productStatsList');
+ try{
+  customerBusinessAnalytics=await api('/api/admin/control/analytics');
+  const rows=Array.isArray(customerBusinessAnalytics?.products)?customerBusinessAnalytics.products:[];
+  const sold=rows.reduce((sum,p)=>sum+Number(p.soldQty||0),0);
+  const revenue=rows.reduce((sum,p)=>sum+Number(p.revenue||0),0);
+  const leader=rows.find(p=>Number(p.soldQty||0)>0);
+  $('#productStatsMetrics').innerHTML=`<div class="customer-base-metric"><small>Товаров в рейтинге</small><strong>${rows.length}</strong></div><div class="customer-base-metric"><small>Продано единиц</small><strong>${sold}</strong></div><div class="customer-base-metric"><small>Выручка товаров</small><strong>${money(revenue)}</strong></div><div class="customer-base-metric"><small>Лидер продаж</small><strong>${leader?escapeHtml(leader.name):'Нет продаж'}</strong></div>`;
+  renderProductSalesRanking('#productStatsList');
+ }catch(e){
+  if(list)list.innerHTML=`<div class="customer-base-empty">Не удалось загрузить статистику товаров.<br>${escapeHtml(e.message||'Проверьте соединение с сервером.')}</div>`;
+ }
 }
 function renderCustomerBaseList(){
  const list=$('#customerBaseList');if(!list)return;
@@ -1746,7 +1769,7 @@ function renderCustomerBaseModal(){
  $('#customerBaseModalCard').innerHTML=`<div class="modal-head"><div><div class="eyebrow">ПАР ОРДО · CRM</div><h2>База клиентов</h2><div class="history-meta">Поиск, история посещений, бонусы и статистика</div></div><button class="close" id="closeCustomerBase" type="button" aria-label="Закрыть">×</button></div>
  <form id="customerBaseForm" class="customer-base-form ${currentRole()==='manager'?'hidden':''}"><div id="customerBaseFormTitle" class="customer-base-form-heading">Регистрация клиента</div><div class="customer-base-field"><label for="customerBaseName">ИМЯ / ФИО КЛИЕНТА *</label><input id="customerBaseName" name="name" autocomplete="name" maxlength="120" placeholder="Например, Азамат Токтосунов" required></div><div class="customer-base-field"><label for="customerBasePhone">ТЕЛЕФОН</label><input id="customerBasePhone" name="phone" type="tel" inputmode="tel" autocomplete="tel" maxlength="40" placeholder="+996 700 000 000" required></div><div class="customer-base-field customer-base-field-note"><label for="customerBaseNote">ПРИМЕЧАНИЕ</label><textarea id="customerBaseNote" name="note" maxlength="500" placeholder="Дополнительная информация (необязательно)"></textarea></div><div class="customer-base-form-actions"><button id="customerBaseSave" class="primary" type="submit">＋ Сохранить клиента</button><button id="customerBaseCancel" class="ghost hidden" type="button">Отмена изменений</button></div></form>${currentRole()==='manager'?'<div class="customer-base-empty">Режим просмотра: регистрация и изменение записей недоступны вашей роли.</div>':''}
  <div id="customerBaseOverview" class="customer-base-overview"><div class="customer-base-empty">Загрузка общей статистики…</div></div>
- <div class="customer-base-tabs"><button type="button" class="active" data-customer-base-tab="clients">Все клиенты</button><button type="button" data-customer-base-tab="bonuses">Бонусы получены</button>${currentRole()==='staff'?'':'<button type="button" data-customer-base-tab="products">Статистика товаров</button>'}</div>
+ <div class="customer-base-tabs"><button type="button" class="active" data-customer-base-tab="clients">Все клиенты</button><button type="button" data-customer-base-tab="bonuses">Бонусы получены</button></div>
  <div id="customerBaseSearchWrap" class="customer-base-search"><input id="customerBaseSearch" type="search" placeholder="Поиск по имени, телефону или примечанию…" autocomplete="off"></div><div id="customerBaseCount" class="customer-base-count">Загрузка базы…</div><div id="customerBaseList" class="customer-base-list"><div class="customer-base-empty">Загружаем базу клиентов…</div></div>`;
  $('#closeCustomerBase').onclick=()=>closeModal('#customerBaseModal');
  $('#customerBaseSearch').addEventListener('input',renderCustomerBaseList);
@@ -2436,7 +2459,8 @@ $('#menuButton').onclick=()=>$('#drawer').classList.add('open');$('#closeDrawer'
 $('#headerReport').onclick=()=>navigate(managerPortalActive()?'managerView':'reportView');
 $('#profitMonth')?.addEventListener('change',()=>loadManagerDashboard());
 $('#managerExitToControl').onclick=()=>{sessionStorage.removeItem(MANAGER_PORTAL_KEY);syncManagerPortalChrome();navigate('homeView');toast('Управление баней ✅')};
-document.addEventListener('click',async e=>{const b=e.target.closest('[data-manager-open]');if(!b)return;const target=b.dataset.managerOpen;if(target==='customers'){await openCustomerBase();return}if(target==='productStats'){await openCustomerBase();setCustomerBaseTab('products');return}if(['expensesView','reportView','productsView','historyView'].includes(target)){navigate(target);return}});
+document.addEventListener('click',async e=>{const b=e.target.closest('[data-manager-open]');if(!b)return;const target=b.dataset.managerOpen;if(target==='customers'){await openCustomerBase();return}if(target==='productStats'){await openProductStats();return}if(['expensesView','reportView','productsView','historyView'].includes(target)){navigate(target);return}});
+$('#productStatsModal').addEventListener('click',e=>{if(e.target.id==='productStatsModal')closeModal('#productStatsModal')});
 $('#logoutButton').onclick=logout;
 $('#openCustomerBase').onclick=openCustomerBase;
 $('#openManagerLogin').onclick=()=>{ $('#drawer').classList.remove('open');$('#managerLoginError').textContent='';$('#managerLoginPass').value='';openModal('#managerLoginModal');$('#managerLoginUser').focus({preventScroll:true}); };
