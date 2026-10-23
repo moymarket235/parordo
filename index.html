@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#080604"><title>ПАР ОРДО CONTROL V52</title>
+<meta name="theme-color" content="#080604"><title>ПАР ОРДО CONTROL V91</title>
 <link rel="icon" href="./assets/par-ordo-logo.png">
 <style>
 :root{--bg:#070604;--panel:#100b07;--panel2:#171009;--gold:#f6bd47;--gold2:#ffe5a1;--line:#4d351e;--muted:#b2a18a;--green:#2df082;--red:#ff554b;--blue:#76a8ff}
@@ -1467,12 +1467,27 @@ body.manager-portal .bottom-nav{display:none!important}
 @media(min-width:1100px){.manager-profit-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.manager-profit-metric{min-height:112px}}
 @media(max-width:390px){.manager-profit-panel{padding:10px}.manager-profit-grid{gap:6px}.manager-profit-metric{min-height:84px;padding:9px 8px}.manager-profit-metric small{font-size:8px}.manager-profit-metric strong{font-size:16px}.manager-profit-entry-split span{font-size:9px;padding:7px}}
 </style>
+<style>
+
+/* V90 legacy product-photo styles retained for compatibility; V91 uses inline SVG icons. */
+.product-photo-wrap{position:relative;display:block;flex:0 0 auto;width:70px;height:70px;overflow:hidden;border:1px solid #9c6d2b;border-radius:14px;background:radial-gradient(circle at 50% 25%,#38220d,#080604 78%);box-shadow:0 1px 0 #f3cb7040,inset 0 0 0 1px #e6bb5b20}
+.product-photo-wrap>img{display:block!important;width:100%!important;height:100%!important;max-width:none!important;max-height:none!important;object-fit:cover!important;object-position:center!important;border:0!important;border-radius:inherit!important;padding:0!important;background:transparent!important}
+.product-photo-brand{position:absolute;left:3px;right:3px;bottom:3px;z-index:2;display:block;padding:2px 1px;border:1px solid #ca983d66;border-radius:4px;background:linear-gradient(90deg,#090604eF,#211305eF,#090604eF);color:#ffe0a0;font-size:6px;font-weight:950;letter-spacing:.12em;line-height:1.1;text-align:center;text-shadow:0 1px 2px #000;pointer-events:none;white-space:nowrap}
+.product-top .product-photo-wrap{width:70px;height:70px;flex:0 0 70px}
+#addModal .add-product .product-photo-wrap{width:54px;height:54px;flex:0 0 54px;border-radius:11px}
+#addModal .add-product .product-photo-wrap>img{width:100%!important;height:100%!important}
+.purchase .product-photo-wrap{width:49px;height:49px;flex:0 0 49px;border-radius:11px}
+.purchase .product-photo-wrap>img{width:100%!important;height:100%!important}
+@media(max-width:390px){.product-top .product-photo-wrap{width:60px;height:60px;flex-basis:60px}.product-photo-brand{font-size:5.5px}}
+@media(min-width:900px){.product-top .product-photo-wrap{width:76px;height:76px;flex-basis:76px}}
+
+</style>
 </head>
 <body>
 <div id="loginView" class="login-view">
  <form id="loginForm" class="login-card">
   <img class="login-logo" src="./assets/par-ordo-logo.png" alt="ПАР ОРДО" onerror="this.style.display='none'">
-  <div class="eyebrow">ПАР ОРДО · CONTROL V88</div>
+  <div class="eyebrow">ПАР ОРДО · CONTROL V91</div>
   <h1>Управление баней</h1><p>Номера · клиенты · покупки · касса · отчёты</p>
   <input id="loginUser" autocomplete="username" placeholder="Логин администратора" required>
   <input id="loginPass" type="password" autocomplete="current-password" placeholder="Пароль" required>
@@ -1484,7 +1499,7 @@ body.manager-portal .bottom-nav{display:none!important}
 <div id="appView" class="hidden">
  <header class="header">
   <button id="menuButton" class="icon-btn" aria-label="Меню">☰</button>
-  <div class="brand"><img src="./assets/par-ordo-logo.png" alt="" onerror="this.style.display='none'"><div><b>ПАР ОРДО</b><small>CONTROL · V89</small></div></div>
+  <div class="brand"><img src="./assets/par-ordo-logo.png" alt="" onerror="this.style.display='none'"><div><b>ПАР ОРДО</b><small>CONTROL · V91</small></div></div>
   <button id="headerReport" class="icon-btn" aria-label="Отчёт">▥</button>
  </header>
  <main>
@@ -2123,13 +2138,61 @@ async function addLoyaltyBonusToCurrentVisit(){
  try{await persistClient(c);saveLocal();await loadCustomerBaseEntries();renderClientModal();renderHome();toast('Бесплатный вход применён ✅');}
  catch(e){c.items=beforeItems;saveLocal();renderClientModal();toast('Не удалось применить бонус: '+e.message)}
 }
+function productIconKind(p){
+ const name=String(p?.name||'').trim();
+ const raw=`${name} ${p?.cat||''}`.toLocaleLowerCase('ru-RU');
+ if(/бонусный вход|вход детский|^вход\b/.test(raw))return 'entry';
+ if(/носки|носок/.test(raw))return 'socks';
+ if(/шорт|трусы|бель[её]|underwear/.test(raw))return 'shorts';
+ if(/майка|футболка|рубашка|халат|одежда|shirt|одежд/.test(raw))return 'shirt';
+ if(/веник/.test(raw))return 'venik';
+ if(/шампун|гель|forx|nivea|clear|pro series|viking|deonica/.test(raw))return 'bottle';
+ if(/мыло/.test(raw))return 'soap';
+ if(/мочалк|пилк|тёрк|терк|гигиен/.test(raw))return 'loofah';
+ if(/дезодорант|rexona|old spice|axe/.test(raw))return 'spray';
+ if(/бритв|станок для бритья/.test(raw))return 'razor';
+ if(/полотенц/.test(raw))return 'towel';
+ if(/чай|кофе/.test(raw))return 'cup';
+ if(/вода|coca[- ]?cola|pepsi|fanta|sprite|шоро|аралаш|чалап|максым|напит|лимонад|сок|legend/.test(raw))return 'drink';
+ if(/шапк/.test(raw))return 'hat';
+ if(/тапоч|обув/.test(raw))return 'slippers';
+ if(/баня|для бани|ковш|таз|аксессуар/.test(raw))return 'bath';
+ return 'product';
+}
+function productPhotoMarkup(p,extraClass=''){
+ const item=p||{};
+ const name=String(item.name||'Товар');
+ const kind=productIconKind(item);
+ const shapes={
+  entry:`<path d="M23 20h25v34H23z"/><path d="M29 20v-5h13v5M31 36h9M36 31v10"/><circle cx="36" cy="27" r="2.5"/>`,
+  socks:`<path d="M25 12h15v23c0 5 3 8 9 10l5 2c4 2 3 7-2 8H31c-8 0-12-4-12-11 0-5 6-9 6-15z"/><path d="M25 18h15M25 24h15M25 30h15"/><path d="M34 47h11"/>`,
+  shorts:`<path d="M20 15h32l-2 20-9 4-5-10-5 10-9-4z"/><path d="M36 15v14M21 25l10 3M51 25l-10 3"/>`,
+  shirt:`<path d="m26 16 10 5 10-5 10 8-6 10-6-4v24H28V30l-6 4-6-10z"/><path d="m30 18 6 6 6-6M36 24v11"/>`,
+  venik:`<path d="M17 54 48 17M22 55 53 18M27 57 58 20"/><path d="M27 41c-9 1-13-4-14-12 9 0 14 4 14 12ZM34 33c-2-9 2-14 10-17 2 9-2 14-10 17ZM39 46c-9 1-14-3-17-11 9-1 14 3 17 11ZM45 28c0-8 5-13 13-14 0 9-4 13-13 14ZM48 51c-8 0-13-4-15-11 8 0 13 4 15 11Z"/><path d="M16 55c9 4 20 4 29-2"/>`,
+  bottle:`<path d="M30 12h12v8l5 5v28c0 3-2 5-5 5H30c-3 0-5-2-5-5V25l5-5z"/><path d="M30 12h12M27 31h20M28 42h18"/><path d="M32 20h8"/>`,
+  soap:`<path d="M20 29c0-5 4-9 9-9h17c5 0 9 4 9 9v15c0 5-4 9-9 9H29c-5 0-9-4-9-9z"/><path d="M28 31c4-3 9-3 13 0M31 40h12"/><circle cx="23" cy="17" r="2"/><circle cx="49" cy="17" r="3"/>`,
+  loofah:`<path d="M22 21c-7 5-8 17-2 25l12 10c6 4 16 1 19-6l5-12c2-8-4-17-13-18z"/><path d="m24 28 26 20M21 36l20 17M31 22l22 18M28 47l17-24M37 53l13-19M21 31l14-10"/><circle cx="28" cy="17" r="2"/><circle cx="49" cy="18" r="2"/>`,
+  spray:`<path d="M29 21h18v34H26V24z"/><path d="M31 21v-5h14v5M34 16v-4h9v4M44 12h8v4h-8"/><path d="M29 34h17M31 42h13"/>`,
+  razor:`<path d="M28 15h17l5 8-4 6H25l-3-6z"/><path d="M31 29 36 54M42 29l-5 25M28 20h17M27 24h21"/><path d="M33 54h7"/>`,
+  towel:`<path d="M18 20h37v13H18zM24 33h32v13H24zM18 46h37v10H18z"/><path d="M24 24h25M30 38h19M24 50h25"/>`,
+  cup:`<path d="M20 29h30l-3 23H24z"/><path d="M50 33h5c6 0 6 10-1 10h-5M25 23h21M30 19h12"/><path d="M29 36h14M30 42h12"/>`,
+  drink:`<path d="M28 12h16v5l5 5v32c0 3-2 5-5 5H28c-3 0-5-2-5-5V22l5-5z"/><path d="M28 12h16M26 30h22M28 42h18"/><path d="M34 22h5"/>`,
+  hat:`<path d="M18 51c0-20 8-34 18-34s18 14 18 34c-11 7-25 7-36 0z"/><path d="M18 51c12-3 25-3 36 0M27 34c5-4 11-4 17 0"/>`,
+  slippers:`<path d="M25 16c9 0 16 7 16 17v18c0 5-4 8-9 7l-8-2c-7-2-10-9-8-16l4-17c1-4 2-7 5-7z"/><path d="M43 27c8-1 14 5 14 14v10c0 4-4 7-8 6l-5-2"/><path d="M20 47c6 4 12 5 19 2M44 47l10 2"/>`,
+  bath:`<path d="M19 34h34l-4 19H23z"/><path d="M22 34v-6c0-3 2-5 5-5M31 23v-7M40 23v-7M49 23c-2-4-1-6 2-8"/><path d="M24 40h24M28 46h16"/>`,
+  product:`<path d="M21 24 36 15l17 9v23l-17 10-15-10z"/><path d="m21 24 15 9 17-9M36 33v24M29 20l17 10"/><path d="M27 39h6M27 44h6"/>`
+ };
+ const label=escapeHtml(name);
+ return `<span class="product-photo-wrap product-icon-wrap ${escapeHtml(extraClass)}" role="img" aria-label="${label}" title="${label}"><svg class="product-photo-icon" viewBox="0 0 72 72" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><rect x="1.5" y="1.5" width="69" height="69" rx="13" fill="#100a05" stroke="#7b5527" stroke-width="1.2"/><circle cx="36" cy="36" r="25.5" fill="#211406" stroke="#4c351b" stroke-width="1"/><path d="M12 36h5M55 36h5M36 12v4M36 56v4" stroke="#8f652c" stroke-width="1.2" stroke-linecap="round"/><g fill="none" stroke="#f6cd72" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">${shapes[kind]||shapes.product}</g><path d="M21 61h30" stroke="#8b6028" stroke-width="1.3" stroke-linecap="round"/></svg></span>`;
+}
+
 function purchaseCard(i){
- const prod=db.products.find(p=>Number(p.id)===Number(i.productId)),img=prod?.img||'./assets/par-ordo-logo.png';
+ const prod=db.products.find(p=>Number(p.id)===Number(i.productId));const photoProduct=prod||{name:String(i.name||'Товар'),cat:'',img:''};
  const method=i.method||'pending';
  const methodClass=method==='cash'?'is-cash':method==='transfer'?'is-transfer':'is-pending';
  const canEditLinePrice=['admin','staff'].includes(currentRole());
  const editButton=canEditLinePrice?`<button class="edit-price" type="button" data-edit-price="${i.id}">✎ Изменить цену</button>`:'';
- return `<article class="purchase"><img src="${escapeHtml(img)}" alt="" onerror="this.src='./assets/par-ordo-logo.png'"><div class="purchase-info"><div class="purchase-title">${escapeHtml(i.name)}</div><div class="purchase-price"><span>${money(i.price)} × ${i.qty} = <b>${money(i.price*i.qty)}</b></span>${editButton}</div><div class="quantity"><button type="button" data-qty="${i.id}|-1">−</button><b>${i.qty}</b><button type="button" data-qty="${i.id}|1">＋</button><span style="margin-left:auto;color:var(--muted);font-size:9px">шт.</span></div><div class="pay-methods"><button class="${method==='pending'?methodClass:''}" type="button" data-payment="${i.id}|pending">Ожидает оплаты</button><button class="${method==='cash'?methodClass:''}" type="button" data-payment="${i.id}|cash">Оплачено наличными</button><button class="${method==='transfer'?methodClass:''}" type="button" data-payment="${i.id}|transfer">Оплачено переводом</button></div></div></article>`;
+ return `<article class="purchase">${productPhotoMarkup(photoProduct,'purchase-photo')}<div class="purchase-info"><div class="purchase-title">${escapeHtml(i.name)}</div><div class="purchase-price"><span>${money(i.price)} × ${i.qty} = <b>${money(i.price*i.qty)}</b></span>${editButton}</div><div class="quantity"><button type="button" data-qty="${i.id}|-1">−</button><b>${i.qty}</b><button type="button" data-qty="${i.id}|1">＋</button><span style="margin-left:auto;color:var(--muted);font-size:9px">шт.</span></div><div class="pay-methods"><button class="${method==='pending'?methodClass:''}" type="button" data-payment="${i.id}|pending">Ожидает оплаты</button><button class="${method==='cash'?methodClass:''}" type="button" data-payment="${i.id}|cash">Оплачено наличными</button><button class="${method==='transfer'?methodClass:''}" type="button" data-payment="${i.id}|transfer">Оплачено переводом</button></div></div></article>`;
 }
 function cleanCatalogDisplayName(value){
  return String(value||'').replace(/\s*(?:[-–—,:]\s*)?\d+(?:[.,]\d+)?\s*(?:мл|ml|л|l|литр(?:а|ов)?)(?=\s|$|[,;.)])/giu,'').replace(/\s{2,}/g,' ').replace(/\s*[-–—,:;]\s*$/g,'').trim();
@@ -2164,7 +2227,7 @@ function renderAddProductGrid(){
  const list=db.products.filter(p=>addProductCategory==='Все'||productPickerCategory(p)===addProductCategory);
  if(!list.length){root.innerHTML='<div class="add-products-empty">В этой категории пока нет товаров.<br>Администратор может добавить товары через кнопку «Добавить товар».</div>';return}
  root.innerHTML=list.map(p=>`<article class="add-product-tile">
-  <button type="button" class="add-product" data-product="${Number(p.id)}"><img src="${escapeHtml(p.img||'./assets/par-ordo-logo.png')}" alt="" onerror="this.src='./assets/par-ordo-logo.png'"><span><b>${escapeHtml(p.name)}</b><small>${p.price==null?'Цена не указана':money(p.price)} · в наличии ${Number(p.available??p.stock??0)} шт.</small></span></button>
+  <button type="button" class="add-product" data-product="${Number(p.id)}">${productPhotoMarkup(p,'picker-photo')}<span><b>${escapeHtml(p.name)}</b><small>${p.price==null?'Цена не указана':money(p.price)} · в наличии ${Number(p.available??p.stock??0)} шт.</small></span></button>
   ${['admin','staff'].includes(currentRole())?`<div class="product-edit-actions"><button type="button" data-edit-catalog-name="${Number(p.id)}">✎ Название</button><button type="button" data-edit-catalog-price="${Number(p.id)}">✎ Цена продажи</button>${currentRole()==='admin'?`<button type="button" data-edit-catalog-cost="${Number(p.id)}">✎ Закупочная цена</button>`:''}</div>`:''}
  </article>`).join('');
  $$('[data-product]').forEach(b=>b.onclick=async()=>{
@@ -2356,7 +2419,7 @@ async function renderInventory(){
  const i=db.incoming[p.id],inc=i?.day===todayKey()?Number(i.qty||0):0;
  return `<article class="product">
   <div class="product-top">
-    <img src="${escapeHtml(p.img||'./assets/par-ordo-logo.png')}" alt="" onerror="this.src='./assets/par-ordo-logo.png'">
+    ${productPhotoMarkup(p,'inventory-photo')}
     <div class="product-title"><b>${escapeHtml(p.name)}</b><small>${escapeHtml(p.cat||'Товар')}</small></div>
   </div>
   <div class="stock-stats">
@@ -2646,6 +2709,15 @@ syncManagerPortalChrome();
   #addModal #addModalCard,#clientModal #clientModalCard{max-height:92dvh!important}
 }
 @media(prefers-reduced-motion:reduce){#addModal #addModalCard,#clientModal #clientModalCard{scroll-behavior:auto}}
+
+/* V91 — professional offline SVG product icons; PAR ORDO brand stays in the header only */
+.product-photo-wrap.product-icon-wrap{display:block;flex:0 0 auto;overflow:hidden;border:1px solid #9c6d2b;border-radius:14px;background:radial-gradient(circle at 50% 25%,#38220d,#080604 78%);box-shadow:0 1px 0 #f3cb7040,inset 0 0 0 1px #e6bb5b20;padding:0}
+.product-photo-icon{display:block;width:100%;height:100%;min-width:100%;min-height:100%}
+.product-top .product-icon-wrap{width:70px;height:70px;flex:0 0 70px}
+#addModal .add-product .product-icon-wrap{width:54px;height:54px;flex:0 0 54px;border-radius:11px}
+.purchase .product-icon-wrap{width:49px;height:49px;flex:0 0 49px;border-radius:11px}
+@media(max-width:390px){.product-top .product-icon-wrap{width:60px;height:60px;flex-basis:60px}}
+@media(min-width:900px){.product-top .product-icon-wrap{width:76px;height:76px;flex-basis:76px}}
 </style>
 
 </body></html>
