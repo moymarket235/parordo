@@ -1,0 +1,67 @@
+/* PAR ORDO PRO V106 — fixed viewport background + mobile performance tune.
+   Does not target bracelet cards, bracelet images, numbers, filters or room grid. */
+
+html {
+  background: #050706 !important;
+  min-height: 100%;
+}
+
+/* Stop the large photo from scrolling as part of the document. Render it once
+   in a viewport-fixed layer instead of several background-attachment layers. */
+body {
+  position: relative !important;
+  z-index: 0 !important;
+  background: transparent !important;
+  background-image: none !important;
+  background-attachment: initial !important;
+  background-color: transparent !important;
+  min-height: 100dvh;
+  scroll-behavior: auto !important;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-color: #050706;
+  background-image:
+    linear-gradient(180deg, rgba(3,7,5,.35) 0%, rgba(3,7,5,.43) 48%, rgba(3,7,5,.62) 100%),
+    url('./assets/par-ordo-spa-background.webp');
+  background-position: center center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  transform: translateZ(0);
+}
+
+/* Keep the app surfaces transparent enough to show the fixed scenery, while
+   retaining the existing contrast and borders. */
+#appView, main { background: transparent !important; }
+
+/* Mobile GPU tune: disable expensive backdrop blurs on low-power devices.
+   Existing colors, borders and content remain unchanged. */
+@media (max-width: 700px) {
+  .header,
+  .bottom-nav,
+  .drawer-panel,
+  .modal-card,
+  .login-card,
+  .icon-btn {
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+  }
+
+  /* Keep decorative lighting static and inexpensive. */
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+  }
+}
+
+/* The modal windows scroll independently; the page background remains fixed. */
+.modal, .drawer {
+  overscroll-behavior: contain;
+}
+
+/* Ensure the fixed background never intercepts taps. */
+body::before { touch-action: none; }
