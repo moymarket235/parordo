@@ -1,0 +1,358 @@
+/* PAR ORDO PRO UI V101 — dashboard polish only.
+   Deliberately does not target .room, .room-visual, .bracelet, #roomsGrid or bracelet filters. */
+
+/* Top app bar */
+.header{
+  background:linear-gradient(180deg,rgba(7,15,12,.98),rgba(7,10,8,.96))!important;
+  border-bottom:1px solid rgba(65,210,139,.24)!important;
+  box-shadow:0 8px 24px rgba(0,0,0,.2)!important;
+}
+.header .icon-btn{
+  border-color:rgba(226,183,93,.48)!important;
+  background:linear-gradient(145deg,#151b16,#090c0a)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 5px 14px rgba(0,0,0,.18)!important;
+  transition:transform .18s ease,border-color .18s ease,background .18s ease;
+}
+.header .icon-btn:active{transform:scale(.96)}
+.brand b{letter-spacing:.16em!important}
+.brand small{color:#8feab8!important;letter-spacing:.18em!important}
+
+/* Main dashboard hero — leaves bracelet cards untouched */
+#homeView > .hero{
+  position:relative!important;
+  isolation:isolate!important;
+  overflow:hidden!important;
+  min-height:164px!important;
+  padding:21px!important;
+  border:1px solid rgba(222,177,86,.46)!important;
+  border-radius:24px!important;
+  background:
+    radial-gradient(ellipse at 88% 15%,rgba(50,218,132,.14),transparent 42%),
+    linear-gradient(135deg,#18170f 0%,#0d110d 62%,#090b09 100%)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.055),0 16px 34px rgba(0,0,0,.25)!important;
+}
+#homeView > .hero::after{
+  content:""!important;position:absolute!important;z-index:-1!important;right:-50px!important;bottom:-82px!important;
+  width:190px!important;height:190px!important;border-radius:50%!important;
+  border:1px solid rgba(71,230,149,.12)!important;
+  box-shadow:0 0 0 17px rgba(71,230,149,.025),0 0 0 35px rgba(71,230,149,.018)!important;
+  pointer-events:none!important;
+}
+#homeView > .hero .eyebrow{color:#e6c77e!important;letter-spacing:.19em!important}
+#homeView > .hero h1{font-family:system-ui,-apple-system,Segoe UI,sans-serif!important;font-weight:820!important;letter-spacing:-.045em!important;line-height:1.08!important}
+#homeView > .hero p{max-width:390px!important;color:#c3c8bd!important;font-size:13px!important;line-height:1.6!important}
+#homeView > .hero .live-badge{
+  flex-shrink:0!important;border-color:#42d98a!important;border-radius:22px!important;
+  background:linear-gradient(155deg,#0c291b,#08160f)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 0 28px rgba(45,240,130,.09)!important;
+}
+#homeView > .hero .live-badge strong{font-size:31px!important;font-weight:850!important}
+#homeView > .hero .live-badge span{font-size:10px!important;letter-spacing:.04em!important}
+
+/* Shift control: clearer status hierarchy and tighter spacing */
+#shiftControl .shift-control-card{
+  gap:13px!important;margin:0 0 13px!important;padding:17px!important;
+  border-radius:22px!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.045),0 13px 28px rgba(0,0,0,.19)!important;
+}
+#shiftControl .shift-control-card.is-open{
+  background:radial-gradient(ellipse at 100% 0,rgba(39,191,111,.13),transparent 48%),linear-gradient(145deg,#0b2117,#09110d 78%)!important;
+  border-color:rgba(62,208,133,.55)!important;
+}
+#shiftControl .shift-control-eyebrow{font-size:11px!important;letter-spacing:.16em!important}
+#shiftControl .shift-control-title{font-weight:850!important;letter-spacing:-.025em!important}
+#shiftControl .shift-control-description,#shiftControl .shift-control-card p{line-height:1.55!important;color:#c4cec5!important}
+#shiftControl .shift-control-meta{color:#a5b8aa!important}
+#shiftControl .shift-control-card button{min-height:46px!important;border-radius:14px!important;font-size:13px!important;font-weight:800!important}
+
+/* Daily KPI tiles: refined, consistent hierarchy */
+#homeKpis.kpis{gap:10px!important;margin:12px 0!important}
+#homeKpis .kpi-v3{
+  min-height:112px!important;padding:13px 11px!important;border-radius:21px!important;
+  backdrop-filter:blur(8px)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.055),0 9px 22px rgba(0,0,0,.2)!important;
+}
+#homeKpis .kpi-v3::before{height:2px!important;opacity:1!important}
+#homeKpis .kpi-icon{box-shadow:inset 0 1px 0 rgba(255,255,255,.07),0 5px 16px rgba(0,0,0,.18)!important}
+#homeKpis .kpi-copy small{font-size:9px!important;line-height:1.45!important;letter-spacing:.08em!important;color:#d2d8ce!important}
+#homeKpis .kpi-copy strong{font-weight:850!important;text-shadow:none!important}
+#homeKpis .kpi-graph{opacity:.6!important}
+
+/* Customer database quick action */
+#homeView .customer-base-launch{
+  min-height:78px!important;padding:14px 16px!important;gap:13px!important;
+  border:1px solid rgba(63,205,132,.42)!important;border-radius:19px!important;
+  background:radial-gradient(ellipse at 0 0,rgba(47,211,128,.1),transparent 55%),linear-gradient(135deg,#111b14,#0a0e0b)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.04),0 8px 20px rgba(0,0,0,.18)!important;
+}
+#homeView .customer-base-launch-icon{border-color:rgba(71,220,145,.5)!important;background:#0d281a!important;color:#7df0ad!important}
+#homeView .customer-base-launch-copy strong{font-size:15px!important;font-weight:850!important;letter-spacing:-.015em!important}
+#homeView .customer-base-launch-copy small{font-size:11px!important;line-height:1.5!important;color:#b9c8bc!important}
+#homeView .customer-base-launch-arrow{color:#84e6ac!important}
+
+/* Global bottom navigation */
+.bottom-nav{
+  background:linear-gradient(180deg,rgba(10,13,10,.97),rgba(5,7,6,.99))!important;
+  border-top:1px solid rgba(66,198,130,.23)!important;
+  box-shadow:0 -10px 28px rgba(0,0,0,.28)!important;
+  backdrop-filter:blur(18px)!important;
+}
+.nav-item{transition:color .18s ease,transform .18s ease!important}
+.nav-item .nav-icon{border:1px solid transparent!important;border-radius:12px!important;transition:all .18s ease!important}
+.nav-item.active{color:#91edb6!important}
+.nav-item.active .nav-icon{
+  background:linear-gradient(145deg,#123d28,#0b2117)!important;
+  border-color:rgba(69,215,139,.42)!important;
+  box-shadow:0 0 17px rgba(45,240,130,.1),inset 0 1px 0 rgba(255,255,255,.05)!important;
+}
+.nav-item.active span{filter:none!important}
+.nav-item small{font-size:10px!important;font-weight:750!important}
+
+/* Non-bracelet areas only: stock, history, archive, reports and expenses */
+#productsView .product,#historyView .history-card,#archiveView .history-card,
+#expensesView .history-card,#reportView .report-panel{
+  border-radius:18px!important;border-color:rgba(205,167,93,.28)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.035),0 8px 20px rgba(0,0,0,.16)!important;
+}
+#productsView .product{background:linear-gradient(145deg,#121610,#0b0e0b)!important}
+#productsView .product-top b{font-weight:820!important;letter-spacing:-.01em!important}
+#productsView .stock-stat{border-radius:12px!important;background:rgba(5,8,6,.45)!important}
+#productsView .add-stock input{border-radius:12px!important}
+#productsView .add-stock button{border-radius:12px!important}
+#historyView .history-card,#archiveView .history-card,#expensesView .history-card{background:linear-gradient(145deg,#141610,#0b0d0a)!important}
+#reportView .report-panel{background:linear-gradient(145deg,#141610,#0a0d0a)!important}
+
+/* Touch-friendly behavior. No selectors below target bracelet elements. */
+@media(max-width:420px){
+  #homeView > .hero{min-height:0!important;padding:17px!important;gap:10px!important;border-radius:21px!important}
+  #homeView > .hero h1{font-size:clamp(23px,6vw,30px)!important}
+  #homeView > .hero p{font-size:12px!important;line-height:1.5!important}
+  #homeView > .hero .live-badge{min-width:70px!important;width:70px!important;height:80px!important;border-radius:20px!important}
+  #homeView > .hero .live-badge strong{font-size:27px!important}
+  #shiftControl .shift-control-card{padding:14px!important;border-radius:19px!important}
+  #homeKpis.kpis{gap:8px!important}
+  #homeKpis .kpi-v3{min-height:100px!important;padding:10px 8px!important;border-radius:17px!important}
+  #homeKpis .kpi-copy small{font-size:8px!important}
+  #homeKpis .kpi-copy strong{font-size:clamp(16px,4.4vw,20px)!important}
+  #homeView .customer-base-launch{min-height:72px!important;padding:11px!important;border-radius:16px!important}
+  .nav-item .nav-icon{width:34px!important;height:29px!important}
+}
+@media(prefers-reduced-motion:reduce){.nav-item,.nav-item .nav-icon,.header .icon-btn{transition:none!important}}
+/* PAR ORDO PRO UI V102 — richer full-app background + slightly stronger small text.
+   Intentional exclusion: no selectors target bracelet cards, their images, digits, filters, or room grid. */
+
+/* Full application canvas: graphite, deep forest green, and restrained warm-gold ambient light. */
+html{background:#060a08!important}
+body{
+  background-color:#060a08!important;
+  background-image:
+    radial-gradient(ellipse at 7% 2%,rgba(26,104,68,.23) 0,rgba(13,45,31,.12) 23%,transparent 47%),
+    radial-gradient(ellipse at 98% 20%,rgba(171,123,43,.14) 0,transparent 35%),
+    radial-gradient(ellipse at 50% 100%,rgba(23,74,53,.18) 0,transparent 48%),
+    linear-gradient(155deg,#080e0b 0%,#070907 42%,#090b08 72%,#050706 100%)!important;
+  background-attachment:fixed!important;
+}
+#appView{background:transparent!important;min-height:100dvh!important}
+main{background:transparent!important}
+
+/* Header now feels like part of the same premium app surface. */
+.header{
+  background:linear-gradient(180deg,rgba(7,17,12,.97),rgba(6,11,8,.94))!important;
+  border-bottom:1px solid rgba(102,204,145,.25)!important;
+  box-shadow:0 8px 26px rgba(0,0,0,.24),inset 0 1px 0 rgba(255,255,255,.025)!important;
+}
+
+/* Unified, more polished surfaces for all major non-bracelet screens. */
+#homeView > .hero,
+#shiftControl .shift-control-card,
+#homeKpis .kpi-v3,
+#homeView .customer-base-launch,
+.manager-hero,
+.manager-kpi,
+.manager-action,
+.manager-section-title,
+#productsView .product,
+#historyView .history-card,
+#archiveView .history-card,
+#expensesView .history-card,
+#reportView .report-panel,
+.report-tile,
+.customer-base-modal,
+.product-stats-modal,
+.modal-card,
+.drawer-panel,
+.login-card,
+.empty-state{
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.055),
+    0 12px 28px rgba(0,0,0,.22)!important;
+}
+#homeView > .hero{
+  border-color:rgba(210,177,104,.42)!important;
+  background:
+    radial-gradient(ellipse at 100% 0,rgba(49,174,108,.12),transparent 42%),
+    linear-gradient(135deg,rgba(24,29,21,.97),rgba(10,16,12,.98) 70%,rgba(7,11,8,.98))!important;
+}
+#shiftControl .shift-control-card.is-open{
+  background:
+    radial-gradient(ellipse at 100% 0,rgba(45,213,125,.14),transparent 48%),
+    linear-gradient(145deg,rgba(10,38,25,.98),rgba(7,17,12,.98) 76%)!important;
+}
+#homeKpis .kpi-v3{
+  background:
+    radial-gradient(ellipse at 12% 0,rgba(255,255,255,.035),transparent 42%),
+    linear-gradient(145deg,rgba(20,25,19,.97),rgba(8,12,9,.98) 82%)!important;
+  backdrop-filter:blur(10px)!important;
+}
+#homeView .customer-base-launch,
+.manager-action,
+#productsView .product,
+#historyView .history-card,
+#archiveView .history-card,
+#expensesView .history-card,
+#reportView .report-panel,
+.report-tile{
+  background:
+    radial-gradient(ellipse at 0 0,rgba(47,160,99,.065),transparent 54%),
+    linear-gradient(145deg,rgba(18,24,18,.97),rgba(7,11,8,.98))!important;
+}
+.manager-hero,.manager-kpi,.manager-section-title{
+  border-color:rgba(201,164,91,.27)!important;
+  background:linear-gradient(145deg,rgba(21,26,19,.97),rgba(8,12,9,.98))!important;
+}
+.modal-card,.drawer-panel,.login-card{
+  background:
+    radial-gradient(ellipse at 100% 0,rgba(34,119,75,.11),transparent 48%),
+    linear-gradient(155deg,#151b14 0%,#0a100c 65%,#070a08 100%)!important;
+  border-color:rgba(196,160,91,.4)!important;
+}
+.empty-state{
+  background:rgba(9,15,11,.92)!important;
+  border-color:rgba(131,173,143,.32)!important;
+}
+.bottom-nav{
+  background:linear-gradient(180deg,rgba(8,15,10,.96),rgba(4,7,5,.995))!important;
+  border-top:1px solid rgba(86,185,124,.27)!important;
+  box-shadow:0 -12px 28px rgba(0,0,0,.32)!important;
+  backdrop-filter:blur(18px)!important;
+}
+
+/* Small descriptions and labels: keep their existing sizes; only make them slightly bolder. */
+.header .brand small,
+#homeView > .hero .eyebrow,
+#homeView > .hero p,
+#shiftControl .shift-control-eyebrow,
+#shiftControl .shift-control-description,
+#shiftControl .shift-control-card p,
+#shiftControl .shift-control-meta,
+#homeKpis .kpi-copy small,
+#homeView .customer-base-launch-copy small,
+#homeView .section-head .hint,
+#productsView .product-top small,
+#productsView .stock-stat small,
+#historyView .history-meta,
+#archiveView .history-meta,
+#expensesView .history-meta,
+#reportView .history-meta,
+#reportView .report-tile small,
+#reportView .report-total small,
+.manager-kpi small,
+.manager-action-copy small,
+.manager-top-copy small,
+.manager-empty,
+.customer-base-field label,
+.modal-card .history-meta,
+.drawer-links button,
+.nav-item small,
+.login-card p,
+.empty-state{
+  font-weight:600!important;
+}
+
+/* Improve reading contrast without modifying type sizes. */
+#homeView > .hero p,
+#shiftControl .shift-control-description,
+#shiftControl .shift-control-card p,
+#shiftControl .shift-control-meta,
+#homeView .customer-base-launch-copy small,
+#productsView .product-top small,
+#productsView .stock-stat small,
+.history-meta,
+.manager-action-copy small,
+.manager-top-copy small,
+.manager-empty,
+.login-card p{
+  color:#c3cec4!important;
+}
+#homeView .section-head .hint,
+#productsView .stock-stat strong,
+#reportView .report-total strong{font-weight:750!important}
+
+/* Keep background fixed on mobile without forcing GPU-heavy animated effects. */
+@media(max-width:600px){
+  body{background-attachment:scroll!important}
+}
+@media(prefers-reduced-motion:reduce){
+  *{scroll-behavior:auto!important}
+}
+
+
+/* PAR ORDO PRO UI V103 — premium sauna ambience + AZA ecosystem signature.
+   Intentionally does not target bracelet elements, images, labels, filters, or room grid. */
+html,body{background-color:#050806!important}
+body{
+  background-image:
+    radial-gradient(ellipse at 4% 9%,rgba(25,105,69,.22) 0%,transparent 33%),
+    radial-gradient(ellipse at 98% 24%,rgba(184,121,43,.14) 0%,transparent 33%),
+    radial-gradient(ellipse at 50% 96%,rgba(20,75,51,.16) 0%,transparent 43%),
+    linear-gradient(90deg,rgba(0,0,0,.22) 0%,transparent 12%,transparent 88%,rgba(0,0,0,.24) 100%),
+    repeating-linear-gradient(90deg,rgba(183,128,59,.025) 0,rgba(183,128,59,.025) 1px,transparent 2px,transparent 42px),
+    linear-gradient(160deg,#080e0b 0%,#070907 48%,#050706 100%)!important;
+  background-attachment:fixed!important;
+}
+@media(max-width:600px){body{background-attachment:scroll!important}}
+
+/* Add AZA DIGITAL ECOSYSTEM under the existing premium system label. */
+.header .brand small::after{
+  content:"AZA DIGITAL ECOSYSTEM";
+  display:block;
+  margin-top:2px;
+  color:#d1ad64;
+  font-size:8px;
+  font-weight:700;
+  line-height:1.35;
+  letter-spacing:.13em;
+  white-space:nowrap;
+  text-shadow:0 0 9px rgba(210,168,81,.12);
+}
+
+/* Hide a decorative steam badge if one exists; preserve the real shift status dot. */
+#shiftControl .shift-steam-badge,
+#shiftControl .shift-steam-icon,
+#shiftControl .shift-control-steam,
+#shiftControl .shift-control-illustration,
+#shiftControl .shift-side-icon,
+#shiftControl .shift-visual-icon{display:none!important}
+
+/* Keep small labels at their existing size; only slightly increase weight. */
+.header .brand small,
+#homeView > .hero .eyebrow,
+#homeView > .hero p,
+#shiftControl .shift-control-eyebrow,
+#shiftControl .shift-control-text,
+#shiftControl .shift-control-meta,
+#homeKpis .kpi-copy small,
+#homeView .customer-base-launch-copy small,
+#productsView .product-top small,
+#productsView .stock-stat small,
+.history-meta,.manager-action-copy small,.manager-top-copy small,
+.customer-base-field label,.drawer-links button,.nav-item small{
+  font-weight:650!important;
+}
+
+/* Restrained premium highlights; no bracelet selectors below. */
+.header .brand img{
+  box-shadow:0 0 16px rgba(221,161,55,.18),0 0 0 1px rgba(229,189,104,.16)!important;
+}
+#shiftControl .shift-control-card.is-open{
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 12px 28px rgba(0,0,0,.23),0 0 24px rgba(20,107,64,.06)!important;
+}
