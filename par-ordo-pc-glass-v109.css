@@ -1,0 +1,259 @@
+/* PAR ORDO PRO — PC Glass Layout V109
+   Desktop-only layout and translucency upgrade. Keeps mobile UI intact.
+   Deliberately does not style .room, .room-visual, .room-bracelet-photo,
+   .band-number-overlay, bracelet state controls, timer logic, or #roomsGrid cards. */
+
+/* A clearer, brighter sauna wallpaper on wide displays, rendered in one fixed layer. */
+@media (min-width: 1000px) {
+  html::before {
+    background-image:
+      linear-gradient(180deg, rgba(2, 7, 4, .12) 0%, rgba(2, 7, 4, .22) 56%, rgba(2, 7, 4, .35) 100%),
+      url("./assets/par-ordo-spa-background.webp") !important;
+    background-position: center center !important;
+    background-size: cover !important;
+    background-repeat: no-repeat !important;
+  }
+
+  body,
+  #appView,
+  #appView > main,
+  #appView > main > .view {
+    background: transparent !important;
+  }
+
+  /* Use the existing drawer as a real desktop sidebar. Same links/actions, no duplicate UI. */
+  #drawer {
+    display: block !important;
+    position: fixed !important;
+    inset: 0 auto 0 0 !important;
+    width: 246px !important;
+    height: 100vh !important;
+    z-index: 19 !important;
+    overflow: visible !important;
+    background: transparent !important;
+    pointer-events: none !important;
+  }
+  #drawer .drawer-panel {
+    pointer-events: auto !important;
+    position: relative !important;
+    width: 246px !important;
+    height: 100vh !important;
+    max-height: 100vh !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    padding: 26px 14px 28px !important;
+    border: 0 !important;
+    border-right: 1px solid rgba(237, 186, 91, .36) !important;
+    border-radius: 0 !important;
+    background: linear-gradient(180deg, rgba(5, 12, 8, .88), rgba(4, 8, 6, .93)) !important;
+    box-shadow: 12px 0 34px rgba(0, 0, 0, .28), inset -1px 0 0 rgba(255,255,255,.025) !important;
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+  }
+  #drawer .drawer-close { display: none !important; }
+  #drawer .drawer-brand { padding: 14px 0 18px !important; }
+  #drawer .drawer-brand img {
+    width: 82px !important;
+    height: 82px !important;
+    box-shadow: 0 0 20px rgba(226, 167, 60, .18) !important;
+  }
+  #drawer .drawer-brand h2 { font-size: 23px !important; letter-spacing: .04em !important; }
+  #drawer .drawer-brand small { color: #e2bd72 !important; font-weight: 750 !important; }
+  #drawer .user-caption { margin: 0 0 14px !important; color: #d4c19d !important; font-size: 11px !important; font-weight: 650 !important; }
+  #drawer .drawer-links { gap: 7px !important; margin-top: 6px !important; }
+  #drawer .drawer-links button {
+    min-height: 46px !important;
+    border-color: rgba(218, 176, 99, .30) !important;
+    background: linear-gradient(110deg, rgba(28, 22, 12, .82), rgba(7, 11, 8, .74)) !important;
+    color: #f1e4c9 !important;
+    font-size: 12px !important;
+    font-weight: 650 !important;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.035) !important;
+  }
+  #drawer .drawer-links button:hover {
+    border-color: rgba(249, 205, 109, .68) !important;
+    background: linear-gradient(110deg, rgba(91, 61, 19, .72), rgba(12, 22, 15, .82)) !important;
+  }
+  #drawer .drawer-links button.logout {
+    margin-top: 7px !important;
+    border-color: rgba(208, 84, 72, .42) !important;
+    background: rgba(58, 17, 14, .63) !important;
+  }
+
+  /* Header and main content are shifted to accommodate the sidebar. */
+  #appView > .header {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 20 !important;
+    width: calc(100% - 246px) !important;
+    margin-left: 246px !important;
+    padding: 12px clamp(24px, 2.5vw, 42px) !important;
+    min-height: 82px !important;
+    height: auto !important;
+    background: linear-gradient(180deg, rgba(5, 12, 8, .70), rgba(5, 10, 7, .62)) !important;
+    border-bottom: 1px solid rgba(227, 181, 94, .28) !important;
+    box-shadow: 0 8px 24px rgba(0,0,0,.18) !important;
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+  }
+  #appView > .header .brand b { font-size: 16px !important; }
+  #appView > .header .brand small { font-size: 9px !important; }
+  #appView > .header #menuButton { display: none !important; }
+  #appView > main {
+    width: calc(100% - 246px) !important;
+    max-width: none !important;
+    margin-left: 246px !important;
+    padding: 24px clamp(22px, 2.2vw, 42px) 46px !important;
+  }
+  #appView > main > .view {
+    width: 100% !important;
+    max-width: 1680px !important;
+    margin: 0 auto !important;
+  }
+
+  /* Same gold/emerald visual identity, but genuinely translucent panels. */
+  #homeView > .hero,
+  #shiftControl .shift-control-card,
+  #homeView .customer-base-launch,
+  #homeView .kpi-v3,
+  #productsView .product,
+  #historyView .history-card,
+  #archiveView .history-card,
+  #expensesView .expense-form-card,
+  #expensesView .expense-summary-card,
+  #reportView .report-panel,
+  .manager-hero,
+  .manager-kpi,
+  .manager-action,
+  .customer-base-metric,
+  .customer-base-entry,
+  .customer-base-overview,
+  .report-tile,
+  .report-total {
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.07), 0 12px 28px rgba(0,0,0,.20) !important;
+  }
+  #homeView > .hero {
+    min-height: 230px !important;
+    padding: clamp(22px, 2vw, 34px) !important;
+    border-color: rgba(236, 187, 94, .55) !important;
+    background: linear-gradient(110deg, rgba(8, 13, 9, .70), rgba(7, 12, 8, .48)) !important;
+  }
+  #homeView > .hero .eyebrow { color: #f1d48f !important; }
+  #homeView > .hero h1 { text-shadow: 0 2px 12px rgba(0,0,0,.35) !important; }
+  #homeView > .hero p { color: #f0eadf !important; font-size: 14px !important; }
+  #homeView > .hero .live-badge { background: rgba(3, 37, 21, .80) !important; }
+
+  #shiftControl .shift-control-card {
+    min-height: 230px !important;
+    justify-content: space-between !important;
+    padding: 22px !important;
+    border-color: rgba(75, 218, 143, .58) !important;
+    background: linear-gradient(115deg, rgba(3, 34, 20, .82), rgba(4, 21, 13, .60)) !important;
+  }
+  #shiftControl .shift-control-card p,
+  #shiftControl .shift-control-meta { color: #e1e9df !important; }
+  #shiftControl .shift-control-title { font-size: clamp(23px, 2vw, 30px) !important; }
+  #shiftControl .shift-report-btn { background: rgba(3, 62, 35, .70) !important; }
+
+  #homeKpis.kpis {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    gap: 12px !important;
+    margin: 0 !important;
+  }
+  #homeKpis .kpi-v3 {
+    min-height: 120px !important;
+    background: linear-gradient(145deg, rgba(8, 14, 9, .70), rgba(5, 9, 6, .57)) !important;
+    backdrop-filter: none !important;
+  }
+  #homeKpis .kpi-copy small { font-size: 10px !important; font-weight: 750 !important; color: #f0e5cf !important; }
+  #homeKpis .kpi-copy strong { font-size: clamp(20px, 1.6vw, 28px) !important; }
+
+  #homeView .customer-base-launch {
+    min-height: 88px !important;
+    border-color: rgba(220, 177, 95, .45) !important;
+    background: linear-gradient(100deg, rgba(6, 14, 9, .78), rgba(7, 13, 9, .54)) !important;
+  }
+
+  /* Arrange the dashboard in a clean PC grid. Bracelet card styles themselves are untouched. */
+  #homeView.view.active {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1.06fr) minmax(0, .94fr) !important;
+    gap: 18px !important;
+    align-items: stretch !important;
+  }
+  #homeView > .hero { grid-column: 1 !important; grid-row: 1 !important; }
+  #homeView > #shiftControl { grid-column: 2 !important; grid-row: 1 !important; margin: 0 !important; }
+  #homeView > #homeKpis { grid-column: 1 / -1 !important; grid-row: 2 !important; }
+  #homeView > .customer-base-launch-wrap { grid-column: 1 / -1 !important; grid-row: 3 !important; margin: 0 !important; }
+  #homeView > .section-head { grid-column: 1 / -1 !important; grid-row: 4 !important; margin-top: 7px !important; }
+  #homeView > .filters { grid-column: 1 / -1 !important; grid-row: 5 !important; }
+  #homeView > #roomsGrid { grid-column: 1 / -1 !important; grid-row: 6 !important; }
+
+  /* Keep the room grid layout familiar; only set responsive column count, not card appearance. */
+  #homeView .rooms { grid-template-columns: repeat(5, minmax(0, 1fr)) !important; gap: 12px !important; }
+  #productsView .inventory { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; gap: 14px !important; }
+  #productsView .kpis,
+  #managerKpis.manager-kpis { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; gap: 12px !important; }
+  #historyView .list,
+  #archiveView .list { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+  #expensesView .expense-layout { grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr) !important; gap: 18px !important; }
+  .manager-actions { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; gap: 12px !important; }
+  .manager-hero,
+  .manager-kpi,
+  .manager-action,
+  #productsView .product,
+  #historyView .history-card,
+  #archiveView .history-card,
+  #expensesView .expense-form-card,
+  #expensesView .expense-summary-card,
+  #reportView .report-panel {
+    background: linear-gradient(140deg, rgba(10, 17, 11, .77), rgba(5, 9, 6, .60)) !important;
+    border-color: rgba(220, 177, 95, .34) !important;
+  }
+
+  /* The left desktop sidebar replaces the five-button mobile navigation. */
+  #appView > .bottom-nav { display: none !important; }
+
+  /* Glass modals stay readable and use the full desktop canvas sensibly. */
+  .modal-card,
+  #clientModal #clientModalCard,
+  #addModal #addModalCard,
+  #customerBaseModal #customerBaseModalCard,
+  #productStatsModal #productStatsModalCard {
+    background: linear-gradient(145deg, rgba(9, 16, 10, .92), rgba(4, 8, 6, .90)) !important;
+    border-color: rgba(223, 179, 91, .54) !important;
+    box-shadow: 0 22px 62px rgba(0,0,0,.42), inset 0 1px 0 rgba(255,255,255,.065) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+    backdrop-filter: blur(8px) !important;
+  }
+  #clientModal #clientModalCard { width: min(92vw, 880px) !important; }
+  #addModal #addModalCard { width: min(94vw, 1260px) !important; }
+  #customerBaseModal #customerBaseModalCard,
+  #productStatsModal #productStatsModalCard { width: min(94vw, 1140px) !important; }
+
+  /* Hide install banner on desktop so it never overlaps reports or cards. */
+  #parOrdoInstallApp, button[aria-label="Установить ПАР ОРДО PRO"] { display: none !important; }
+}
+
+@media (min-width: 1500px) {
+  #homeView .rooms { grid-template-columns: repeat(6, minmax(0, 1fr)) !important; }
+  #appView > main { padding-left: 38px !important; padding-right: 38px !important; }
+}
+
+/* Laptops: keep the same look while preventing cramped four-column KPI tiles. */
+@media (min-width: 1000px) and (max-width: 1199px) {
+  #drawer, #drawer .drawer-panel { width: 220px !important; }
+  #appView > .header { width: calc(100% - 220px) !important; margin-left: 220px !important; }
+  #appView > main { width: calc(100% - 220px) !important; margin-left: 220px !important; }
+  #homeView.view.active { grid-template-columns: minmax(0, 1fr) !important; }
+  #homeView > .hero, #homeView > #shiftControl,
+  #homeView > #homeKpis, #homeView > .customer-base-launch-wrap,
+  #homeView > .section-head, #homeView > .filters, #homeView > #roomsGrid {
+    grid-column: 1 !important; grid-row: auto !important;
+  }
+  #homeView > .hero, #homeView > #shiftControl { min-height: 0 !important; }
+  #homeKpis.kpis { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+  #homeView .rooms { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; }
+  #productsView .inventory { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
+  #productsView .kpis, #managerKpis.manager-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+}
