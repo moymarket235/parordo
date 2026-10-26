@@ -1,0 +1,103 @@
+/* PAR ORDO PRO V107 — truly fixed background, translucent panels, mobile/desktop rendering tune.
+   Leaves bracelet cards, bracelet images, numbers, filters, and room grid untouched. */
+
+html {
+  min-height: 100%;
+  position: relative !important;
+  isolation: isolate !important;
+  background: #050706 !important;
+}
+
+/* Use ONE viewport-fixed background layer. No background-attachment lists and no transform,
+   which can cause jank/scroll-linked movement on mobile browsers. */
+html::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-color: #050706;
+  background-image:
+    linear-gradient(180deg, rgba(3, 7, 5, .26) 0%, rgba(3, 7, 5, .44) 52%, rgba(3, 7, 5, .60) 100%),
+    url("./assets/par-ordo-spa-background.webp");
+  background-position: center center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+/* Disable the previous body pseudo-background so the image is not painted twice. */
+body::before { display: none !important; }
+
+body {
+  position: relative !important;
+  z-index: 0 !important;
+  min-height: 100%;
+  background: transparent !important;
+  background-image: none !important;
+  background-color: transparent !important;
+  background-attachment: initial !important;
+  scroll-behavior: auto !important;
+}
+
+#appView,
+#loginView,
+main { background: transparent !important; }
+
+/* Remove separate card-attached copies of the spa photo. The same global wallpaper stays
+   still behind the UI; translucent dark panels provide legibility. */
+.header {
+  background: linear-gradient(180deg, rgba(5, 12, 8, .80), rgba(5, 10, 7, .90)) !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+#homeView > .hero {
+  background:
+    radial-gradient(ellipse at 88% 12%, rgba(45, 186, 111, .10), transparent 44%),
+    linear-gradient(115deg, rgba(8, 13, 9, .88), rgba(8, 12, 9, .72)) !important;
+}
+#shiftControl .shift-control-card.is-open {
+  background:
+    radial-gradient(ellipse at 93% 8%, rgba(37, 209, 122, .12), transparent 45%),
+    linear-gradient(115deg, rgba(4, 28, 17, .94), rgba(4, 17, 11, .84)) !important;
+}
+#homeView .customer-base-launch {
+  background:
+    linear-gradient(100deg, rgba(6, 13, 9, .94), rgba(6, 13, 9, .74)) !important;
+}
+
+/* Keep glass-style transparency without GPU-heavy background blurs. */
+.bottom-nav,
+.drawer-panel,
+.modal-card,
+.login-card,
+.header .icon-btn,
+#homeKpis .kpi-v3 {
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+.bottom-nav {
+  background: linear-gradient(180deg, rgba(5, 12, 8, .94), rgba(3, 6, 4, .98)) !important;
+}
+.drawer-panel,
+.modal-card,
+.login-card {
+  background: linear-gradient(150deg, rgba(12, 20, 14, .97), rgba(5, 9, 6, .98)) !important;
+}
+#homeKpis .kpi-v3 {
+  background: linear-gradient(145deg, rgba(16, 22, 16, .93), rgba(5, 9, 6, .94)) !important;
+}
+
+/* Small screens: avoid continuous scroll-linked/smooth-scroll work. Do not alter bracelet visuals. */
+@media (max-width: 700px) {
+  html, body { scroll-behavior: auto !important; }
+  .header,
+  .bottom-nav,
+  .drawer-panel,
+  .modal-card,
+  .login-card,
+  #homeKpis .kpi-v3 { background-attachment: initial !important; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html, body { scroll-behavior: auto !important; }
+}
