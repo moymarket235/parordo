@@ -1,5 +1,5 @@
 'use strict';
-const CACHE_NAME = 'par-ordo-customer-v11';
+const CACHE_NAME = 'par-ordo-customer-v12';
 const SHELL = [
   './',
   './index.html',
@@ -7,7 +7,11 @@ const SHELL = [
   './app.js?v=11',
   './manifest.webmanifest?v=11',
   '../assets/par-ordo-logo.png',
-  '../assets/par-ordo-spa-background.webp'
+  '../assets/par-ordo-spa-background.webp',
+  '../assets/par-ordo-hero-future.webp',
+  '../assets/par-ordo-steam-room.webp',
+  '../assets/par-ordo-shower-room.webp',
+  '../assets/par-ordo-relax-room.webp'
 ];
 
 self.addEventListener('install', event => {
@@ -65,7 +69,11 @@ self.addEventListener('fetch', event => {
 
   const customerAsset = url.pathname.includes('/customer/') ||
     url.pathname.endsWith('/assets/par-ordo-logo.png') ||
-    url.pathname.endsWith('/assets/par-ordo-spa-background.webp');
+    url.pathname.endsWith('/assets/par-ordo-spa-background.webp') ||
+    url.pathname.endsWith('/assets/par-ordo-hero-future.webp') ||
+    url.pathname.endsWith('/assets/par-ordo-steam-room.webp') ||
+    url.pathname.endsWith('/assets/par-ordo-shower-room.webp') ||
+    url.pathname.endsWith('/assets/par-ordo-relax-room.webp');
   if (!customerAsset) return;
   event.respondWith((async () => {
     const cache = await caches.open(CACHE_NAME);

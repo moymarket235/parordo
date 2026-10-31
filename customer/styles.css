@@ -559,3 +559,128 @@ main{padding:13px 14px 28px}
   .future-overlay{background:linear-gradient(90deg,#03111aff 0%,#03111af0 32%,#03111a83 46%,#03111a2a 64%,#03111a05 100%),linear-gradient(0deg,#03111af0 0%,transparent 30%)}
   .future-copy{top:20px;width:61%}
 }
+
+
+/* PAR ORDO CUSTOMER V12 — original B / FUTURE ARENA visual asset pass */
+.future-photo{
+  z-index:0;
+  top:0;right:0;bottom:0;left:0;
+  width:100%;
+  background-image:url('../assets/par-ordo-hero-future.webp');
+  background-position:center center;
+  background-size:cover;
+  background-repeat:no-repeat;
+  clip-path:none;
+  filter:saturate(1.08) contrast(1.04) brightness(1.08);
+}
+.future-overlay{
+  z-index:1;
+  background:
+    linear-gradient(90deg,rgba(2,12,18,.48) 0%,rgba(2,12,18,.28) 35%,rgba(2,12,18,.05) 62%,rgba(2,12,18,0) 100%),
+    linear-gradient(0deg,rgba(2,12,18,.58) 0%,rgba(2,12,18,.03) 34%,rgba(2,12,18,.02) 100%);
+  clip-path:polygon(0 0,59% 0,40% 100%,0 100%);
+}
+.future-angle-line{
+  z-index:2;
+  left:0;top:0;width:100%;height:100%;
+  transform:none;
+  background:linear-gradient(180deg,#77ffe9 0%,#00f0cf 45%,#00b69e 100%);
+  clip-path:polygon(58.4% 0,59.1% 0,40.1% 100%,39.4% 100%);
+  filter:drop-shadow(0 0 4px #00f7d7) drop-shadow(0 0 10px #00e8c3);
+  opacity:1;
+}
+
+/* Separate, brighter generated interiors: no more duplicated dark sauna backdrop. */
+.facility-photo,
+.gallery-photo{
+  background-size:cover;
+  background-repeat:no-repeat;
+}
+.facility-photo.steam-photo,
+.gallery-photo.steam-photo{
+  background-image:
+    linear-gradient(180deg,rgba(1,9,14,.04),rgba(1,9,14,.18)),
+    url('../assets/par-ordo-steam-room.webp');
+  background-position:center,center 52%;
+  filter:none;
+}
+.facility-photo.shower-photo,
+.gallery-photo.shower-photo{
+  background-image:
+    linear-gradient(180deg,rgba(1,9,14,.02),rgba(1,9,14,.18)),
+    url('../assets/par-ordo-shower-room.webp');
+  background-position:center,center 50%;
+  filter:none;
+}
+.facility-photo.rooms-photo,
+.gallery-photo.rooms-photo{
+  background-image:
+    linear-gradient(180deg,rgba(1,9,14,.02),rgba(1,9,14,.18)),
+    url('../assets/par-ordo-relax-room.webp');
+  background-position:center,center 52%;
+  filter:none;
+}
+.facility-photo:after{
+  background:linear-gradient(135deg,rgba(0,232,195,.04),transparent 52%);
+}
+.gallery-photo{
+  filter:none;
+}
+@media(max-width:680px){
+  .future-hero{
+    min-height:370px;
+    height:370px;
+  }
+  .future-photo{
+    filter:saturate(1.10) contrast(1.04) brightness(1.12);
+  }
+  .future-overlay{
+    background:
+      linear-gradient(90deg,rgba(2,12,18,.42) 0%,rgba(2,12,18,.24) 34%,rgba(2,12,18,.04) 63%,transparent 100%),
+      linear-gradient(0deg,rgba(2,12,18,.54) 0%,transparent 35%);
+    clip-path:polygon(0 0,60% 0,40% 100%,0 100%);
+  }
+  .future-angle-line{
+    clip-path:polygon(59.4% 0,60.2% 0,40.2% 100%,39.4% 100%);
+  }
+  .future-copy{
+    z-index:3;
+    width:60%;
+    left:15px;
+    top:18px;
+  }
+  .future-copy h1{
+    font-size:clamp(25px,7.2vw,33px);
+    text-shadow:0 2px 14px #000b;
+  }
+  .future-services>div{
+    font-size:7.5px;
+    text-shadow:0 1px 6px #000a;
+  }
+  .future-photo-label{display:none!important}
+  .future-book{
+    z-index:6;
+    background:linear-gradient(180deg,rgba(3,18,25,.97),rgba(3,18,25,.92));
+    border:1.5px solid #72ffea;
+    box-shadow:0 0 0 1px rgba(0,232,195,.35),0 0 14px rgba(0,232,195,.45),inset 0 0 18px rgba(0,232,195,.14);
+    color:#f1fffc;
+  }
+  .future-book b{color:#f1fffc}
+  .future-base{z-index:8}
+  .facility-photo{height:82px}
+  .gallery-photo{height:150px}
+  .gallery-wide .gallery-photo{height:160px}
+}
+@media(max-width:380px){
+  .future-hero{height:354px;min-height:354px}
+  .future-copy{width:62%;left:12px}
+  .future-copy h1{font-size:24px}
+  .future-services>div{font-size:7px}
+  .facility-photo{height:74px}
+}
+@media(min-width:681px){
+  .future-hero{height:410px;min-height:410px}
+  .future-copy{width:56%}
+  .facility-photo{height:120px}
+  .gallery-photo{height:220px}
+}
