@@ -1,6 +1,6 @@
 'use strict';
-const CACHE='par-ordo-customer-v5';
-const CORE=['./','./index.html','./styles.css?v=5','./app.js?v=5','./manifest.webmanifest?v=5','../assets/par-ordo-logo.png','../assets/par-ordo-spa-background.webp'];
+const CACHE='par-ordo-customer-v6';
+const CORE=['./','./index.html','./styles.css?v=6','./app.js?v=6','./manifest.webmanifest?v=6','../assets/par-ordo-logo.png','../assets/par-ordo-spa-background.webp'];
 self.addEventListener('install',e=>e.waitUntil((async()=>{const c=await caches.open(CACHE);await Promise.all(CORE.map(async p=>{try{const u=new URL(p,self.registration.scope),r=await fetch(u,{cache:'reload'});if(r.ok&&r.type==='basic')await c.put(u,r)}catch(_){}}));await self.skipWaiting()})()));
 self.addEventListener('activate',e=>e.waitUntil((async()=>{for(const k of await caches.keys())if(k.startsWith('par-ordo-customer-')&&k!==CACHE)await caches.delete(k);await self.clients.claim()})()));
 self.addEventListener('fetch',e=>{const q=e.request;if(q.method!=='GET')return;const u=new URL(q.url);if(u.origin!==location.origin)return;if(q.mode==='navigate'){e.respondWith((async()=>{try{const r=await fetch(q,{cache:'no-store'});if(r.ok){const c=await caches.open(CACHE);await c.put(new URL('./index.html',self.registration.scope),r.clone())}return r}catch(_){const c=await caches.open(CACHE);return await c.match(q)||await c.match(new URL('./index.html',self.registration.scope))||Response.error()}})())}else if(u.pathname.includes('/customer/')||u.pathname.endsWith('/assets/par-ordo-logo.png')||u.pathname.endsWith('/assets/par-ordo-spa-background.webp'))e.respondWith((async()=>{const c=await caches.open(CACHE),hit=await c.match(q);if(hit)return hit;const r=await fetch(q);if(r.ok&&r.type==='basic')await c.put(q,r.clone());return r})())});

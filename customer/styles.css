@@ -13,3 +13,72 @@ main{padding:18px 16px 30px}.screen{display:none;animation:appear .25s ease}.scr
 @media(min-width:680px){.hero-card{height:510px}.hero-content{width:62%;padding-left:34px}.hero-side-panel{right:28px;width:24%}.quick-card{flex-basis:170px}.feature-grid{grid-template-columns:repeat(3,1fr)}.gallery-art{height:210px}}
 @media(prefers-reduced-motion:no-preference){.hero-side-panel{animation:pulse 4s ease-in-out infinite alternate}.arena-orbit{animation:orbit 3s ease-in-out infinite alternate}@keyframes pulse{to{box-shadow:0 0 30px #00e8cf38,inset 0 0 25px #00e8cf17}}@keyframes orbit{to{transform:scale(1.04);box-shadow:0 0 0 8px #00e8cf18,0 0 26px #00e8cf55}}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;scroll-behavior:auto!important;transition:none!important}}
+
+
+
+/* PAR ORDO CUSTOMER V6 — mobile composition correction (not color-only) */
+@media(max-width:680px){
+  /* The large desktop capacity panel becomes a compact 30 MAX badge,
+     so it cannot cover the title or description on a narrow phone. */
+  .hero-card.arena-layout{height:510px;min-height:510px}
+  .hero-card .hero-bg{width:100%;inset:0;background-position:62% center;opacity:.88}
+  .hero-card .hero-shade{
+    background:
+      linear-gradient(180deg,#031018c9 0%,#04131be8 42%,#04131bf5 100%),
+      linear-gradient(90deg,#031018dd 0%,#04131b44 100%)
+  }
+  .hero-card .hero-content{
+    top:0;left:0;right:0;width:100%;height:100%;
+    padding:105px 18px 58px;
+    justify-content:flex-start
+  }
+  .hero-card .eyebrow{font-size:8px;letter-spacing:.15em}
+  .hero-card .hero-tag{margin-top:12px;font-size:6px;padding:5px 8px}
+  .hero-card h1{font-size:clamp(31px,8.4vw,39px);line-height:.98;margin:13px 0 10px}
+  .hero-card h1 em{font-size:.73em}
+  .hero-card .hero-content p{max-width:100%;font-size:10px;line-height:1.5}
+  .hero-card .arena-features{
+    width:100%;max-width:100%;grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:6px;margin:13px 0 0
+  }
+  .hero-card .arena-features span{min-height:45px;font-size:7px}
+  .hero-card .arena-features i{font-size:14px}
+  .hero-card .btn{width:100%;max-width:100%;min-height:46px;margin-top:12px}
+  .hero-side-panel{
+    top:13px;right:13px;width:74px;min-height:74px;height:74px;
+    padding:5px;border-radius:9px 16px 9px 16px;
+    background:linear-gradient(145deg,#06252eF2,#06131df5)
+  }
+  .hero-side-panel .arena-orbit,
+  .hero-side-panel small,
+  .hero-side-panel>i,
+  .hero-side-panel .side-signal{display:none}
+  .hero-side-panel strong{margin:0;font-size:25px}
+  .hero-side-panel strong span{display:block;font-size:7px;letter-spacing:.12em;margin-top:3px}
+  /* Four fact cards stay fully visible in a 2 x 2 grid. */
+  .quick-grid{
+    display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+    overflow:visible;gap:8px;margin:12px 0 25px;padding:0
+  }
+  .quick-card{width:auto;min-width:0;min-height:88px;flex:none;padding:11px}
+  .quick-card b{font-size:10px;overflow-wrap:anywhere}
+  /* Three service cards form one compact horizontal row like the selected concept. */
+  .feature-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+  .feature-card{min-width:0;min-height:120px;padding:8px;gap:7px}
+  .feature-icon{width:39px;height:39px;font-size:19px}
+  .feature-card b{font-size:8px;letter-spacing:0}
+  .feature-card small{font-size:7px;line-height:1.25}
+  .feature-card>i{right:7px;top:7px;font-size:15px}
+}
+@media(max-width:380px){
+  .hero-card.arena-layout{height:495px;min-height:495px}
+  .hero-card .hero-content{padding:98px 15px 55px}
+  .hero-card h1{font-size:30px}
+  .hero-side-panel{width:68px;height:68px;min-height:68px;right:10px;top:10px}
+  .hero-side-panel strong{font-size:23px}
+  .feature-card{min-height:116px;padding:7px}
+  .feature-card small{font-size:6.5px}
+}
+@media(prefers-reduced-motion:reduce){
+  .hero-side-panel,.arena-orbit{animation:none!important}
+}

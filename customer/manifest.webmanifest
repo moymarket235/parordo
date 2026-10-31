@@ -1,9 +1,9 @@
 {
   "id": "./",
-  "name": "PAR ORDO — Future Arena",
+  "name": "PAR ORDO — Future Arena Guest App",
   "short_name": "PAR ORDO",
   "description": "Приложение для гостей PAR ORDO в Бишкеке",
-  "start_url": "./?v=5",
+  "start_url": "./?app=v6",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
