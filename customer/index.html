@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="./styles.css?v=3">
+<link rel="stylesheet" href="./styles.css?v=4">
 <title>PAR ORDO — Приложение</title>
 </head>
 <body>
@@ -37,10 +37,15 @@
         <div class="hero-bg"></div><div class="hero-shade"></div>
         <div class="hero-content">
           <div class="eyebrow"><i></i> БИШКЕК · PAR ORDO</div>
-          <div class="hero-tag">ПРОСТРАНСТВО ДЛЯ ОТДЫХА</div>
-          <h1 id="homeTitle">Время<br><em>перезагрузиться.</em></h1>
-          <p>Соберитесь компанией, насладитесь парной и проведите время в спокойной атмосфере.</p>
-          <button class="btn btn-gold" data-go="booking">Запросить бронирование <span>↗</span></button>
+          <div class="hero-tag">ПРЕМИУМ БАНЯ В БИШКЕКЕ</div>
+          <h1 id="homeTitle">PAR ORDO<br><em>БОЛЬШАЯ БАНЯ</em></h1>
+          <p>Пространство для отдыха, парной и встреч большой компанией.</p>
+          <div class="arena-features" aria-label="Особенности PAR ORDO">
+            <span><i>♨</i> Парная</span>
+            <span><i>♟</i> До 30 гостей</span>
+            <span><i>◷</i> 3 часа</span>
+          </div>
+          <button class="btn btn-gold" data-go="booking">ЗАБРОНИРОВАТЬ <span>→</span></button>
         </div>
         <div class="hero-bottom"><span>БОЛЬШАЯ БАНЯ</span><b>ДО 30 ГОСТЕЙ</b></div>
       </div>
@@ -116,6 +121,6 @@
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
   <div class="modal-backdrop" id="modal" hidden><div class="modal-card"><button class="modal-close" id="modalClose">×</button><span class="modal-mark">PAR ORDO</span><h2 id="modalTitle">Запрос подготовлен</h2><p id="modalText"></p><button class="btn btn-gold btn-full" id="modalOk">Понятно</button></div></div>
 </div>
-<script src="./app.js?v=3" defer></script>
+<script src="./app.js?v=4" defer></script>
 </body>
 </html>

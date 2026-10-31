@@ -63,3 +63,28 @@ body{background:radial-gradient(ellipse at 50% -12%,#0b3435 0,#07141a 35%,#050b1
 .modal-mark{color:#8affdf}
 @media(max-width:680px){.topbar{border-bottom-color:#0c776c}.hero-card{min-height:540px}.hero-content{top:35px}.bottom-nav{height:76px}.nav-item.active:before{content:"";width:25px;height:2px;background:#69ffe0;box-shadow:0 0 12px #00e8c3;margin-bottom:3px}.quick-card{min-height:112px}}
 @media(prefers-reduced-motion:no-preference){.hero-card{animation:arenaGlow 5s ease-in-out infinite alternate}.btn-gold{transition:transform .18s,box-shadow .18s}.feature-card,.quick-card{transition:border-color .2s,transform .2s}.feature-card:active{transform:scale(.985);border-color:#62ffe0}@keyframes arenaGlow{from{box-shadow:0 0 0 1px #00e8c31c,0 22px 55px #0008,0 0 20px #00e8c30c}to{box-shadow:0 0 0 1px #00e8c344,0 22px 55px #0008,0 0 36px #00e8c326}}}
+
+
+/* PAR ORDO CUSTOMER V4 — closer to selected B / FUTURE ARENA concept */
+:root{--arena-cyan:#00f2d0;--arena-cyan-soft:#8bfff0;--arena-blue:#07151d}
+.hero-card{height:590px;min-height:570px;border:1px solid var(--arena-cyan);border-radius:7px 25px 7px 25px;box-shadow:0 0 0 1px #00f2d02b,0 22px 55px #000a,0 0 32px #00e8c326}
+.hero-card:before{content:"";position:absolute;inset:0;z-index:4;pointer-events:none;border:1px solid #8bfff080;clip-path:polygon(0 0,35% 0,39% 3%,100% 3%,100% 100%,0 100%)}
+.hero-bg{background-position:58% center;filter:saturate(.92) contrast(1.08)}
+.hero-shade{background:linear-gradient(90deg,#031018f7 0%,#04131bdc 48%,#04131b78 100%),linear-gradient(0deg,#041018 0%,transparent 42%)}
+.hero-content{left:23px;right:23px;top:31px}
+.hero-tag{margin-top:35px;border:1px solid #00d9c0;background:#041c24e8;color:#a4fff3;box-shadow:0 0 18px #00e8c333}
+.hero h1{font:800 clamp(35px,8.8vw,51px)/.98 'DM Sans',system-ui,sans-serif;letter-spacing:-.045em;text-transform:uppercase;margin:18px 0 13px;color:#f1fffd;text-shadow:0 3px 22px #000a}
+.hero h1 em{display:inline-block;margin-top:5px;font:800 .72em/1.05 'DM Sans',system-ui,sans-serif;letter-spacing:-.025em;color:#a5fff0;text-shadow:0 0 22px #00e8c344}
+.hero-content p{max-width:390px;font-size:13px;color:#d7e8e5}
+.arena-features{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin:20px 0 6px;max-width:420px}
+.arena-features span{min-height:55px;padding:8px 5px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;border:1px solid #087e73;border-radius:7px 13px 7px 13px;background:linear-gradient(145deg,#09252bdb,#06151de8);color:#c9fff5;font-size:9px;text-align:center;box-shadow:inset 0 0 14px #00e8c310}
+.arena-features i{font-style:normal;font-size:18px;color:var(--arena-cyan);text-shadow:0 0 12px #00e8c377}
+.hero .btn{margin-top:16px;min-height:52px;min-width:min(100%,280px);border-radius:8px 16px 8px 16px;letter-spacing:.07em}
+.hero-bottom{border-top:1px solid #00bda7;background:#04151deF;color:#a5fff0}
+.quick-card{border-radius:7px 16px 7px 16px}
+.quick-card:after{width:60px;height:2px;background:linear-gradient(90deg,transparent,var(--arena-cyan));box-shadow:0 0 12px #00e8c3}
+.feature-card{position:relative;overflow:hidden}
+.feature-card:before{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(115deg,transparent 0 72%,#00e8c30c 73% 74%,transparent 75%)}
+.btn-gold{background:linear-gradient(105deg,#00a98e,#43f8dc);color:#031411;border:1px solid #9affef;box-shadow:0 0 22px #00e8c344,inset 0 1px #ffffff77}
+@media(max-width:680px){.hero-card{height:590px;min-height:570px}.hero-content{top:31px}.hero-tag{margin-top:34px}.hero h1{font-size:clamp(35px,8.8vw,49px)}.arena-features{gap:6px}.arena-features span{font-size:8px;min-height:54px}.hero .btn{width:100%;max-width:100%}}
+@media(max-width:380px){.hero-card{height:570px;min-height:550px}.hero-content{left:17px;right:17px}.hero h1{font-size:34px}.arena-features span{font-size:7px}}
