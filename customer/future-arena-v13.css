@@ -1,0 +1,136 @@
+/* PAR ORDO CUSTOMER — B / FUTURE ARENA V13
+   Loaded AFTER styles.css. Keeps existing HTML/app behavior; only refines visuals. */
+
+.future-hero{
+  height:390px!important;
+  min-height:390px!important;
+  position:relative!important;
+  isolation:isolate!important;
+  overflow:hidden!important;
+  background:#04131b!important;
+  border:1px solid #16e8cb!important;
+  box-shadow:0 0 0 1px #00e8c344,0 16px 42px #0009,0 0 28px #00e8c322!important;
+}
+
+/* Photo occupies the right side like reference B; brighter and less obscured. */
+.future-photo{
+  position:absolute!important;
+  z-index:0!important;
+  inset:0!important;
+  width:100%!important;
+  height:100%!important;
+  background-image:url('../assets/par-ordo-hero-future.webp')!important;
+  background-repeat:no-repeat!important;
+  background-size:cover!important;
+  background-position:76% center!important;
+  clip-path:polygon(34% 0,100% 0,100% 100%,19% 100%,42% 58%)!important;
+  filter:saturate(1.34) contrast(1.13) brightness(1.34)!important;
+}
+
+/* Keep the left text readable without turning the whole hero black. */
+.future-overlay{
+  position:absolute!important;
+  z-index:1!important;
+  inset:0!important;
+  pointer-events:none!important;
+  clip-path:none!important;
+  background:
+    linear-gradient(90deg,
+      rgba(2,12,18,.98) 0%,
+      rgba(2,12,18,.91) 27%,
+      rgba(2,12,18,.66) 43%,
+      rgba(2,12,18,.18) 64%,
+      rgba(2,12,18,.02) 100%),
+    linear-gradient(0deg,rgba(2,12,18,.62) 0%,transparent 30%)!important;
+}
+
+.future-angle-line{
+  position:absolute!important;
+  z-index:2!important;
+  inset:0!important;
+  width:100%!important;
+  height:100%!important;
+  transform:none!important;
+  clip-path:polygon(47.8% 0,48.5% 0,30.8% 100%,30.1% 100%)!important;
+  background:linear-gradient(180deg,#a0fff0,#00f0cf 55%,#00b99f)!important;
+  filter:drop-shadow(0 0 5px #00f7d7) drop-shadow(0 0 13px #00e8c3)!important;
+  opacity:1!important;
+}
+
+.future-copy{
+  z-index:3!important;
+  left:16px!important;
+  top:20px!important;
+  bottom:62px!important;
+  width:62%!important;
+}
+.future-kicker{font-size:8px!important;letter-spacing:.13em!important}
+.future-copy h1{
+  margin:13px 0 8px!important;
+  font-size:clamp(27px,7.2vw,36px)!important;
+  line-height:.98!important;
+}
+.future-copy h1 em{font-size:.66em!important}
+.future-capacity{font-size:10px!important}
+.future-services{gap:6px!important;margin-top:13px!important}
+.future-services>div{font-size:8px!important;min-height:19px!important}
+.future-services i{
+  width:18px!important;height:18px!important;flex-basis:18px!important;
+}
+
+.future-book{
+  z-index:6!important;
+  left:14px!important;right:14px!important;bottom:34px!important;
+  height:44px!important;
+  border:1.5px solid #80ffeb!important;
+  border-radius:0!important;
+  clip-path:polygon(0 0,96% 0,100% 18%,100% 82%,96% 100%,0 100%)!important;
+  background:linear-gradient(180deg,rgba(3,24,31,.98),rgba(3,17,25,.96))!important;
+  color:#f0fffc!important;
+  box-shadow:0 0 0 1px #00e8c355,0 0 18px #00e8c344,inset 0 0 18px #00e8c31b!important;
+}
+.future-book b{color:#effffc!important}
+.future-book .future-calendar,.future-book .future-arrow{color:#9effef!important}
+.future-base{z-index:8!important;height:26px!important}
+
+.metrics-grid{gap:6px!important;margin:12px 0 21px!important}
+.metric-card{
+  height:82px!important;min-height:82px!important;
+  padding:10px 6px 7px!important;
+  border-color:#168b82!important;
+  background:linear-gradient(145deg,#0a2631,#06141e)!important;
+}
+.metric-card small{font-size:6px!important}
+.metric-card b{font-size:8px!important}
+.facility-grid{gap:7px!important}
+.facility-card{
+  border-color:#168b82!important;
+  background:linear-gradient(145deg,#0a2631,#06141e)!important;
+  box-shadow:0 0 13px #00e8c312!important;
+}
+.facility-photo{height:88px!important}
+.facility-photo i{box-shadow:0 0 16px #00e8c366!important}
+.price-strip,.address-strip,.booking-card,.contact-card{
+  border-color:#168b82!important;
+  background:linear-gradient(145deg,#0a2631,#06141e)!important;
+}
+
+@media(max-width:380px){
+  .future-hero{height:370px!important;min-height:370px!important}
+  .future-photo{background-position:78% center!important}
+  .future-copy{left:13px!important;top:17px!important;width:65%!important}
+  .future-copy h1{font-size:25px!important}
+  .future-services{gap:4px!important;margin-top:10px!important}
+  .future-services>div{font-size:7px!important}
+  .future-book{height:41px!important;bottom:31px!important}
+  .metric-card{height:76px!important;min-height:76px!important}
+  .facility-photo{height:74px!important}
+}
+@media(min-width:681px){
+  .future-hero{height:440px!important;min-height:440px!important}
+  .future-photo{background-position:76% center!important}
+  .future-copy{left:26px!important;top:25px!important;width:56%!important}
+  .future-copy h1{font-size:46px!important}
+  .future-services>div{font-size:10px!important}
+  .facility-photo{height:125px!important}
+}
