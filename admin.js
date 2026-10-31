@@ -2,6 +2,7 @@ const API='https://par-ordo-api.moimarketjibekjolu.workers.dev';
 const TOKEN_KEY='parordo_admin_token';
 const USER_KEY='parordo_admin_user';
 const CURRENCY='сом';
+let bookingPollTimer=null;
 
 const $=s=>document.querySelector(s);
 const $$=s=>[...document.querySelectorAll(s)];
@@ -31,6 +32,7 @@ function toast(msg){
   document.body.appendChild(t);setTimeout(()=>t.remove(),1800);
 }
 function showLogin(){
+  stopBookingPolling();
   $('#loginView').classList.remove('hidden');
   $('#dashView').classList.add('hidden');
   $('#loginPass').value='';
@@ -55,6 +57,7 @@ async function login(){
     showDash();
     $('#whoami').textContent=`Выполнен вход: ${username} · полный доступ`;
     await refreshAll();
+    startBookingPolling();
   }catch(e){
     $('#loginStatus').textContent=e.message;
   }finally{$('#loginBtn').disabled=false}
@@ -71,6 +74,76 @@ function statusBadge(status){
   if(status==='cancelled')return '<span class="badge no">Отменён</span>';
   if(status==='expired')return '<span class="badge no">Истёк</span>';
   return '<span class="badge wait">Ожидает оплаты</span>';
+}
+function escapeHtml(value){
+  return String(value??'').replace(/[&<>"']/g,ch=>({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  }[ch]));
+}
+function bookingDate(value){
+  const m=String(value||'').match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})$/);
+  return m?`${m[3]}.${m[2]}.${m[1]} · ${m[4]}:${m[5]}`:escapeHtml(value||'');
+}
+function bookingStatusBadge(status){
+  if(status==='pending')return '<span class="badge wait">Новая заявка</span>';
+  if(status==='booked')return '<span class="badge ok">Подтверждена</span>';
+  if(status==='cancelled')return '<span class="badge no">Отменена</span>';
+  if(status==='completed')return '<span class="badge ok">Выполнена</span>';
+  return '<span class="badge wait">Неизвестный статус</span>';
+}
+async function renderBookings(){
+  const data=await api('/api/admin/control/bookings');
+  const rows=Array.isArray(data.bookings)?data.bookings:[];
+  const pending=rows.filter(b=>b.status==='pending').length;
+  const count=$('#bookingCount');
+  if(count){
+    count.textContent=`${pending} новых`;
+    count.className=`badge ${pending?'wait':'ok'}`;
+  }
+  $('#bookings').innerHTML=rows.length?rows.map(b=>{
+    const id=encodeURIComponent(String(b.id||''));
+    const name=escapeHtml(b.name||'Клиент');
+    const phone=escapeHtml(b.phone||'');
+    const note=escapeHtml(b.note||'');
+    const createdBy=b.createdBy?`<div class="muted">Источник: ${escapeHtml(b.createdBy)}</div>`:'';
+    let actions='';
+    if(b.status==='pending'){
+      actions=`<div class="booking-actions"><button class="confirm" data-booking-confirm="${id}">✓ Подтвердить</button><button class="cancel" data-booking-cancel="${id}">Отклонить</button></div>`;
+    }else if(b.status==='booked'){
+      actions=`<div class="booking-actions"><button class="complete" data-booking-complete="${id}">✓ Выполнено</button><button class="cancel" data-booking-cancel="${id}">Отменить</button></div>`;
+    }
+    return `<article class="booking">
+      <div class="booking-top"><div><b>${name}</b><div class="muted">${phone}</div></div><div>${bookingStatusBadge(b.status)}</div></div>
+      <div class="booking-time">🗓 ${bookingDate(b.appointmentAt)}</div>
+      ${note?`<div class="booking-note">${note}</div>`:''}
+      ${createdBy}${actions}
+    </article>`;
+  }).join(''):'<div class="message">Ближайших броней пока нет.</div>';
+  $$('[data-booking-confirm]').forEach(b=>b.onclick=()=>changeBookingStatus(decodeURIComponent(b.dataset.bookingConfirm),'booked'));
+  $$('[data-booking-cancel]').forEach(b=>b.onclick=()=>changeBookingStatus(decodeURIComponent(b.dataset.bookingCancel),'cancelled'));
+  $$('[data-booking-complete]').forEach(b=>b.onclick=()=>changeBookingStatus(decodeURIComponent(b.dataset.bookingComplete),'completed'));
+}
+async function changeBookingStatus(id,status){
+  try{
+    await api(`/api/admin/control/bookings/${encodeURIComponent(id)}/status`,{
+      method:'POST',
+      body:JSON.stringify({status})
+    });
+    const messages={booked:'Бронирование подтверждено ✅',cancelled:'Бронирование отменено',completed:'Посещение отмечено выполненным ✅'};
+    toast(messages[status]||'Статус обновлён');
+    await renderBookings();
+  }catch(e){toast(e.message)}
+}
+function startBookingPolling(){
+  stopBookingPolling();
+  bookingPollTimer=setInterval(()=>{
+    if(token()&&!$('#dashView').classList.contains('hidden')){
+      renderBookings().catch(()=>{});
+    }
+  },20000);
+}
+function stopBookingPolling(){
+  if(bookingPollTimer){clearInterval(bookingPollTimer);bookingPollTimer=null;}
 }
 async function renderOrders(){
   const data=await api('/api/admin/orders');
@@ -160,9 +233,10 @@ async function refreshAll(){
   const username=sessionStorage.getItem(USER_KEY)||'admin';
   $('#whoami').textContent=`Выполнен вход: ${username} · полный доступ`;
   const active=document.querySelector('#rangeTabs button.active')?.dataset.range||'today';
-  await Promise.all([renderStatsRange(active),renderOrders(),renderProducts()]);
+  await Promise.all([renderStatsRange(active),renderOrders(),renderBookings(),renderProducts()]);
 }
 function logout(){
+  stopBookingPolling();
   const t=token();
   if(t)fetch(API+'/api/admin/logout',{method:'POST',headers:apiHeaders()}).catch(()=>{});
   clearToken();showLogin();
@@ -173,6 +247,7 @@ async function boot(){
     await api('/api/admin/me');
     showDash();
     await refreshAll();
+    startBookingPolling();
   }catch(e){showLogin()}
 }
 
