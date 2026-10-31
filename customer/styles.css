@@ -492,3 +492,70 @@ main{padding:13px 14px 28px}
   .future-overlay{background:linear-gradient(90deg,#03111aff 0%,#03111af4 31%,#03111a70 53%,#03111a05 100%),linear-gradient(0deg,#03111af0 0%,transparent 29%)}
   .future-book{background:linear-gradient(180deg,#061a22,#04131b);color:#eafffa;border:1.5px solid #61ffe5;box-shadow:0 0 0 1px #00e8c355,0 0 18px #00e8c344,inset 0 0 18px #00e8c314}
 }
+
+
+/* PAR ORDO CUSTOMER V11 — composition tuning against the center B reference */
+@media(max-width:680px){
+  /* Reference's photo-led diagonal cut: widen photo and let its warm details show. */
+  .future-hero{height:310px;min-height:310px}
+  .future-photo{
+    width:77%;
+    clip-path:polygon(49% 0,100% 0,100% 100%,18% 100%,43% 62%,17% 45%);
+    background-position:78% center;
+    filter:saturate(1.32) contrast(1.12) brightness(1.28);
+  }
+  .future-overlay{
+    background:
+      linear-gradient(90deg,#03111aff 0%,#03111af0 32%,#03111a83 46%,#03111a2a 64%,#03111a05 100%),
+      linear-gradient(0deg,#03111af0 0%,transparent 30%);
+  }
+  /* Keep the title and four facility bullets compact, as in the reference. */
+  .future-copy{
+    left:15px;top:16px;bottom:56px;width:68%;
+  }
+  .future-kicker{font-size:6.5px;letter-spacing:.11em}
+  .future-copy h1{
+    margin:9px 0 5px;
+    font-size:clamp(24px,6.9vw,31px);
+    line-height:.96;
+  }
+  .future-copy h1 em{margin-top:3px;font-size:.66em}
+  .future-capacity{margin-top:2px;font-size:9px}
+  .future-services{gap:3px;margin-top:8px}
+  .future-services>div{min-height:16px;gap:6px;font-size:7px}
+  .future-services i{width:16px;height:16px;flex-basis:16px;font-size:9px}
+  /* The neon-outline call-to-action sits at the lower edge of the hero. */
+  .future-book{
+    left:13px;right:13px;bottom:32px;height:40px;
+  }
+  .future-base{height:24px;padding:0 9px}
+  .future-base,.future-base b{font-size:5.5px}
+  /* Slightly shorter metrics and room cards to retain the dense app rhythm. */
+  .metrics-grid{margin:10px 0 18px;gap:5px}
+  .metric-card{height:74px;min-height:74px;padding:8px 5px 6px}
+  .metric-card small{font-size:5px;min-height:17px}
+  .metric-card b{font-size:6.7px;margin-top:6px}
+  .section-title{margin-top:17px;margin-bottom:9px}
+  .facility-photo{height:70px}
+}
+@media(max-width:380px){
+  .future-hero{height:300px;min-height:300px}
+  .future-copy{left:12px;top:14px;bottom:54px;width:68%}
+  .future-copy h1{font-size:23px}
+  .future-services>div{font-size:6.7px}
+  .future-photo{background-position:82% center}
+  .future-book{height:38px;bottom:30px}
+  .metric-card{height:70px;min-height:70px}
+  .facility-photo{height:64px}
+}
+@media(min-width:681px){
+  .future-hero{height:370px;min-height:370px}
+  .future-photo{
+    width:77%;
+    clip-path:polygon(49% 0,100% 0,100% 100%,18% 100%,43% 62%,17% 45%);
+    background-position:78% center;
+    filter:saturate(1.32) contrast(1.12) brightness(1.28);
+  }
+  .future-overlay{background:linear-gradient(90deg,#03111aff 0%,#03111af0 32%,#03111a83 46%,#03111a2a 64%,#03111a05 100%),linear-gradient(0deg,#03111af0 0%,transparent 30%)}
+  .future-copy{top:20px;width:61%}
+}
