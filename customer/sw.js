@@ -1,5 +1,7 @@
 'use strict';
-const CACHE_NAME = 'par-ordo-customer-v14';
+
+// V15 forces a clean cache so phones stop showing the older green customer screen.
+const CACHE_NAME = 'par-ordo-customer-v15';
 const SHELL = [
   './',
   './index.html',
@@ -26,7 +28,7 @@ self.addEventListener('install', event => {
           await cache.put(url.href, response.clone());
         }
       } catch (_) {
-        // An optional image/font must not block installation.
+        // An optional image must not block installation.
       }
     }));
     await self.skipWaiting();
@@ -76,6 +78,7 @@ self.addEventListener('fetch', event => {
     url.pathname.endsWith('/assets/par-ordo-shower-room.webp') ||
     url.pathname.endsWith('/assets/par-ordo-relax-room.webp');
   if (!customerAsset) return;
+
   event.respondWith((async () => {
     const cache = await caches.open(CACHE_NAME);
     const cached = await cache.match(request);
