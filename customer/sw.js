@@ -1,11 +1,11 @@
 'use strict';
-const CACHE_NAME = 'par-ordo-customer-v9';
+const CACHE_NAME = 'par-ordo-customer-v10';
 const SHELL = [
   './',
   './index.html',
-  './styles.css?v=9',
-  './app.js?v=9',
-  './manifest.webmanifest?v=9',
+  './styles.css?v=10',
+  './app.js?v=10',
+  './manifest.webmanifest?v=10',
   '../assets/par-ordo-logo.png',
   '../assets/par-ordo-spa-background.webp'
 ];

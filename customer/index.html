@@ -9,13 +9,13 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="PAR ORDO">
-  <link rel="manifest" href="./manifest.webmanifest?v=9">
+  <link rel="manifest" href="./manifest.webmanifest?v=10">
   <link rel="icon" href="../assets/par-ordo-logo.png">
   <link rel="apple-touch-icon" href="../assets/par-ordo-logo.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800;900&family=Orbitron:wght@500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./styles.css?v=9">
+  <link rel="stylesheet" href="./styles.css?v=10">
   <title>PAR ORDO — FUTURE ARENA</title>
 </head>
 <body>
@@ -26,7 +26,9 @@
       <span class="brand-text"><b>PAR ORDO</b><small>БАНЯ • ОТДЫХ</small><i>● БИШКЕК</i></span>
     </a>
     <div class="header-actions">
-      <button class="head-icon" id="notifyBtn" type="button" aria-label="Уведомления">♧</button>
+      <button class="head-icon bell-icon" id="notifyBtn" type="button" aria-label="Уведомления">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/></svg>
+      </button>
       <button class="head-icon menu-icon" id="menuBtn" type="button" aria-label="Профиль">☰</button>
     </div>
   </header>
@@ -50,12 +52,6 @@
         <div><i>⌂</i><span>Комнаты отдыха</span></div>
         <div><i>✓</i><span>Чистота и безопасность</span></div>
       </div>
-    </div>
-
-    <div class="future-photo-label">
-      <small>PAR ORDO</small>
-      <b>30</b>
-      <span>ГОСТЕЙ</span>
     </div>
 
     <button class="future-book" type="button" data-go="booking">
@@ -240,6 +236,6 @@
     </section>
   </div>
 </div>
-<script src="./app.js?v=9" defer></script>
+<script src="./app.js?v=10" defer></script>
 </body>
 </html>

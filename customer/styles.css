@@ -429,3 +429,66 @@ main{padding:13px 14px 28px}
  .future-photo-label{animation:futurePulse 4s ease-in-out infinite alternate}
  @keyframes futurePulse{to{box-shadow:0 0 27px #00e8c34a,inset 0 0 21px #00e8c322}}
 }
+
+
+/* PAR ORDO CUSTOMER V10 — closer visual match to the selected B reference */
+.head-icon.bell-icon{display:grid;place-items:center}
+.head-icon.bell-icon svg{width:20px;height:20px;fill:none;stroke:#9effef;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 4px #00e8c355)}
+
+@media(max-width:680px){
+  .future-hero{height:350px;min-height:350px}
+  /* Give the sauna picture a wider, brighter right-hand stage. */
+  .future-photo{
+    width:72%;
+    clip-path:polygon(34% 0,100% 0,100% 100%,0 100%,22% 52%);
+    background-position:65% center;
+    filter:saturate(1.28) contrast(1.13) brightness(1.10);
+  }
+  .future-overlay{
+    background:
+      linear-gradient(90deg,#03111aff 0%,#03111af5 31%,#03111a72 53%,#03111a05 100%),
+      linear-gradient(0deg,#03111af0 0%,transparent 29%);
+  }
+  .future-angle-line{
+    left:48%;width:2px;opacity:1;
+    background:linear-gradient(180deg,#00ffe4 0%,#05bca6 58%,#00f3d1 100%);
+    box-shadow:0 0 7px #00ffe0,0 0 18px #00e8c3,0 0 30px #00e8c366;
+  }
+  .future-copy{width:70%;top:20px;bottom:61px}
+  .future-copy h1{font-size:clamp(25px,7.2vw,34px)}
+  .future-copy h1 em{font-size:.66em}
+  .future-services{gap:5px;margin-top:11px}
+  .future-services>div{font-size:7.5px}
+  .future-book{
+    background:linear-gradient(180deg,#061a22,#04131b);
+    color:#eafffa;
+    border:1.5px solid #61ffe5;
+    box-shadow:0 0 0 1px #00e8c355,0 0 12px #00e8c355,0 0 25px #00e8c322,inset 0 0 18px #00e8c314;
+    clip-path:polygon(0 0,96% 0,100% 18%,100% 82%,96% 100%,0 100%);
+    border-radius:0;
+    position:absolute;
+  }
+  .future-book:before{
+    content:"";position:absolute;left:0;top:0;width:35%;height:2px;
+    background:#8effec;box-shadow:0 0 10px #00ffe0;
+  }
+  .future-book:after{
+    content:"";position:absolute;right:0;bottom:0;width:23%;height:2px;
+    background:#8effec;box-shadow:0 0 10px #00ffe0;
+  }
+  .future-book .future-calendar,.future-book .future-arrow{color:#a5fff2}
+  .future-book b{color:#f1fffd}
+  .future-base{height:25px}
+}
+@media(max-width:380px){
+  .future-hero{height:342px;min-height:342px}
+  .future-copy{left:12px;top:17px;width:70%}
+  .future-copy h1{font-size:24px}
+  .future-services>div{font-size:7px}
+}
+@media(min-width:681px){
+  .future-hero{height:390px}
+  .future-photo{width:72%;filter:saturate(1.28) contrast(1.13) brightness(1.1)}
+  .future-overlay{background:linear-gradient(90deg,#03111aff 0%,#03111af4 31%,#03111a70 53%,#03111a05 100%),linear-gradient(0deg,#03111af0 0%,transparent 29%)}
+  .future-book{background:linear-gradient(180deg,#061a22,#04131b);color:#eafffa;border:1.5px solid #61ffe5;box-shadow:0 0 0 1px #00e8c355,0 0 18px #00e8c344,inset 0 0 18px #00e8c314}
+}
