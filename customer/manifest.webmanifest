@@ -3,7 +3,7 @@
   "name": "PAR ORDO — FUTURE ARENA",
   "short_name": "PAR ORDO",
   "description": "Приложение для гостей PAR ORDO в Бишкеке.",
-  "start_url": "./?app=v8",
+  "start_url": "./?app=v9",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",

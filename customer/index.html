@@ -9,13 +9,13 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="PAR ORDO">
-  <link rel="manifest" href="./manifest.webmanifest?v=8">
+  <link rel="manifest" href="./manifest.webmanifest?v=9">
   <link rel="icon" href="../assets/par-ordo-logo.png">
   <link rel="apple-touch-icon" href="../assets/par-ordo-logo.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800;900&family=Orbitron:wght@500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./styles.css?v=8">
+  <link rel="stylesheet" href="./styles.css?v=9">
   <title>PAR ORDO — FUTURE ARENA</title>
 </head>
 <body>
@@ -34,74 +34,97 @@
   <main id="appMain">
     <!-- HOME -->
     <section class="screen active" id="home" aria-labelledby="homeTitle">
-      <div class="home-hero">
-        <div class="hero-photo" aria-hidden="true"></div>
-        <div class="hero-photo-shade" aria-hidden="true"></div>
-        <div class="hero-angle" aria-hidden="true"></div>
-        <div class="hero-copy">
-          <div class="hero-kicker"><span class="live-dot"></span> ПРЕМИУМ БАНЯ В БИШКЕКЕ</div>
-          <div class="hero-brandline">PAR ORDO / PRIVATE BATH</div>
-          <h1 id="homeTitle">PAR ORDO<br><em>БОЛЬШАЯ БАНЯ</em></h1>
-          <div class="hero-capacity"><span>♟</span> До 30 гостей</div>
-          <p>Настоящий отдых в хорошей компании.</p>
-          <div class="hero-benefits">
-            <span><i>♨</i> Русская парная</span>
-            <span><i>✧</i> Душевые</span>
-            <span><i>⌂</i> Комнаты отдыха</span>
-            <span><i>✓</i> Чистота и комфорт</span>
-          </div>
-        </div>
-        <div class="hero-visual-badge">
-          <small>PAR ORDO</small>
-          <b>30</b>
-          <i>ГОСТЕЙ</i>
-          <span class="badge-ring">♨</span>
-        </div>
-        <button class="hero-book-btn" type="button" data-go="booking">
-          <span class="calendar-icon">▦</span><b>ЗАБРОНИРОВАТЬ</b><span class="arrow">→</span>
-        </button>
-        <div class="hero-base"><span>01 / BIG BATH</span><b>БОЛЬШАЯ БАНЯ · ДО 30 ГОСТЕЙ</b></div>
-      </div>
+  <div class="future-hero">
+    <div class="future-photo" aria-hidden="true"></div>
+    <div class="future-overlay" aria-hidden="true"></div>
+    <div class="future-angle-line" aria-hidden="true"></div>
 
-      <div class="metrics-grid" aria-label="Информация">
-        <article class="metric-card"><span class="metric-icon">♟</span><small>ВМЕСТИМОСТЬ</small><b>До 30 человек</b></article>
-        <article class="metric-card"><span class="metric-icon">◷</span><small>ВРЕМЯ ПОСЕЩЕНИЯ</small><b>3 часа</b></article>
-        <article class="metric-card"><span class="metric-icon">₸</span><small>СТОИМОСТЬ</small><b>300 сом / гость</b></article>
-        <article class="metric-card"><span class="metric-icon">◉</span><small>РЕЖИМ РАБОТЫ</small><b>10:00–23:00</b></article>
+    <div class="future-copy">
+      <div class="future-kicker"><i></i> ПРЕМИУМ БАНЯ В БИШКЕКЕ</div>
+      <div class="future-brandline">PAR ORDO / PRIVATE BATH</div>
+      <h1 id="homeTitle">PAR ORDO<br><em>БОЛЬШАЯ БАНЯ</em></h1>
+      <div class="future-capacity"><span>♟</span> До 30 гостей</div>
+      <div class="future-services">
+        <div><i>♨</i><span>Русская парная</span></div>
+        <div><i>✧</i><span>Душевые</span></div>
+        <div><i>⌂</i><span>Комнаты отдыха</span></div>
+        <div><i>✓</i><span>Чистота и безопасность</span></div>
       </div>
+    </div>
 
-      <div class="section-title">
-        <div><small>PAR ORDO / FACILITIES</small><h2>НАШИ ПОМЕЩЕНИЯ</h2></div>
-        <button type="button" class="section-link" data-go="gallery">СМОТРЕТЬ ВСЕ <span>→</span></button>
-      </div>
-      <div class="facility-grid">
-        <button class="facility-card" type="button" data-filter-go="steam">
-          <span class="facility-photo steam-photo"><i>♨</i></span>
-          <b>Парная</b><small>Фото помещения</small>
-        </button>
-        <button class="facility-card" type="button" data-filter-go="shower">
-          <span class="facility-photo shower-photo"><i>✧</i></span>
-          <b>Душ</b><small>Фото помещения</small>
-        </button>
-        <button class="facility-card" type="button" data-filter-go="rooms">
-          <span class="facility-photo rooms-photo"><i>⌂</i></span>
-          <b>Комнаты</b><small>Фото помещения</small>
-        </button>
-      </div>
+    <div class="future-photo-label">
+      <small>PAR ORDO</small>
+      <b>30</b>
+      <span>ГОСТЕЙ</span>
+    </div>
 
-      <div class="price-strip">
-        <div class="price-strip-head"><small>PRICE MODULE / 02</small><span>ТАРИФ</span></div>
-        <div class="price-main"><strong>300</strong><b>СОМ</b><small>3 часа · 1 человек</small></div>
-        <div class="price-extra"><span>Одноразовые шорты</span><b>50 сом / шт.</b></div>
-      </div>
+    <button class="future-book" type="button" data-go="booking">
+      <span class="future-calendar">▦</span>
+      <b>ЗАБРОНИРОВАТЬ</b>
+      <span class="future-arrow">→</span>
+    </button>
 
-      <a class="address-strip" href="https://www.google.com/maps/search/?api=1&query=Торокул+Айтматова+677+Бишкек" target="_blank" rel="noopener">
-        <span><small>LOCATION / BISHKEK</small><b>ул. Торокул Айтматова, 677</b><i>Ежедневно · 10:00–23:00</i></span>
-        <strong>↗</strong>
-      </a>
-    </section>
+    <div class="future-base">
+      <span>01 / BIG BATH</span>
+      <b>БОЛЬШАЯ БАНЯ · ДО 30 ГОСТЕЙ</b>
+    </div>
+  </div>
 
-    <!-- BOOKING -->
+  <div class="metrics-grid" aria-label="Информация о PAR ORDO">
+    <article class="metric-card">
+      <span class="metric-icon">♟</span>
+      <small>ВМЕСТИМОСТЬ</small>
+      <b>До 30 человек</b>
+    </article>
+    <article class="metric-card">
+      <span class="metric-icon">◷</span>
+      <small>ВРЕМЯ ПОСЕЩЕНИЯ</small>
+      <b>3 часа</b>
+    </article>
+    <article class="metric-card">
+      <span class="metric-icon">▤</span>
+      <small>СТОИМОСТЬ</small>
+      <b>300 сом / гость</b>
+    </article>
+    <article class="metric-card">
+      <span class="metric-icon">◉</span>
+      <small>РЕЖИМ РАБОТЫ</small>
+      <b>10:00–23:00</b>
+    </article>
+  </div>
+
+  <div class="section-title">
+    <div><small>PAR ORDO / FACILITIES</small><h2>НАШИ ПОМЕЩЕНИЯ</h2></div>
+    <button type="button" class="section-link" data-go="gallery">СМОТРЕТЬ ВСЁ <span>→</span></button>
+  </div>
+
+  <div class="facility-grid">
+    <button class="facility-card" type="button" data-filter-go="steam">
+      <span class="facility-photo steam-photo"><i>♨</i><small>STEAM ROOM</small></span>
+      <b>Парная</b>
+    </button>
+    <button class="facility-card" type="button" data-filter-go="shower">
+      <span class="facility-photo shower-photo"><i>✧</i><small>SHOWER</small></span>
+      <b>Душ</b>
+    </button>
+    <button class="facility-card" type="button" data-filter-go="rooms">
+      <span class="facility-photo rooms-photo"><i>⌂</i><small>RELAX ROOM</small></span>
+      <b>Комнаты</b>
+    </button>
+  </div>
+
+  <div class="price-strip">
+    <div class="price-strip-head"><small>PRICE MODULE / 02</small><span>ТАРИФ</span></div>
+    <div class="price-main"><strong>300</strong><b>СОМ</b><small>3 часа · 1 человек</small></div>
+    <div class="price-extra"><span>Одноразовые шорты</span><b>50 сом / шт.</b></div>
+  </div>
+
+  <a class="address-strip" href="https://www.google.com/maps/search/?api=1&query=Торокул+Айтматова+677+Бишкек" target="_blank" rel="noopener">
+    <span><small>LOCATION / BISHKEK</small><b>ул. Торокул Айтматова, 677</b><i>Ежедневно · 10:00–23:00</i></span>
+    <strong>↗</strong>
+  </a>
+</section>
+
     <section class="screen" id="booking" aria-labelledby="bookingTitle">
       <div class="screen-heading">
         <small>PAR ORDO / BOOKING SYSTEM</small>
@@ -217,6 +240,6 @@
     </section>
   </div>
 </div>
-<script src="./app.js?v=8" defer></script>
+<script src="./app.js?v=9" defer></script>
 </body>
 </html>
