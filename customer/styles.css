@@ -10,3 +10,56 @@ main{padding:16px 16px 28px}.screen{display:none;animation:fadeIn .32s ease}.scr
 @media(min-width:680px){body{padding-bottom:0}.app-shell{box-shadow:0 0 80px #0008}.topbar{padding:0 28px}main{padding:24px 28px 35px}.hero-card{height:580px}.hero-content{left:36px;top:42px}.quick-grid{grid-template-columns:repeat(4,1fr)}.gallery-image{height:210px}}
 @media(max-width:380px){main{padding:11px}.topbar{height:68px;padding:0 13px}.brand img{width:41px;height:41px}.hero-card{height:490px}.hero-content{left:17px;right:17px}.hero-tag{margin-top:52px}.quick-card{padding:11px}.quick-card b{font-size:11px}.price-big strong{font-size:50px}.form-row{grid-template-columns:1fr}.guest-stepper small{font-size:7px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;scroll-behavior:auto!important;transition:none!important}}
+
+/* PAR ORDO CUSTOMER V3 — FUTURE ARENA visual direction */
+:root{--bg:#050b12;--panel:#09151c;--panel2:#0c2027;--line:#14524e;--gold:#00e8c3;--gold2:#a5fff0;--cream:#e9fbf8;--muted:#91aaa9;--green:#00f0b5;--red:#ff6f78;--shadow:0 18px 55px #00d9b51c}
+body{background:radial-gradient(ellipse at 50% -12%,#0b3435 0,#07141a 35%,#050b12 72%);color:var(--cream)}
+.app-shell{background:transparent}
+.topbar{background:#061117ed;border-bottom:1px solid #087d70;box-shadow:0 8px 32px #00d9b512}
+.brand img{border:1px solid #00e8c3;box-shadow:0 0 18px #00e8c344}
+.brand b{letter-spacing:.23em}
+.icon-btn{border:1px solid #167d72;background:linear-gradient(145deg,#102b31,#071318);color:#a5fff0;box-shadow:inset 0 0 14px #00e8c315,0 0 16px #00e8c30d}
+.hero-card{border:1px solid #00a991;border-radius:8px 24px 8px 24px;background:#061219;box-shadow:0 0 0 1px #00e8c31c,0 22px 55px #0008,0 0 34px #00e8c315}
+.hero-card:before{content:"";position:absolute;inset:0;z-index:3;pointer-events:none;border:1px solid #7bfff04a;clip-path:polygon(0 0,34% 0,38% 9%,100% 9%,100% 100%,0 100%)}
+.hero-shade{background:linear-gradient(90deg,#041016f5 0%,#041016d9 44%,#04101662 100%),linear-gradient(0deg,#041016 0%,transparent 30%)}
+.hero-tag{border:1px solid #00a991;background:#061c20;color:#9dfff0;box-shadow:0 0 18px #00e8c31c}
+.eyebrow i{background:#00f0b5;box-shadow:0 0 12px #00f0b5}
+.hero h1 em,.section h2 em,.page-intro h1 em{color:#8affdf;text-shadow:0 0 24px #00e8c333}
+.btn-gold{background:linear-gradient(105deg,#00a98e,#5bffe0);color:#031411;border:1px solid #8affdf;box-shadow:0 0 24px #00e8c344,inset 0 1px #ffffff66}
+.btn-gold:active{transform:scale(.985);box-shadow:0 0 36px #00e8c366}
+.btn-outline{border:1px solid #00b99f;background:#06171b;color:#b9fff2}
+.hero-bottom{border-top:1px solid #087e70;background:#06151bd9;color:#9cfff0}
+.quick-grid{gap:9px}
+.quick-card,.feature-card,.price-highlight,.location-strip,.booking-card,.gallery-tile,.profile-card,.profile-menu button,.profile-menu a,.profile-info{border:1px solid #15584f;background:linear-gradient(145deg,#0b2026,#071318);box-shadow:inset 0 0 22px #00d9b50a}
+.quick-card{border-radius:7px 17px 7px 17px;position:relative;overflow:hidden}
+.quick-card:after,.feature-card:after{content:"";position:absolute;top:0;right:0;width:38px;height:1px;background:#63ffdf;box-shadow:0 0 12px #00e8c3}
+.quick-icon,.feature-card i,.feature-art,.text-btn,.section-kicker{color:#7effdf}
+.feature-card{border-radius:8px 18px 8px 18px}
+.feature-art{border:1px solid #167a70;background:radial-gradient(circle,#164b49,#0a1d23 72%);box-shadow:inset 0 0 20px #00e8c31c,0 0 15px #00e8c311}
+.art-shower{background:radial-gradient(circle,#164b63,#0a1b27 72%)}
+.art-room{background:radial-gradient(circle,#34523e,#0a1c20 72%)}
+.price-highlight{border-radius:8px 22px 8px 22px;position:relative;overflow:hidden}
+.price-highlight:before{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(115deg,transparent 0 48%,#00e8c309 49% 51%,transparent 52%)}
+.price-big strong{color:#a5fff0;text-shadow:0 0 25px #00e8c344}
+.extra-line b{color:#8affdf}
+.location-strip{border-radius:8px 18px 8px 18px}
+.round-arrow{border-color:#00a991;color:#9bffed;background:#071c20}
+.bottom-nav{background:#061319f5;border-top:1px solid #13766b;box-shadow:0 -12px 34px #0008,0 0 20px #00e8c30d}
+.nav-item.active{color:#8affdf}.nav-item.active span{text-shadow:0 0 16px #00e8c3}
+.page-intro h1{color:#f1fffc}.page-intro h1 em{color:#8affdf}
+.booking-card{border-radius:8px 22px 8px 22px}
+.summary-icon{border:1px solid #00b99f;background:#0a292c;color:#9cfff0;box-shadow:0 0 18px #00e8c31a}
+.booking-card input,.booking-card select,.guest-stepper{border:1px solid #1c655c;background:#06151b;color:#e9fbf8;border-radius:8px}
+.booking-card input:focus,.booking-card select:focus{outline:1px solid #00e8c3;box-shadow:0 0 0 3px #00e8c31a}
+.guest-stepper button{border:1px solid #00a991;background:#0a282d;color:#a5fff0}
+.filter{border:1px solid #15584f;background:#091b21;color:#b4c9c5}.filter.active{background:linear-gradient(105deg,#00a98e,#5bffe0);border-color:#8affdf;color:#031411;box-shadow:0 0 17px #00e8c333}
+.gallery-tile{border-radius:8px 18px 8px 18px;overflow:hidden}.gallery-image{background:radial-gradient(ellipse at 50% 60%,#14564f 0,#0a252a 47%,#071219 100%)}.shower-image{background:radial-gradient(ellipse at 50% 60%,#15516b 0,#0a202d 50%,#071219 100%)}.room-image{background:radial-gradient(ellipse at 50% 60%,#35543d 0,#102923 50%,#071219 100%)}
+.photo-reminder{border-color:#167b70;background:#07191e;color:#a6c5c0}
+.profile-avatar{background:linear-gradient(135deg,#00a98e,#5bffe0);color:#041411;box-shadow:0 0 20px #00e8c333}
+.profile-menu button,.profile-menu a{border-radius:8px 16px 8px 16px}.profile-menu span,.profile-menu i,.edit-profile{color:#8affdf}
+.profile-info{border-radius:8px 18px 8px 18px}
+.toast{border-color:#00b99f;background:#08242a;color:#c6fff4;box-shadow:0 0 20px #00e8c322}
+.modal-card{border:1px solid #00b99f;border-radius:8px 22px 8px 22px;background:linear-gradient(145deg,#0d2b30,#061318);box-shadow:0 0 40px #00e8c322}
+.modal-mark{color:#8affdf}
+@media(max-width:680px){.topbar{border-bottom-color:#0c776c}.hero-card{min-height:540px}.hero-content{top:35px}.bottom-nav{height:76px}.nav-item.active:before{content:"";width:25px;height:2px;background:#69ffe0;box-shadow:0 0 12px #00e8c3;margin-bottom:3px}.quick-card{min-height:112px}}
+@media(prefers-reduced-motion:no-preference){.hero-card{animation:arenaGlow 5s ease-in-out infinite alternate}.btn-gold{transition:transform .18s,box-shadow .18s}.feature-card,.quick-card{transition:border-color .2s,transform .2s}.feature-card:active{transform:scale(.985);border-color:#62ffe0}@keyframes arenaGlow{from{box-shadow:0 0 0 1px #00e8c31c,0 22px 55px #0008,0 0 20px #00e8c30c}to{box-shadow:0 0 0 1px #00e8c344,0 22px 55px #0008,0 0 36px #00e8c326}}}

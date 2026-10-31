@@ -1,6 +1,6 @@
 'use strict';
-const CACHE = 'par-ordo-customer-v2';
-const CORE = ['./', './index.html', './styles.css?v=2', './app.js?v=2', './manifest.webmanifest', '../assets/par-ordo-logo.png', '../assets/par-ordo-spa-background.webp'];
+const CACHE = 'par-ordo-customer-v3';
+const CORE = ['./', './index.html', './styles.css?v=3', './app.js?v=3', './manifest.webmanifest', '../assets/par-ordo-logo.png', '../assets/par-ordo-spa-background.webp'];
 self.addEventListener('install', event => event.waitUntil((async () => {
   const cache = await caches.open(CACHE);
   await Promise.all(CORE.map(async item => { try { const url = new URL(item, self.registration.scope); const res = await fetch(url, { cache: 'reload' }); if (res.ok && res.type === 'basic') await cache.put(url, res); } catch (_) {} }));
