@@ -3,124 +3,106 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#050b12">
-<meta name="description" content="PAR ORDO — приложение для отдыха и посещения бани в Бишкеке.">
-<meta name="application-name" content="PAR ORDO">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="PAR ORDO">
-<link rel="manifest" href="./manifest.webmanifest">
+<meta name="theme-color" content="#030a12">
+<meta name="description" content="PAR ORDO — приложение для гостей бани в Бишкеке">
+<link rel="manifest" href="./manifest.webmanifest?v=5">
 <link rel="icon" href="../assets/par-ordo-logo.png">
 <link rel="apple-touch-icon" href="../assets/par-ordo-logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="./styles.css?v=4">
-<title>PAR ORDO — Приложение</title>
+<link rel="stylesheet" href="./styles.css?v=5">
+<title>PAR ORDO — FUTURE ARENA</title>
 </head>
 <body>
 <div class="app-shell">
-  <header class="topbar">
-    <a class="brand" href="#home" aria-label="PAR ORDO Главная">
-      <img src="../assets/par-ordo-logo.png" alt="PAR ORDO">
-      <span><b>PAR ORDO</b><small>БАНЯ • ОТДЫХ</small></span>
-    </a>
-    <div class="top-actions">
-      <button class="icon-btn" id="installBtn" aria-label="Установить приложение" title="Установить приложение"><span>↓</span></button>
-      <button class="icon-btn" id="menuBtn" aria-label="Меню">☰</button>
+<header class="topbar">
+  <a class="brand" href="#home"><img src="../assets/par-ordo-logo.png" alt="PAR ORDO"><span><b>PAR ORDO</b><small>GUEST EXPERIENCE</small></span></a>
+  <div class="top-actions"><button class="icon-btn" id="installBtn" aria-label="Установить приложение">↓</button><button class="icon-btn" id="menuBtn" aria-label="Профиль">☰</button></div>
+</header>
+<main>
+<section class="screen active" id="home">
+  <div class="hero-card arena-layout">
+    <div class="hero-bg"></div><div class="hero-shade"></div>
+    <div class="hero-content">
+      <div class="eyebrow"><i></i> BISHKEK · PAR ORDO</div>
+      <div class="hero-tag">FUTURE ARENA / PRIVATE SPA</div>
+      <h1>PAR ORDO<br><em>БОЛЬШАЯ БАНЯ</em></h1>
+      <p>Пространство для отдыха, парной и встреч большой компанией.</p>
+      <div class="arena-features">
+        <span><i>♨</i> ПАРНАЯ</span><span><i>30</i> ГОСТЕЙ</span><span><i>03</i> ЧАСА</span>
+      </div>
+      <button class="btn btn-primary" data-go="booking">ЗАБРОНИРОВАТЬ <b>↗</b></button>
     </div>
-  </header>
-
-  <main>
-    <section class="screen active" id="home" aria-labelledby="homeTitle">
-      <div class="hero-card">
-        <div class="hero-bg"></div><div class="hero-shade"></div>
-        <div class="hero-content">
-          <div class="eyebrow"><i></i> БИШКЕК · PAR ORDO</div>
-          <div class="hero-tag">ПРЕМИУМ БАНЯ В БИШКЕКЕ</div>
-          <h1 id="homeTitle">PAR ORDO<br><em>БОЛЬШАЯ БАНЯ</em></h1>
-          <p>Пространство для отдыха, парной и встреч большой компанией.</p>
-          <div class="arena-features" aria-label="Особенности PAR ORDO">
-            <span><i>♨</i> Парная</span>
-            <span><i>♟</i> До 30 гостей</span>
-            <span><i>◷</i> 3 часа</span>
-          </div>
-          <button class="btn btn-gold" data-go="booking">ЗАБРОНИРОВАТЬ <span>→</span></button>
-        </div>
-        <div class="hero-bottom"><span>БОЛЬШАЯ БАНЯ</span><b>ДО 30 ГОСТЕЙ</b></div>
-      </div>
-
-      <div class="quick-grid">
-        <article class="quick-card"><span class="quick-icon">♨</span><small>ВМЕСТИМОСТЬ</small><b>До 30 человек</b></article>
-        <article class="quick-card"><span class="quick-icon">◷</span><small>ВРЕМЯ</small><b>3 часа</b></article>
-        <article class="quick-card"><span class="quick-icon">₸</span><small>СТОИМОСТЬ</small><b>300 сом / гость</b></article>
-        <article class="quick-card"><span class="quick-icon">◉</span><small>РЕЖИМ РАБОТЫ</small><b>10:00–23:00</b></article>
-      </div>
-
-      <div class="section-head"><div><span class="section-kicker">ВАШ ОТДЫХ</span><h2>Всё для хорошего отдыха</h2></div><button class="text-btn" data-go="gallery">Галерея ↗</button></div>
-      <div class="feature-list">
-        <button class="feature-card" data-filter-go="steam"><span class="feature-art art-steam">♨</span><span><b>Парная</b><small>Время для тепла и восстановления</small></span><i>›</i></button>
-        <button class="feature-card" data-filter-go="shower"><span class="feature-art art-shower">✧</span><span><b>Душ</b><small>Комфорт после парной</small></span><i>›</i></button>
-        <button class="feature-card" data-filter-go="rooms"><span class="feature-art art-room">⌂</span><span><b>Комнаты отдыха</b><small>Место для вашей компании</small></span><i>›</i></button>
-      </div>
-
-      <div class="price-highlight">
-        <div><span class="section-kicker">ПРОСТЫЕ И ПОНЯТНЫЕ ЦЕНЫ</span><h2>Отдых без лишних забот</h2><p>Стоимость указана за одного гостя.</p></div>
-        <div class="price-big"><strong>300</strong><span>СОМ</span><small>3 часа · 1 человек</small></div>
-        <div class="extra-line"><span>Одноразовые шорты</span><b>50 сом</b></div>
-        <small class="muted">Дополнительно, по желанию.</small>
-      </div>
-
-      <div class="location-strip"><div><span class="section-kicker">МЫ РЯДОМ</span><b>Бишкек, ул. Торокул Айтматова, 677</b><small>Ежедневно · 10:00–23:00</small></div><a href="https://www.google.com/maps/search/?api=1&query=Торокул+Айтматова+677+Бишкек" target="_blank" rel="noopener" class="round-arrow">↗</a></div>
-    </section>
-
-    <section class="screen" id="booking" aria-labelledby="bookingTitle">
-      <div class="page-intro"><span class="section-kicker">PAR ORDO · БРОНИРОВАНИЕ</span><h1 id="bookingTitle">Запланируйте<br><em>свой отдых.</em></h1><p>Оставьте данные о желаемом посещении. Подтверждение времени будет после связи с администратором.</p></div>
-      <div class="booking-card">
-        <div class="booking-summary"><div class="summary-icon">♨</div><div><b>Большая баня</b><small>До 30 гостей · 3 часа</small></div><strong>300 сом</strong></div>
-        <form id="bookingForm">
-          <label>Ваше имя<input name="name" autocomplete="name" placeholder="Как к вам обращаться" required></label>
-          <label>Номер телефона<input name="phone" type="tel" autocomplete="tel" inputmode="tel" placeholder="+996 ___ ___ ___" required></label>
-          <div class="form-row"><label>Дата посещения<input name="date" type="date" required></label><label>Время<select name="time" required><option value="">Выберите</option><option>10:00</option><option>11:00</option><option>12:00</option><option>13:00</option><option>14:00</option><option>15:00</option><option>16:00</option><option>17:00</option><option>18:00</option><option>19:00</option><option>20:00</option></select></label></div>
-          <label>Количество гостей <div class="guest-stepper"><button type="button" id="guestMinus">−</button><output id="guestCount">2</output><button type="button" id="guestPlus">+</button><small>Максимум 30 человек</small></div></label>
-          <label class="check-row"><input type="checkbox" name="shorts"> <span>Добавить одноразовые шорты (50 сом / шт.)</span></label>
-          <div class="estimate"><span>Предварительная сумма</span><b id="estimate">600 сом</b></div>
-          <button class="btn btn-gold btn-full" type="submit">Отправить запрос <span>→</span></button>
-          <p class="form-note">Это запрос, а не подтверждённая бронь. Онлайн-подтверждение подключим к PAR ORDO PRO после настройки безопасного API.</p>
-        </form>
-      </div>
-    </section>
-
-    <section class="screen" id="gallery" aria-labelledby="galleryTitle">
-      <div class="page-intro"><span class="section-kicker">АТМОСФЕРА PAR ORDO</span><h1 id="galleryTitle">Посмотрите<br><em>внутри.</em></h1><p>Знакомьтесь с пространством для отдыха.</p></div>
-      <div class="filter-row" role="group" aria-label="Фильтр галереи">
-        <button class="filter active" data-filter="all">Все</button><button class="filter" data-filter="steam">Парная</button><button class="filter" data-filter="shower">Душ</button><button class="filter" data-filter="rooms">Комнаты</button>
-      </div>
-      <div class="gallery-grid">
-        <article class="gallery-tile" data-category="steam"><div class="gallery-image steam-image"><span>♨</span><small>ПАРНАЯ</small></div><b>Парная</b><small>Фото помещения добавим</small></article>
-        <article class="gallery-tile" data-category="shower"><div class="gallery-image shower-image"><span>✧</span><small>ДУШ</small></div><b>Душ</b><small>Фото помещения добавим</small></article>
-        <article class="gallery-tile wide" data-category="rooms"><div class="gallery-image room-image"><span>⌂</span><small>КОМНАТЫ</small></div><b>Комнаты отдыха</b><small>Фото помещения добавим</small></article>
-      </div>
-      <div class="photo-reminder"><span>✦</span><p>Здесь будут настоящие фотографии ПАР ОРДО. Отправьте фото парной, душа и комнат — заменим заглушки.</p></div>
-    </section>
-
-    <section class="screen" id="profile" aria-labelledby="profileTitle">
-      <div class="page-intro"><span class="section-kicker">ВАШ ПРОФИЛЬ</span><h1 id="profileTitle">Личный<br><em>кабинет.</em></h1><p>Сохраните контакты для будущих обращений.</p></div>
-      <div class="profile-card"><div class="profile-avatar">P</div><div><b id="profileName">Гость PAR ORDO</b><small id="profilePhone">Номер пока не указан</small></div><button class="edit-profile" id="editProfile">Изменить</button></div>
-      <div class="profile-menu"><button data-go="booking"><span>▣</span><b>Новое бронирование</b><i>›</i></button><button data-go="gallery"><span>▧</span><b>Фотогалерея</b><i>›</i></button><a href="https://www.google.com/maps/search/?api=1&query=Торокул+Айтматова+677+Бишкек" target="_blank" rel="noopener"><span>⌖</span><b>Как добраться</b><i>↗</i></a></div>
-      <div class="profile-info"><span class="section-kicker">КОНТАКТЫ</span><b>ПАР ОРДО · Баня и отдых</b><p>Бишкек, ул. Торокул Айтматова, 677</p><p>Ежедневно · 10:00–23:00</p></div>
-    </section>
-  </main>
-
-  <nav class="bottom-nav" aria-label="Основная навигация">
-    <button class="nav-item active" data-tab="home"><span>⌂</span><small>Главная</small></button>
-    <button class="nav-item" data-tab="booking"><span>▣</span><small>Бронь</small></button>
-    <button class="nav-item" data-tab="gallery"><span>▧</span><small>Галерея</small></button>
-    <button class="nav-item" data-tab="profile"><span>◉</span><small>Профиль</small></button>
-  </nav>
-  <div class="toast" id="toast" role="status" aria-live="polite"></div>
-  <div class="modal-backdrop" id="modal" hidden><div class="modal-card"><button class="modal-close" id="modalClose">×</button><span class="modal-mark">PAR ORDO</span><h2 id="modalTitle">Запрос подготовлен</h2><p id="modalText"></p><button class="btn btn-gold btn-full" id="modalOk">Понятно</button></div></div>
+    <aside class="hero-side-panel">
+      <div class="arena-orbit">♨</div><small>PAR ORDO / PRIVATE SPA</small>
+      <strong>30<span> MAX</span></strong><i>GUEST CAPACITY</i>
+      <div class="side-signal"><i></i> SYSTEM ONLINE</div>
+    </aside>
+    <div class="hero-bottom"><span>01 / PRIVATE BATH</span><b>БОЛЬШАЯ БАНЯ · ДО 30 ГОСТЕЙ</b></div>
+  </div>
+  <div class="quick-grid">
+    <article class="quick-card"><span>♨</span><small>ВМЕСТИМОСТЬ</small><b>До 30 человек</b></article>
+    <article class="quick-card"><span>◷</span><small>ВРЕМЯ СЕАНСА</small><b>3 часа</b></article>
+    <article class="quick-card"><span>₸</span><small>СТОИМОСТЬ</small><b>300 сом / гость</b></article>
+    <article class="quick-card"><span>◉</span><small>ГРАФИК</small><b>10:00–23:00</b></article>
+  </div>
+  <div class="section-head"><div><small>LOCATION MODULE / 01</small><h2>ЗОНЫ ОТДЫХА</h2></div><button class="text-link" data-go="gallery">ГАЛЕРЕЯ ↗</button></div>
+  <div class="feature-grid">
+    <button class="feature-card" data-filter-go="steam"><span class="feature-icon">♨</span><b>ПАРНАЯ</b><small>Тепло и восстановление</small><i>↗</i></button>
+    <button class="feature-card" data-filter-go="shower"><span class="feature-icon">✧</span><b>ДУШ</b><small>Комфорт после парной</small><i>↗</i></button>
+    <button class="feature-card" data-filter-go="rooms"><span class="feature-icon">⌂</span><b>КОМНАТЫ</b><small>Отдых вашей компании</small><i>↗</i></button>
+  </div>
+  <div class="price-panel">
+    <small>PRICE PROTOCOL / 02</small><h2>ПРОСТЫЕ ЦЕНЫ</h2>
+    <div class="price-row"><strong>300</strong><b>СОМ</b><span>3 часа · 1 человек</span></div>
+    <div class="extra-row"><span>Одноразовые шорты</span><b>50 сом / шт.</b></div>
+  </div>
+  <a class="location-panel" href="https://www.google.com/maps/search/?api=1&query=Торокул+Айтматова+677+Бишкек" target="_blank" rel="noopener">
+    <span><small>LOCATION / BISHKEK</small><b>ул. Торокул Айтматова, 677</b><i>Ежедневно · 10:00–23:00</i></span><strong>↗</strong>
+  </a>
+</section>
+<section class="screen" id="booking">
+  <div class="page-heading"><small>PAR ORDO / BOOKING MODULE</small><h1>ЗАПЛАНИРУЙТЕ<br><em>СВОЙ ОТДЫХ</em></h1><p>Оставьте заявку. Время посещения подтвердит администратор.</p></div>
+  <div class="booking-card">
+    <div class="booking-summary"><span>♨</span><div><b>БОЛЬШАЯ БАНЯ</b><small>До 30 гостей · 3 часа</small></div><strong>300 сом</strong></div>
+    <form id="bookingForm">
+      <label>Ваше имя<input name="name" autocomplete="name" placeholder="Как к вам обращаться" required></label>
+      <label>Номер телефона<input name="phone" type="tel" autocomplete="tel" inputmode="tel" placeholder="+996 ___ ___ ___" required></label>
+      <div class="form-row"><label>Дата посещения<input name="date" type="date" required></label><label>Время<select name="time" required><option value="">Выберите</option><option>10:00</option><option>11:00</option><option>12:00</option><option>13:00</option><option>14:00</option><option>15:00</option><option>16:00</option><option>17:00</option><option>18:00</option><option>19:00</option><option>20:00</option></select></label></div>
+      <label>Количество гостей<div class="guest-stepper"><button type="button" id="guestMinus">−</button><output id="guestCount">2</output><button type="button" id="guestPlus">+</button><small>МАКСИМУМ 30</small></div></label>
+      <label class="check-row"><input type="checkbox" name="shorts"><span>Одноразовые шорты · 50 сом / шт.</span></label>
+      <div class="estimate"><span>ПРЕДВАРИТЕЛЬНАЯ СУММА</span><b id="estimate">600 сом</b></div>
+      <button class="btn btn-primary full" type="submit">ОТПРАВИТЬ ЗАЯВКУ <b>↗</b></button>
+      <p class="form-note">Это заявка, а не подтверждённая бронь. Онлайн-подтверждение подключается отдельно через PAR ORDO PRO.</p>
+    </form>
+  </div>
+</section>
+<section class="screen" id="gallery">
+  <div class="page-heading"><small>PAR ORDO / VISUAL ARCHIVE</small><h1>ПОСМОТРИТЕ<br><em>ВНУТРИ</em></h1><p>Фотографии пространства PAR ORDO.</p></div>
+  <div class="filter-row"><button class="filter active" data-filter="all">Все</button><button class="filter" data-filter="steam">Парная</button><button class="filter" data-filter="shower">Душ</button><button class="filter" data-filter="rooms">Комнаты</button></div>
+  <div class="gallery-grid">
+    <article class="gallery-tile" data-category="steam"><div class="gallery-art steam">♨<small>STEAM ZONE</small></div><b>ПАРНАЯ</b><span>Фото помещения добавим</span></article>
+    <article class="gallery-tile" data-category="shower"><div class="gallery-art shower">✧<small>SHOWER ZONE</small></div><b>ДУШ</b><span>Фото помещения добавим</span></article>
+    <article class="gallery-tile wide" data-category="rooms"><div class="gallery-art rooms">⌂<small>RELAX ZONE</small></div><b>КОМНАТЫ ОТДЫХА</b><span>Фото помещения добавим</span></article>
+  </div>
+  <div class="photo-note">✦ Здесь будут настоящие фотографии PAR ORDO. Заглушки заменим после получения ваших снимков.</div>
+</section>
+<section class="screen" id="profile">
+  <div class="page-heading"><small>GUEST ACCOUNT / 04</small><h1>ЛИЧНЫЙ<br><em>КАБИНЕТ</em></h1><p>Контакты для будущих обращений.</p></div>
+  <div class="profile-card"><div class="profile-avatar">P</div><div><b id="profileName">Гость PAR ORDO</b><small id="profilePhone">Номер пока не указан</small></div><button id="editProfile">ИЗМЕНИТЬ</button></div>
+  <div class="profile-links"><button data-go="booking">▣ <b>НОВАЯ ЗАЯВКА</b><i>↗</i></button><button data-go="gallery">▧ <b>ФОТОГАЛЕРЕЯ</b><i>↗</i></button><a href="https://www.google.com/maps/search/?api=1&query=Торокул+Айтматова+677+Бишкек" target="_blank" rel="noopener">⌖ <b>КАК ДОБРАТЬСЯ</b><i>↗</i></a></div>
+  <div class="contact-panel"><small>PAR ORDO / CONTACT</small><b>Баня и отдых</b><span>Бишкек, ул. Торокул Айтматова, 677</span><span>Ежедневно · 10:00–23:00</span></div>
+</section>
+</main>
+<nav class="bottom-nav">
+  <button class="nav-item active" data-tab="home"><span>⌂</span><small>Главная</small></button>
+  <button class="nav-item" data-tab="booking"><span>▣</span><small>Бронь</small></button>
+  <button class="nav-item" data-tab="gallery"><span>▧</span><small>Галерея</small></button>
+  <button class="nav-item" data-tab="profile"><span>◉</span><small>Профиль</small></button>
+</nav>
+<div class="toast" id="toast" role="status"></div>
+<div class="modal-backdrop" id="modal" hidden><div class="modal-card"><button class="modal-close" id="modalClose">×</button><small>PAR ORDO / NOTICE</small><h2 id="modalTitle">Заявка подготовлена</h2><p id="modalText"></p><button class="btn btn-primary full" id="modalOk">ПОНЯТНО</button></div></div>
 </div>
-<script src="./app.js?v=4" defer></script>
-</body>
-</html>
+<script src="./app.js?v=5" defer></script>
+</body></html>
