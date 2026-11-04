@@ -1,0 +1,178 @@
+/* PAR ORDO CEO MODE — signature executive card */
+.manager-actions #poCeoLaunch{
+  grid-column:1 / -1 !important;
+  position:relative !important;
+  isolation:isolate;
+  overflow:hidden !important;
+  display:grid !important;
+  grid-template-columns:64px minmax(0,1fr) 38px !important;
+  align-items:center !important;
+  gap:14px !important;
+  width:100%;
+  min-height:122px !important;
+  padding:16px 18px !important;
+  border:1px solid rgba(227,183,94,.78) !important;
+  border-radius:22px !important;
+  text-align:left !important;
+  color:#fff0cf !important;
+  background:
+    radial-gradient(ellipse at 92% 0%,rgba(255,204,103,.22),transparent 38%),
+    radial-gradient(ellipse at 12% 115%,rgba(126,77,23,.24),transparent 48%),
+    linear-gradient(112deg,#261909 0%,#15100a 48%,#090907 100%) !important;
+  box-shadow:
+    0 15px 34px rgba(0,0,0,.34),
+    inset 0 1px 0 rgba(255,238,196,.18),
+    inset 0 0 30px rgba(234,177,77,.055) !important;
+  transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease !important;
+}
+.manager-actions #poCeoLaunch::before{
+  content:"";
+  position:absolute;
+  z-index:-1;
+  top:-75%;
+  right:8%;
+  width:220px;
+  height:220px;
+  border:1px solid rgba(255,217,142,.13);
+  border-radius:50%;
+  box-shadow:0 0 0 17px rgba(255,217,142,.025),0 0 0 36px rgba(255,217,142,.018),0 0 65px rgba(255,190,83,.09);
+  pointer-events:none;
+}
+.manager-actions #poCeoLaunch::after{
+  content:"↗";
+  display:grid;
+  place-items:center;
+  width:36px;
+  height:36px;
+  border:1px solid rgba(255,217,142,.53);
+  border-radius:50%;
+  color:#ffe1a1;
+  background:linear-gradient(145deg,rgba(113,75,24,.7),rgba(31,21,10,.9));
+  font-size:20px;
+  font-weight:800;
+  box-shadow:0 0 20px rgba(241,185,82,.12);
+}
+.manager-actions #poCeoLaunch .manager-action-icon{
+  position:relative;
+  width:62px !important;
+  height:62px !important;
+  flex:0 0 62px !important;
+  border:1px solid rgba(255,218,139,.88) !important;
+  border-radius:19px !important;
+  color:#ffe09a !important;
+  background:
+    radial-gradient(circle at 32% 20%,rgba(255,231,171,.24),transparent 44%),
+    linear-gradient(145deg,#563711,#1b1208) !important;
+  box-shadow:
+    0 0 0 5px rgba(229,174,83,.07),
+    0 8px 23px rgba(0,0,0,.42),
+    inset 0 1px 0 rgba(255,242,205,.23) !important;
+}
+.manager-actions #poCeoLaunch .manager-action-icon svg{
+  width:29px !important;
+  height:29px !important;
+  filter:drop-shadow(0 0 7px rgba(255,215,130,.42)) !important;
+}
+.manager-actions #poCeoLaunch .manager-action-copy{
+  position:relative;
+  z-index:1;
+  min-width:0;
+  display:block;
+}
+.manager-actions #poCeoLaunch .manager-action-copy::before{
+  content:"AZA DIGITAL ECOSYSTEM  /  OWNER INTELLIGENCE";
+  display:block;
+  margin:0 0 5px;
+  color:#d7ad65;
+  font-size:8px;
+  font-weight:950;
+  line-height:1.35;
+  letter-spacing:.17em;
+}
+.manager-actions #poCeoLaunch .manager-action-copy strong{
+  display:block;
+  color:#fff0cc !important;
+  font-size:16px !important;
+  font-weight:1000 !important;
+  line-height:1.15 !important;
+  letter-spacing:.1em;
+  text-shadow:0 2px 14px rgba(255,204,119,.18);
+}
+.manager-actions #poCeoLaunch .manager-action-copy small{
+  display:block;
+  margin-top:6px !important;
+  color:#d5c09b !important;
+  font-size:11px !important;
+  font-weight:550;
+  line-height:1.45 !important;
+}
+.manager-actions #poCeoLaunch .manager-action-copy::after{
+  content:"DIGITAL TWIN   •   PROFIT FORECAST   •   OWNER APP";
+  display:block;
+  margin-top:9px;
+  color:#f0cc83;
+  font-size:8px;
+  font-weight:900;
+  line-height:1.4;
+  letter-spacing:.08em;
+  opacity:.9;
+}
+.manager-actions #poCeoLaunch:hover,
+.manager-actions #poCeoLaunch:focus-visible{
+  border-color:#ffe0a0 !important;
+  box-shadow:
+    0 17px 40px rgba(0,0,0,.42),
+    0 0 0 2px rgba(245,196,102,.14),
+    0 0 30px rgba(234,177,77,.12),
+    inset 0 1px 0 rgba(255,238,196,.24) !important;
+  transform:translateY(-2px) !important;
+  outline:none;
+}
+.manager-actions #poCeoLaunch:active{
+  transform:scale(.992) !important;
+}
+@media(max-width:420px){
+  .manager-actions #poCeoLaunch{
+    grid-template-columns:54px minmax(0,1fr) 30px !important;
+    gap:11px !important;
+    min-height:116px !important;
+    padding:14px 12px !important;
+    border-radius:19px !important;
+  }
+  .manager-actions #poCeoLaunch .manager-action-icon{
+    width:52px !important;
+    height:52px !important;
+    flex-basis:52px !important;
+    border-radius:16px !important;
+  }
+  .manager-actions #poCeoLaunch .manager-action-icon svg{
+    width:25px !important;
+    height:25px !important;
+  }
+  .manager-actions #poCeoLaunch .manager-action-copy::before{
+    font-size:7px;
+    letter-spacing:.12em;
+  }
+  .manager-actions #poCeoLaunch .manager-action-copy strong{
+    font-size:14px !important;
+  }
+  .manager-actions #poCeoLaunch .manager-action-copy small{
+    font-size:10px !important;
+  }
+  .manager-actions #poCeoLaunch .manager-action-copy::after{
+    font-size:7px;
+    letter-spacing:.045em;
+  }
+  .manager-actions #poCeoLaunch::after{
+    width:29px;height:29px;font-size:17px;
+  }
+}
+@media(prefers-reduced-motion:no-preference){
+  .manager-actions #poCeoLaunch::before{
+    animation:poCeoHalo 7s ease-in-out infinite alternate;
+  }
+  @keyframes poCeoHalo{
+    from{transform:translate3d(0,0,0) scale(.96);opacity:.68}
+    to{transform:translate3d(-10px,8px,0) scale(1.06);opacity:1}
+  }
+}
