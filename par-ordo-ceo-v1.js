@@ -139,7 +139,7 @@
       : 'За выбранный месяц закрытых смен в отчётах нет.';
     const headline = rows.length ? money(estimate) : 'Нет данных';
     $('#poCeoForecast',overlay).innerHTML = `<div class="po-ceo-forecast"><small>${isCurrent?'Ожидаемая выручка к концу месяца':'Фактическая выручка по отчётам'}</small><strong>${headline}</strong><p>${caption}</p><div class="po-ceo-progress"><span style="width:${progress}%"></span></div><div class="po-ceo-note">Выручка за период: ${money(revenue)} · Среднее за день с отчётом: ${money(averagePerRecordedDay)}</div></div>
-      <div class="po-ceo-kpis" style="margin-top:9px"><div class="po-ceo-kpi green"><small>Фактическая выручка</small><strong>${money(revenue)}</strong></div><div class="po-ceo-kpi blue"><small>Средний чек</small><strong>${avgValue?money(avgValue):'—'}</strong></div></div>`;
+      <div class="po-ceo-kpis" style="margin-top:9px"><div class="po-ceo-kpi green"><small>Фактическая выручка</small><strong>${money(revenue)}</strong></div><div class="po-ceo-kpi blue"><small>Средний чек</small><strong>${avgValue?money(Math.round(avgValue)):'—'}</strong></div></div>`;
     $('#poCeoProfitNote',overlay).innerHTML = '<b>Чистая прибыль пока не рассчитывается.</b> В текущем менеджерском API доступны отчёты выручки, клиенты и товары, но не подтверждённые расходы и себестоимость. Не показываем выручку как прибыль.';
   }
 
@@ -238,8 +238,24 @@
   }
 
   function addLauncher() {
+    if ($('#poCeoLaunch')) return;
+
+    // Main PAR ORDO application: place CEO Mode inside the real owner dashboard.
+    const managerActions = $('#managerView .manager-actions');
+    if (managerActions) {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.id = 'poCeoLaunch';
+      button.className = 'manager-action';
+      button.innerHTML = '<span class="manager-action-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3.5 19.5h17M5.5 16.5 10 12l3.2 2.8 5.3-7.3"/><path d="M13.8 7.5h4.7v4.7"/></svg></span><span class="manager-action-copy"><strong>CEO MODE · OWNER APP</strong><small>Digital Twin, прогноз дохода и панель владельца</small></span>';
+      button.addEventListener('click', open);
+      managerActions.appendChild(button);
+      return;
+    }
+
+    // Standalone manager.html compatibility.
     const host = $('#reportsPanel > .panel');
-    if (!host || $('#poCeoLaunch')) return;
+    if (!host) return;
     const button = document.createElement('button');
     button.type = 'button';
     button.id = 'poCeoLaunch';
