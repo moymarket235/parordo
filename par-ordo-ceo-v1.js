@@ -288,6 +288,11 @@
     css.href = './par-ordo-ceo-live3d-v1.css?v=1.0.0';
     document.head.appendChild(css);
 
+     const layoutV4 = document.createElement('script');
+layoutV4.src = './par-ordo-live3d-map-v4.js?v=4.0.0';
+layoutV4.async = true;
+document.head.appendChild(layoutV4);
+
     const script = document.createElement('script');
     script.src = './par-ordo-ceo-live3d-v1.js?v=1.0.0';
     script.async = true;
