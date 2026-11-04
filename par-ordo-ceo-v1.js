@@ -138,7 +138,7 @@
       ? `${rows.length} отчётов закрытых смен · ${days.size} календарных дней с данными.`
       : 'За выбранный месяц закрытых смен в отчётах нет.';
     const headline = rows.length ? money(estimate) : 'Нет данных';
-    $('#poCeoForecast',overlay).innerHTML = `<div class="po-ceo-forecast"><small>${isCurrent?'Ожидаемая выручка к концу месяца':'Фактическая выручка по отчётам'}</small><strong>${headline}</strong><p>${caption}</p><div class="po-ceo-progress"><span style="width:${progress}%"></span></div><div class="po-ceo-note">Выручка за период: ${money(revenue)} · Среднее за день с отчётом: ${money(averagePerRecordedDay)}</div></div>
+    $('#poCeoForecast',overlay).innerHTML = `<div class="po-ceo-forecast"><small>${isCurrent?'Ожидаемая выручка к концу месяца':'Фактическая выручка по отчётам'}</small><strong>${headline}</strong><p>${caption}</p><div class="po-ceo-progress"><span style="width:${progress}%"></span></div><div class="po-ceo-note">Выручка за период: ${money(revenue)} · Среднее за день с отчётом: ${money(Math.round(averagePerRecordedDay))}</div></div>
       <div class="po-ceo-kpis" style="margin-top:9px"><div class="po-ceo-kpi green"><small>Фактическая выручка</small><strong>${money(revenue)}</strong></div><div class="po-ceo-kpi blue"><small>Средний чек</small><strong>${avgValue?money(Math.round(avgValue)):'—'}</strong></div></div>`;
     $('#poCeoProfitNote',overlay).innerHTML = '<b>Чистая прибыль пока не рассчитывается.</b> В текущем менеджерском API доступны отчёты выручки, клиенты и товары, но не подтверждённые расходы и себестоимость. Не показываем выручку как прибыль.';
   }
@@ -187,7 +187,7 @@
       `<div class="po-ceo-kpi"><small>Сейчас в бане</small><strong>${count(todayActive.length)}</strong></div>`,
       `<div class="po-ceo-kpi green"><small>Выручка последней смены</small><strong>${latest?money(latest.paidTotal ?? (Number(latest.cashTotal||0)+Number(latest.transferTotal||0))):'—'}</strong></div>`,
       `<div class="po-ceo-kpi blue"><small>Выручка месяца</small><strong>${reportsResult?money(monthRevenue):'—'}</strong></div>`,
-      `<div class="po-ceo-kpi"><small>Средний чек месяца</small><strong>${monthAvg?money(monthAvg):'—'}</strong></div>`
+      `<div class="po-ceo-kpi"><small>Средний чек месяца</small><strong>${monthAvg?money(Math.round(monthAvg)):'—'}</strong></div>`
     ].join('');
     const failed = results.filter(r=>r.status==='rejected').length;
     const live = $('#poCeoLive',overlay);
