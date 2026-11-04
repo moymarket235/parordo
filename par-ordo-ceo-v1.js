@@ -279,3 +279,17 @@
     window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js',{scope:'./'}).catch(()=>{}),{once:true});
   }
 })();
+
+
+  // Load PAR ORDO LIVE DIGITAL TWIN assets
+  (function loadLiveDigitalTwin() {
+    const css = document.createElement('link');
+    css.rel = 'stylesheet';
+    css.href = './par-ordo-ceo-live3d-v1.css?v=1.0.0';
+    document.head.appendChild(css);
+
+    const script = document.createElement('script');
+    script.src = './par-ordo-ceo-live3d-v1.js?v=1.0.0';
+    script.async = true;
+    document.head.appendChild(script);
+  })();
