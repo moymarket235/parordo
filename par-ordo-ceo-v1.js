@@ -292,4 +292,8 @@
     script.src = './par-ordo-ceo-live3d-v1.js?v=1.0.0';
     script.async = true;
     document.head.appendChild(script);
+     const enhancement = document.createElement('script');
+enhancement.src = './par-ordo-live3d-fullscreen-v1.js?v=1.0.0';
+enhancement.async = true;
+document.head.appendChild(enhancement);
   })();
