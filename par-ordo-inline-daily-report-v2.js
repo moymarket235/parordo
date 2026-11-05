@@ -125,8 +125,12 @@
     const root = $('#poInlineReportBody');
     if (root) root.innerHTML = `<div class="poir-error">${esc(message)}</div>`;
   }
-  async function loadData() {
+  async function loadData(force = false) {
     if (state.loading) return;
+    if (!force && state.loadedAt && Date.now() - state.loadedAt < 30000) {
+      renderReport();
+      return;
+    }
     state.loading = true;
     const root = $('#poInlineReportBody');
     if (root) root.innerHTML = '<div class="poir-loading">Загружаем ежедневный отчёт…</div>';
@@ -155,23 +159,71 @@
     const style = document.createElement('style');
     style.id='poInlineReportStyles';
     style.textContent = `
-      #${MODAL_ID}{position:fixed;inset:0;z-index:9999;display:none;align-items:flex-start;justify-content:center;overflow:auto;padding:max(10px,env(safe-area-inset-top)) 10px calc(14px + env(safe-area-inset-bottom));background:rgba(0,0,0,.86);backdrop-filter:blur(9px)}
+
+      /* CEO-style full-width daily report shortcut */
+      #openDailyManagerReport{
+        grid-column:1/-1!important;width:100%;min-height:116px!important;
+        display:grid!important;grid-template-columns:58px minmax(0,1fr) 28px!important;
+        align-items:center!important;gap:14px!important;padding:16px 18px!important;
+        text-align:left!important;position:relative;overflow:hidden;
+        border:1px solid #bd9146!important;border-radius:22px!important;
+        background:
+          radial-gradient(ellipse at 12% 0%,rgba(246,189,71,.22),transparent 55%),
+          linear-gradient(115deg,#241707 0%,#171008 48%,#0b1710 100%)!important;
+        box-shadow:0 12px 30px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,232,174,.12),0 0 22px rgba(246,189,71,.08)!important;
+        transition:transform .16s ease,border-color .16s ease,box-shadow .16s ease!important;
+      }
+      #openDailyManagerReport:active{transform:scale(.99)!important;border-color:#ffda82!important}
+      #openDailyManagerReport::after{
+        content:"↗";grid-column:3;grid-row:1;align-self:center;justify-self:end;
+        width:34px;height:34px;display:grid;place-items:center;border-radius:50%;
+        border:1px solid #9e783b;background:rgba(8,8,5,.45);color:#ffdb83;
+        font-size:22px;font-weight:900;font-style:italic;
+      }
+      #openDailyManagerReport .manager-action-icon{
+        width:58px!important;height:58px!important;flex-basis:58px!important;
+        border-radius:17px!important;border:1px solid #b78a3d!important;
+        background:linear-gradient(145deg,#34220b,#120e08)!important;
+        color:#ffdc8d!important;box-shadow:0 0 20px rgba(246,189,71,.12),inset 0 1px 0 #ffffff12!important;
+      }
+      #openDailyManagerReport .manager-action-icon svg{width:28px!important;height:28px!important}
+      #openDailyManagerReport .manager-action-copy{grid-column:2;grid-row:1;min-width:0}
+      #openDailyManagerReport .manager-action-copy strong{
+        display:block;font-size:clamp(17px,4.4vw,21px)!important;line-height:1.18!important;
+        font-weight:950!important;font-style:italic!important;letter-spacing:-.025em!important;
+        color:#ffe5aa!important;text-shadow:0 2px 12px rgba(255,190,73,.15);
+      }
+      #openDailyManagerReport .manager-action-copy small{
+        display:block;margin-top:7px;font-size:clamp(10px,2.7vw,12px)!important;
+        line-height:1.45!important;font-weight:750!important;font-style:italic!important;
+        color:#d7c5a2!important;max-width:520px;
+      }
+      @media(min-width:760px){
+        #openDailyManagerReport{min-height:126px!important;padding:20px 23px!important;grid-template-columns:66px minmax(0,1fr) 34px!important}
+        #openDailyManagerReport .manager-action-icon{width:66px!important;height:66px!important}
+      }
+      @media(max-width:390px){
+        #openDailyManagerReport{min-height:110px!important;grid-template-columns:48px minmax(0,1fr) 24px!important;gap:10px!important;padding:13px!important}
+        #openDailyManagerReport .manager-action-icon{width:48px!important;height:48px!important;flex-basis:48px!important}
+        #openDailyManagerReport .manager-action-icon svg{width:24px!important;height:24px!important}
+      }
+      #${MODAL_ID}{position:fixed;inset:0;z-index:9999;display:none;align-items:flex-start;justify-content:center;overflow:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding:max(10px,env(safe-area-inset-top)) 10px calc(14px + env(safe-area-inset-bottom));background:rgba(0,0,0,.88);}
       #${MODAL_ID}.is-open{display:flex}
       #${MODAL_ID} .poir-dialog{width:min(100%,850px);margin:auto 0;border:1px solid #8b672f;border-radius:22px;background:linear-gradient(150deg,#1b1209,#07100b);box-shadow:0 24px 80px #000c;color:#f8edda;overflow:hidden}
       #${MODAL_ID} .poir-head{position:sticky;top:0;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px;background:linear-gradient(145deg,#211608,#100d08);border-bottom:1px solid #654820}
-      #${MODAL_ID} .poir-brand{color:#edce8b;font-size:9px;font-weight:900;letter-spacing:.15em}#${MODAL_ID} .poir-head h1{margin:4px 0 0;font:700 clamp(22px,5vw,30px)/1.1 Georgia,serif}
+      #${MODAL_ID} .poir-brand{color:#edce8b;font-size:10px;font-weight:950;font-style:italic;letter-spacing:.17em}#${MODAL_ID} .poir-head h1{margin:4px 0 0;font:900 italic clamp(23px,5.4vw,32px)/1.08 Georgia,serif;letter-spacing:-.035em;text-shadow:0 2px 16px rgba(255,190,73,.16)}
       #${MODAL_ID} .poir-close{width:42px;height:42px;flex:0 0 42px;border:1px solid #80602e;border-radius:12px;background:#170f07;color:#ffe8b7;font-size:25px}
       #${MODAL_ID} .poir-controls{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 15px;border-bottom:1px solid rgba(199,164,98,.17)}
-      #${MODAL_ID} .poir-controls label{display:flex;align-items:center;gap:9px;color:#d2bf99;font-size:11px;font-weight:800}#${MODAL_ID} .poir-controls input{width:150px;max-width:45vw;padding:9px 10px;border:1px solid #70572f;border-radius:10px;background:#0e100b;color:#fff0cb;color-scheme:dark;font:700 13px Arial}
+      #${MODAL_ID} .poir-controls label{display:flex;align-items:center;gap:9px;color:#d2bf99;font-size:12px;font-weight:900;font-style:italic}#${MODAL_ID} .poir-controls input{width:150px;max-width:45vw;padding:9px 10px;border:1px solid #70572f;border-radius:10px;background:#0e100b;color:#fff0cb;color-scheme:dark;font:700 13px Arial}
       #${MODAL_ID} .poir-refresh{padding:10px 13px;border:1px solid #85632e;border-radius:10px;background:#2a1c0c;color:#f7dfa8;font-size:10px;font-weight:900}
       #${MODAL_ID} .poir-body{padding:13px;display:grid;gap:13px}#${MODAL_ID} .poir-section{padding:13px;border:1px solid rgba(197,164,101,.28);border-radius:16px;background:rgba(9,17,12,.62)}
-      #${MODAL_ID} .poir-section-title span{color:#e5c27c;font-size:9px;font-weight:950;letter-spacing:.15em}#${MODAL_ID} .poir-section-title h2{margin:3px 0 12px;font:700 23px/1.12 Georgia,serif;color:#f5e5c4}
+      #${MODAL_ID} .poir-section-title span{color:#e5c27c;font-size:9px;font-weight:950;letter-spacing:.15em}#${MODAL_ID} .poir-section-title h2{margin:3px 0 12px;font:900 italic 25px/1.08 Georgia,serif;color:#ffe4a8;letter-spacing:-.025em;text-shadow:0 2px 13px rgba(255,190,73,.12)}
       #${MODAL_ID} .poir-kpis{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}#${MODAL_ID} .poir-kpi{display:grid;gap:6px;align-content:start;min-width:0;padding:12px;border:1px solid #4d412b;border-radius:13px;background:#0b100b}
-      #${MODAL_ID} .poir-kpi small{color:#bcb49e;font-size:9px;font-weight:900;letter-spacing:.08em}#${MODAL_ID} .poir-kpi strong{font-size:clamp(18px,4.6vw,24px);line-height:1.12;color:#ffdf9b;overflow-wrap:anywhere}#${MODAL_ID} .poir-kpi .poir-green{color:#88e9ad}#${MODAL_ID} .poir-kpi .poir-blue{color:#a0caff}#${MODAL_ID} .poir-kpi span{font-size:10px;line-height:1.45;color:#aab6aa}#${MODAL_ID} .poir-full{grid-column:1/-1}
-      #${MODAL_ID} .poir-table{margin-top:10px;padding:11px;border:1px solid #403b29;border-radius:12px;background:#090e0a}#${MODAL_ID} .poir-table h3{margin:0 0 7px;color:#e4c47f;font-size:10px;letter-spacing:.12em}#${MODAL_ID} .poir-table-head,#${MODAL_ID} .poir-table-row{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:9px;align-items:center}#${MODAL_ID} .poir-table-head{padding:6px 0;color:#899c8e;font-size:9px;font-weight:800}#${MODAL_ID} .poir-table-row{padding:10px 0;border-top:1px solid #273028;font-size:11px}#${MODAL_ID} .poir-table-row strong{overflow-wrap:anywhere;color:#f0e4cb}#${MODAL_ID} .poir-table-row span{white-space:nowrap;color:#b9c8bd}#${MODAL_ID} .poir-table-row b{white-space:nowrap;color:#f3d79a;text-align:right}
+      #${MODAL_ID} .poir-kpi small{color:#bcb49e;font-size:9px;font-weight:900;letter-spacing:.08em}#${MODAL_ID} .poir-kpi strong{font-size:clamp(19px,4.8vw,25px);line-height:1.1;font-weight:950;font-style:italic;color:#ffdf9b;letter-spacing:-.03em;overflow-wrap:anywhere}#${MODAL_ID} .poir-kpi .poir-green{color:#88e9ad}#${MODAL_ID} .poir-kpi .poir-blue{color:#a0caff}#${MODAL_ID} .poir-kpi span{font-size:11px;line-height:1.45;font-weight:700;font-style:italic;color:#c1cbbf}#${MODAL_ID} .poir-full{grid-column:1/-1}
+      #${MODAL_ID} .poir-table{margin-top:10px;padding:11px;border:1px solid #403b29;border-radius:12px;background:#090e0a}#${MODAL_ID} .poir-table h3{margin:0 0 7px;color:#e4c47f;font-size:10px;letter-spacing:.12em}#${MODAL_ID} .poir-table-head,#${MODAL_ID} .poir-table-row{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:9px;align-items:center}#${MODAL_ID} .poir-table-head{padding:6px 0;color:#899c8e;font-size:9px;font-weight:800}#${MODAL_ID} .poir-table-row{padding:10px 0;border-top:1px solid #273028;font-size:11px;font-weight:950;font-style:italic;letter-spacing:.08em}#${MODAL_ID} .poir-table-row strong{overflow-wrap:anywhere;color:#fff0d2;font-weight:850;font-style:italic}#${MODAL_ID} .poir-table-row span{white-space:nowrap;color:#b9c8bd}#${MODAL_ID} .poir-table-row b{white-space:nowrap;color:#f3d79a;text-align:right}
       #${MODAL_ID} .poir-shifts{display:grid;gap:7px;margin-top:9px}#${MODAL_ID} .poir-shifts>div{display:flex;justify-content:space-between;gap:8px;padding:8px 2px;border-bottom:1px solid #293027;font-size:10px}#${MODAL_ID} .poir-shifts span{color:#aab6aa}#${MODAL_ID} .poir-shifts b{text-align:right;color:#e7d3aa}
       #${MODAL_ID} .poir-empty,#${MODAL_ID} .poir-loading,#${MODAL_ID} .poir-error,#${MODAL_ID} .poir-warning{padding:14px;border:1px dashed #51452f;border-radius:12px;color:#adb8aa;font-size:11px;line-height:1.5}#${MODAL_ID} .poir-empty{display:grid;gap:5px}#${MODAL_ID} .poir-empty strong{color:#f0dbb0}#${MODAL_ID} .poir-error{color:#ffc0b7;border-color:#86504a}#${MODAL_ID} .poir-warning{color:#f4d799;border-color:#80602e}
-      #${MODAL_ID} .poir-stock-summary{display:flex;justify-content:space-between;gap:8px;padding:10px;border-radius:10px;background:#10251a;color:#c4d3c5;font-size:10px}#${MODAL_ID} .poir-stock-summary b{color:#92e8ac}#${MODAL_ID} .poir-stock-list{display:grid}#${MODAL_ID} .poir-stock-list article{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:11px 2px;border-bottom:1px solid #283229}#${MODAL_ID} .poir-stock-list article>div{display:grid;gap:4px;min-width:0}#${MODAL_ID} .poir-stock-list strong{font-size:11px;overflow-wrap:anywhere}#${MODAL_ID} .poir-stock-list small{font-size:9px;color:#9cab9e}#${MODAL_ID} .poir-stock-list article>b{color:#92e8ac;font-size:12px;white-space:nowrap}
+      #${MODAL_ID} .poir-stock-summary{display:flex;justify-content:space-between;gap:8px;padding:10px;border-radius:10px;background:#10251a;color:#c4d3c5;font-size:10px}#${MODAL_ID} .poir-stock-summary b{color:#92e8ac}#${MODAL_ID} .poir-stock-list{display:grid}#${MODAL_ID} .poir-stock-list article{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:11px 2px;border-bottom:1px solid #283229}#${MODAL_ID} .poir-stock-list article>div{display:grid;gap:4px;min-width:0}#${MODAL_ID} .poir-stock-list strong{font-size:13px;font-weight:900;font-style:italic;overflow-wrap:anywhere;color:#fff0d2}#${MODAL_ID} .poir-stock-list small{font-size:9px;color:#9cab9e}#${MODAL_ID} .poir-stock-list article>b{color:#92e8ac;font-size:13px;font-weight:950;font-style:italic;white-space:nowrap;text-shadow:0 0 12px rgba(80,235,146,.12)}
       @media(max-width:520px){#${MODAL_ID} .poir-head{padding:12px}#${MODAL_ID} .poir-controls{align-items:stretch;flex-direction:column}#${MODAL_ID} .poir-controls label{justify-content:space-between}#${MODAL_ID} .poir-controls input{max-width:58vw}#${MODAL_ID} .poir-refresh{width:100%}#${MODAL_ID} .poir-shifts{font-size:9px}#${MODAL_ID} .poir-shifts>div{flex-direction:column}#${MODAL_ID} .poir-shifts b{text-align:left}}
     `;
     document.head.appendChild(style);
@@ -191,12 +243,15 @@
     $('#poInlineReportDate',el).addEventListener('change',e=>{state.date=e.target.value||dateKey();renderReport();});
   }
   function openModal() {
+    // Modal markup and styles are prepared during boot, so tapping opens instantly.
     ensureModal(); addStyles();
     state.date=state.date||dateKey();
-    const el=$('#'+MODAL_ID); el.classList.add('is-open'); el.setAttribute('aria-hidden','false');
+    const el=$('#'+MODAL_ID);
+    el.classList.add('is-open'); el.setAttribute('aria-hidden','false');
     document.body.style.overflow='hidden';
     $('#poInlineReportDate').value=state.date;
-    loadData();
+    if (state.loadedAt) renderReport();
+    if ((!state.loadedAt || Date.now() - state.loadedAt >= 30000) && !state.loading) loadData(true);
   }
   function closeModal() {
     const el=$('#'+MODAL_ID); if(!el)return;
@@ -204,9 +259,15 @@
   }
   function boot() {
     const button=$('#'+BTN_ID); if(!button)return;
+    // Warm the UI before any tap: avoid creating a large modal and injecting styles
+    // at interaction time, which caused a visible pause on mobile devices.
+    addStyles();
+    ensureModal();
     button.removeAttribute('onclick');
     button.addEventListener('click',e=>{e.preventDefault();openModal();});
     document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('#'+MODAL_ID)?.classList.contains('is-open'))closeModal();});
+    // Start a quiet data prefetch in the background when an authenticated session exists.
+    if (sessionStorage.getItem('parordo_admin_token')) loadData(true);
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
 })();
