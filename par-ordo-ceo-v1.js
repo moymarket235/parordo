@@ -293,6 +293,11 @@ layoutV4.src = './par-ordo-live3d-map-v4.js?v=8.0.0';
 layoutV4.async = true;
 document.head.appendChild(layoutV4);
 
+     const fitScreen = document.createElement('script');
+fitScreen.src = './par-ordo-dt-fit-screen-v9.js?v=9.0.0';
+fitScreen.async = true;
+document.head.appendChild(fitScreen);
+
     const script = document.createElement('script');
     script.src = './par-ordo-ceo-live3d-v1.js?v=1.0.0';
     script.async = true;
