@@ -6,7 +6,11 @@
   "start_url": "./manager.html",
   "scope": "./",
   "display": "standalone",
-  "orientation": "any",
+  "display_override": [
+    "standalone",
+    "minimal-ui"
+  ],
+  "orientation": "portrait-primary",
   "background_color": "#080604",
   "theme_color": "#0b0805",
   "categories": [
