@@ -1,10 +1,18 @@
 <!doctype html>
 <html lang="ru-RU">
 <head>
-<link rel="manifest" href="./owner.webmanifest?v=1.0.0">
+<link rel="manifest" href="./owner.webmanifest?v=1.0.1">
 <link rel="stylesheet" href="./par-ordo-ceo-v1.css?v=1.0.0">
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#0b0805"><title>ПАР ОРДО · Панель руководителя V82</title>
+<meta name="theme-color" content="#0b0805">
+<meta name="application-name" content="PAR ORDO OWNER">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="PAR ORDO OWNER">
+<meta name="description" content="Защищённое мобильное приложение руководителя PAR ORDO.">
+<link rel="apple-touch-icon" href="./assets/par-ordo-logo.png">
+<title>PAR ORDO OWNER · Панель руководителя</title>
 <style>
 :root{color-scheme:dark;--gold:#ffda81;--muted:#b8a58d;--line:#563b20;--green:#65e9a0;--blue:#8abbff}*{box-sizing:border-box}body{margin:0;min-height:100dvh;background:radial-gradient(ellipse at top,#2b1808 0,#100904 44%,#050403 100%);color:#fff1db;font:15px/1.45 system-ui,-apple-system,Segoe UI,Arial,sans-serif}.wrap{width:min(100%,850px);margin:auto;padding:16px 13px calc(32px + env(safe-area-inset-bottom))}.top{display:flex;align-items:center;gap:12px;padding:8px 2px 16px;border-bottom:1px solid #4c341d;margin-bottom:16px}.logo{width:53px;height:53px;border-radius:50%;object-fit:cover;border:2px solid #c48c2c;box-shadow:0 0 20px #e9a92b27}.brand{flex:1}.brand b{display:block;letter-spacing:.12em;font-size:17px}.brand small{color:var(--gold);letter-spacing:.2em;font-size:9px}.live{font-size:10px;color:var(--green);border:1px solid #286940;border-radius:99px;padding:6px 9px;white-space:nowrap}.panel{padding:17px;border:1px solid #765025;border-radius:20px;background:linear-gradient(150deg,#1b1008,#0b0705);box-shadow:0 12px 35px #0007;margin-bottom:14px}.eyebrow{font-size:10px;font-weight:900;letter-spacing:.18em;color:var(--gold)}h1{font:700 28px/1.12 Georgia,serif;margin:6px 0 5px}h2{font:700 22px/1.2 Georgia,serif;margin:0}.muted{color:var(--muted);font-size:12px}.form{display:grid;gap:9px;margin-top:17px}.field{width:100%;padding:14px;border-radius:12px;border:1px solid #654523;background:#fff;color:#15100a;font-size:16px}.btn{min-height:48px;padding:12px 15px;border-radius:12px;border:1px solid #c38a2c;background:linear-gradient(110deg,#b97716,#ffdc69);color:#190e04;font-weight:900;font-size:14px;cursor:pointer}.btn.secondary{background:#140c07;color:var(--gold);border-color:#614321}.btn:disabled{opacity:.55}.hidden{display:none!important}.summary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:14px}.tile{min-width:0;padding:12px;border:1px solid #49321c;border-radius:14px;background:#100904}.tile small{display:block;color:var(--muted);font-size:9px;line-height:1.35;min-height:25px}.tile strong{display:block;margin-top:3px;color:var(--gold);font-size:17px;overflow-wrap:anywhere}.tile.cash strong{color:var(--green)}.tile.transfer strong{color:var(--blue)}.report-list{display:grid;gap:10px;margin-top:13px}.report{padding:14px;border:1px solid #5d4123;border-radius:16px;background:linear-gradient(145deg,#190f08,#0d0805)}.report-top{display:flex;justify-content:space-between;gap:8px;align-items:start}.report-top b{display:block;font-size:14px}.report-top strong{color:var(--gold);font-size:17px;white-space:nowrap}.meta{margin-top:4px;color:var(--muted);font-size:10px}.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:12px}.stats>div{padding:9px;border-radius:11px;border:1px solid #3e2b1b;background:#0d0805}.stats small{display:block;color:var(--muted);font-size:8px;line-height:1.35;min-height:19px}.stats strong{display:block;color:#ffe09a;font-size:13px;overflow-wrap:anywhere;margin-top:3px}.cash-text{color:var(--green)!important}.transfer-text{color:var(--blue)!important}.empty{padding:22px;text-align:center;border:1px dashed #604322;border-radius:14px;color:var(--muted);font-size:12px}.notice{margin-top:12px;color:var(--muted);font-size:10px}.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:9;background:#171008;border:1px solid #87602d;color:#ffdfa0;padding:11px 15px;border-radius:13px;box-shadow:0 9px 30px #000;max-width:92vw;font-size:12px;text-align:center} @media(min-width:650px){.summary{grid-template-columns:repeat(4,minmax(0,1fr))}.stats{grid-template-columns:repeat(4,minmax(0,1fr))}.panel{padding:21px}h1{font-size:34px}}
 
@@ -654,5 +662,5 @@ let refreshBusy=false;setInterval(async()=>{if(tok()&&!refreshBusy&&!document.hi
   wrap.appendChild(button);
  }
 })();</script>
- <script src="./par-ordo-ceo-v1.js?v=1.0.0"></script>
+ <script src="./par-ordo-ceo-v1.js?v=1.0.4"></script>
 </body></html>
