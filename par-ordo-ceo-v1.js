@@ -289,7 +289,7 @@
     document.head.appendChild(css);
 
      const layoutV4 = document.createElement('script');
-layoutV4.src = './par-ordo-live3d-map-v4.js?v=4.0.0';
+layoutV4.src = './par-ordo-live3d-map-v4.js?v=6.0.0';
 layoutV4.async = true;
 document.head.appendChild(layoutV4);
 
