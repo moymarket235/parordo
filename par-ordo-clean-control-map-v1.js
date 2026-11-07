@@ -1,4 +1,4 @@
-/* PAR ORDO OWNER — CLEAN CONTROL overlay for the existing 3D floor map.
+/* PAR ORDO OWNER — CLEAN CONTROL overlay v1.0.1 (MutationObserver loop fix) for the existing 3D floor map.
    Red pulse = not submitted/rejected; amber = pending manager review; green check = approved.
    Uses read-only Clean Control API endpoints and does not change guest tracking. */
 (() => {
@@ -59,6 +59,7 @@
   let pollTimer = null;
   let watchTimer = null;
   let observer = null;
+  let activeMap = null;
 
   const $ = (s, root=document) => root.querySelector(s);
   function svg(tag, attrs, text) {
@@ -213,17 +214,32 @@
   function sync() {
     const overlay = $('#poCeoOverlay');
     const open = Boolean(overlay && overlay.classList.contains('po-ceo-open'));
-    const mapReady = Boolean($('#poDtMap', overlay || document));
+    const map = $('#poDtMap', overlay || document);
+    const panel = $('#poDtLivePanel', overlay || document);
+    const mapReady = Boolean(map && panel);
+
     if (open && mapReady) {
-      renderMap();
-      if (!active) {
+      // IMPORTANT: renderMap() mutates the SVG and legend. The document-wide
+      // MutationObserver calls sync() again for those mutations, so rendering
+      // on every observer callback creates an infinite mutation/render loop.
+      // Render only when the overlay opens, the SVG is replaced, or our layer
+      // is missing. Normal refreshes render once after the API response.
+      const needsRender = !active || activeMap !== map || !$('#poCleanControlZones', map);
+      if (needsRender) {
         active = true;
-        refresh();
-        if (pollTimer) clearInterval(pollTimer);
-        pollTimer = window.setInterval(refresh,POLL_MS);
+        activeMap = map;
+        renderMap();
       }
-    } else if (!open && active) {
+      if (!pollTimer) {
+        refresh();
+        pollTimer = window.setInterval(refresh, POLL_MS);
+      }
+      return;
+    }
+
+    if (active) {
       active = false;
+      activeMap = null;
       if (pollTimer) clearInterval(pollTimer);
       pollTimer = null;
     }
