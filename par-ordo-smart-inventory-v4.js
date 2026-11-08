@@ -10,9 +10,9 @@
 (() => {
   'use strict';
 
-  if (window.PARORDOSmartInventory?.version === '4.0.0') return;
+  if (window.PARORDOSmartInventory?.version === '4.0.1') return;
 
-  const VERSION = '4.0.0';
+  const VERSION = '4.0.1';
   const CATEGORIES = [
     'Напитки', 'Чай', 'Шорты', 'Одежда', 'Снеки',
     'Полотенца', 'Аксессуары', 'Гигиена', 'Для бани', 'Прочее'
@@ -453,7 +453,10 @@
   function fillCategorySelect(select) {
     if (!select) return;
     const previous = select.value;
-    select.innerHTML = CATEGORIES.map(category => `<option value="${esc(category)}">${esc(category)}</option>`).join('');
+    const options = CATEGORIES.map(category => `<option value="${esc(category)}">${esc(category)}</option>`).join('');
+    // Do not rewrite the options when they are already correct. This keeps
+    // MutationObserver callbacks idempotent and avoids needless DOM work.
+    if (select.innerHTML !== options) select.innerHTML = options;
     if (CATEGORIES.includes(previous)) select.value = previous;
   }
 
@@ -573,20 +576,27 @@
       const wrap = $('#poLegacyVariantWrap');
       const select = $('#poLegacyVariant');
       if (!wrap || !select) return;
+      let options = '';
       if (category === 'Шорты') {
         wrap.hidden = false;
-        wrap.firstChild.textContent = 'Тип шорт';
-        select.innerHTML = '<option value="Взрослый">Взрослый</option><option value="Детский">Детский</option>';
+        if (wrap.firstChild.textContent !== 'Тип шорт') wrap.firstChild.textContent = 'Тип шорт';
+        options = '<option value="Взрослый">Взрослый</option><option value="Детский">Детский</option>';
       } else if (category === 'Одежда') {
         wrap.hidden = false;
-        wrap.firstChild.textContent = 'Размер одежды';
-        select.innerHTML = '<option value="XS">XS</option><option value="S">S</option><option value="M">M</option><option value="L">L</option><option value="XL">XL</option><option value="XXL">XXL</option><option value="3XL">3XL</option><option value="Другой">Другой</option>';
+        if (wrap.firstChild.textContent !== 'Размер одежды') wrap.firstChild.textContent = 'Размер одежды';
+        options = '<option value="XS">XS</option><option value="S">S</option><option value="M">M</option><option value="L">L</option><option value="XL">XL</option><option value="XXL">XXL</option><option value="3XL">3XL</option><option value="Другой">Другой</option>';
       } else {
         wrap.hidden = true;
-        select.innerHTML = '';
       }
+      if (select.innerHTML !== options) select.innerHTML = options;
     };
-    new MutationObserver(enhance).observe(root, { childList: true, subtree: true });
+    // Watch only when openAdd replaces the modal card's direct content. The
+    // enhancer mutates nested <select> elements; subtree:true observed those
+    // very mutations and recursively called enhance forever, freezing the UI.
+    const observerRoot = $('#addModalCard') || root;
+    new MutationObserver(records => {
+      if (records.some(record => record.type === 'childList' && record.target === observerRoot)) enhance();
+    }).observe(observerRoot, { childList: true, subtree: false });
     enhance();
   }
 
