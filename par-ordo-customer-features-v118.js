@@ -515,9 +515,11 @@
   function wrapOpenAdd() {
     const original = window.openAdd;
     if (typeof original !== 'function' || original.__parOrdoV110Wrapped) return;
-    const wrapped = async function(...args) {
-      await refreshSharedSettings(true);
-      return original.apply(this, args);
+    const wrapped = function(...args) {
+      // Адегенде сатып алуу терезесин ачабыз. Тариф серверден фондо жаңыланат.
+      const result = original.apply(this, args);
+      void refreshSharedSettings(true);
+      return result;
     };
     wrapped.__parOrdoV110Wrapped = true;
     window.openAdd = wrapped;

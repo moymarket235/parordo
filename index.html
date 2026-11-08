@@ -2387,7 +2387,8 @@ async function editCatalogProduct(id,field){
 }
 async function openAdd(clientId){
  currentClientId=clientId;const c=db.clients.find(x=>x.id===clientId);if(!c)return;
- await loadProducts(); // Refresh the shared catalog so new products and prices appear on other devices.
+ const addOpenToken = (window.__PAR_ORDO_ADD_OPEN_TOKEN = Number(window.__PAR_ORDO_ADD_OPEN_TOKEN || 0) + 1);
+ const addOpenClientId = String(clientId); // Каталогду модал ачылгандан кийин фондо жаңыртабыз.
  addProductCategory='Все';
  $('#addModalCard').innerHTML=`<div class="modal-head"><div><div class="eyebrow">ДОБАВИТЬ ПОКУПКУ</div><h2>Клиент ${c.clientNo} (№${c.room})</h2></div><button class="close" type="button" data-close-add>×</button></div>
  <div class="entry-add-wrap">
@@ -2412,7 +2413,19 @@ async function openAdd(clientId){
  $$('[data-close-add]').forEach(b=>b.onclick=()=>closeModal('#addModal'));
  $('#addEntry').onclick=()=>addPurchase({name:'Вход',price:300,productId:null});
  $('#addChildEntry').onclick=()=>addPurchase({name:'Вход детский',price:200,productId:null});
- renderAddProductCategories();renderAddProductGrid();
+ renderAddProductCategories();
+ renderAddProductGrid();
+ if (!Array.isArray(db.products) || !db.products.length) {
+  $('#addProductGrid').innerHTML = '<div class="empty-state">Загружаем список товаров…</div>';
+ }
+ void loadProducts().then(() => {
+  if (window.__PAR_ORDO_ADD_OPEN_TOKEN !== addOpenToken) return;
+  if (String(currentClientId) !== addOpenClientId) return;
+  if (!$('#addModal')?.classList.contains('open')) return;
+  renderAddProductCategories();
+  renderAddProductGrid();
+  normalizeAddProductPickerLayout(false);
+ });
  requestAnimationFrame(()=>{if(addModalCard)addModalCard.scrollTop=0;normalizeAddProductPickerLayout(true);});
  const toggle=$('#toggleNewProductForm'),form=$('#newProductForm'),cancel=$('#cancelNewProduct'),save=$('#saveNewProduct');
  if(toggle&&form)toggle.onclick=()=>{form.hidden=!form.hidden;if(!form.hidden){form.scrollIntoView({behavior:'smooth',block:'nearest'});$('#newProductName')?.focus()}};
@@ -2980,7 +2993,6 @@ html body #addModal #addProductGrid > .add-product-tile > .product-edit-actions 
 <style>@import url('./par-ordo-pc-glass-v109.css?v=109');</style>
 <script src="./pwa-init.js?v=1.0.0"></script>
 <script src="./par-ordo-bracelet-rules-v108.js?v=108"></script>
-<script src="./par-ordo-customer-features-v110.js?v=110"></script>
 <script src="./par-ordo-performance-guard-v1.js?v=1.0.0" defer></script>
 <script src="./par-ordo-grand-luxury-portal-v119.js?v=119" defer></script>
 <script src="./par-ordo-grand-luxury-portal-enhancer-v121.js?v=121" defer></script>
