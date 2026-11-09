@@ -1,5 +1,5 @@
-/* PAR ORDO PRO — show previous and selected day reports side-by-side vertically.
-   Read-only overlay: does not modify Worker, D1, shifts, stock, cash, or stored reports.
+/* PAR ORDO PRO — show previous-day actual report first, then current-day report.
+   Read-only overlay: preserves Worker, D1, shifts, stock, cash, and stored reports.
    Report date is derived from shiftStartAt in Asia/Bishkek, not closedAt/shiftDate.
 */
 (() => {
@@ -165,9 +165,22 @@
       const receipts = Array.isArray(results[1]?.events) ? results[1].events.filter(event => event.action === 'stock_receipt') : [];
       if (!modal.isConnected || !modal.classList.contains('is-open')) return;
 
+      // One-time business-date correction for the transition shown by the owner:
+      // the already stored first 09.11 report belongs to 08.11; the new 09.11 shift
+      // must remain separate and show as EXPECTED until it is closed. Do not mutate D1.
+      const reportDateOverrides = new Map();
+      const nov9Reports = reports.filter(report => reportDay(report) === '2026-11-09')
+        .slice().sort((a,b) => new Date(a.closedAt || a.shiftStartAt || 0) - new Date(b.closedAt || b.shiftStartAt || 0));
+      const hasNov8Report = reports.some(report => reportDay(report) === '2026-11-08');
+      if (!hasNov8Report && nov9Reports.length) {
+        reportDateOverrides.set(nov9Reports[0], '2026-11-08');
+      }
+      const assignedReportDay = report => reportDateOverrides.get(report) || reportDay(report);
+
+      // Yesterday's actual report first, today's report/expected placeholder second.
       const days = [startDay,endDay];
       const blocks = days.map(day => {
-        const dayReports = reports.filter(report => reportDay(report) === day)
+        const dayReports = reports.filter(report => assignedReportDay(report) === day)
           .sort((a,b) => new Date(a.closedAt)-new Date(b.closedAt));
         return `
           <section class="poir-section poir-two-day-card">
@@ -181,7 +194,7 @@
             ${renderReceipts(day,receipts)}
           </section>`;
       }).join('');
-      root.innerHTML = `<div class="poir-two-day-hint">Показаны два отдельных отчёта: ${dateLabel(startDay)} и ${dateLabel(endDay)}. Дата смены определяется по времени её открытия.</div>${blocks}`;
+      root.innerHTML = `<div class="poir-two-day-hint">Сначала показан выбранный день: ${dateLabel(endDay)}, затем предыдущий день: ${dateLabel(startDay)}. Дата смены определяется по времени её открытия.</div>${blocks}`;
       root.dataset.twoDayReady = '1';
       lastRenderedKey = renderKey;
     } catch (error) {
