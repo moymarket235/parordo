@@ -49,6 +49,74 @@ html.po121-boot #loginView{
 .go-scanner-quick:active{transform:scale(.99)}
 @media(max-width:420px){.go-scanner-card{padding:13px}.go-scanner-actions{flex-wrap:wrap}.go-scanner-actions button{min-width:42%}}
 
+
+/* PAR ORDO GO QR SCANNER — PREMIUM TOUCH CONTROLS V2 */
+#goScannerModal .go-scanner-card{
+  background:
+    radial-gradient(ellipse at 12% 0%,rgba(227,174,83,.16),transparent 38%),
+    linear-gradient(155deg,#14212b 0%,#0b151e 58%,#101b22 100%);
+  border:1px solid rgba(235,190,105,.58);
+  box-shadow:0 28px 90px rgba(0,0,0,.72),inset 0 1px 0 rgba(255,235,190,.08);
+}
+#goScannerModal .go-scanner-card .eyebrow{color:#f4d28b;letter-spacing:.18em;font-weight:900}
+#goScannerModal .go-scanner-card h2{color:#fff0cf;font-size:clamp(25px,6vw,31px);letter-spacing:-.025em;text-shadow:0 3px 18px rgba(225,171,79,.18)}
+#goScannerModal .go-scanner-muted{color:#b9c5ce;font-size:14px;line-height:1.55}
+#goScannerModal .go-scanner-video-wrap{border:1px solid rgba(244,207,128,.35);box-shadow:0 12px 32px rgba(0,0,0,.34),0 0 0 1px rgba(255,255,255,.035)}
+#goScannerModal .go-scanner-frame{border:2px solid #f4c96e;box-shadow:0 0 0 999px rgba(0,0,0,.48),0 0 24px rgba(246,194,93,.25),inset 0 0 18px rgba(246,194,93,.12)}
+#goScannerModal .go-scanner-input{
+  min-height:58px;margin-top:10px;padding:14px 16px;
+  border:1px solid rgba(143,169,188,.38);border-radius:16px;
+  background:linear-gradient(180deg,#09131b,#0d1a24);color:#f7f4ec;
+  font-size:15px;box-shadow:inset 0 2px 8px rgba(0,0,0,.28);
+}
+#goScannerModal .go-scanner-input::placeholder{color:#80909d;opacity:1}
+#goScannerModal .go-scanner-input:focus{outline:none;border-color:#e8bd69;box-shadow:0 0 0 3px rgba(232,189,105,.16),inset 0 2px 8px rgba(0,0,0,.24)}
+#goScannerModal .go-scanner-actions{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-top:13px}
+#goScannerModal .go-scanner-actions button{
+  display:flex;align-items:center;justify-content:center;gap:9px;
+  min-width:0;min-height:70px;padding:12px 13px;border-radius:17px;
+  font-size:14px;line-height:1.25;font-weight:900;letter-spacing:.005em;
+  text-align:center;text-shadow:none;cursor:pointer;
+  transition:transform .16s ease,filter .16s ease,box-shadow .16s ease,border-color .16s ease;
+  -webkit-tap-highlight-color:transparent;
+}
+#goScannerModal #goScannerManualBtn{
+  color:#201607!important;
+  background:linear-gradient(135deg,#ffe7a8 0%,#f2c76d 42%,#c88935 100%);
+  border:1px solid #ffdfa0;
+  box-shadow:0 9px 24px rgba(191,131,45,.25),inset 0 1px 0 rgba(255,255,255,.7);
+}
+#goScannerModal #goScannerManualBtn::before{
+  content:"✓";display:inline-grid;place-items:center;flex:0 0 27px;width:27px;height:27px;
+  border-radius:9px;background:rgba(74,45,10,.12);border:1px solid rgba(74,45,10,.22);
+  font-size:17px;font-weight:1000;
+}
+#goScannerModal #goScannerRestart{
+  color:#e8f7fb!important;
+  background:linear-gradient(145deg,#1d4652 0%,#17313c 55%,#10232d 100%);
+  border:1px solid rgba(109,208,224,.58);
+  box-shadow:0 9px 24px rgba(23,104,122,.2),inset 0 1px 0 rgba(210,249,255,.12);
+}
+#goScannerModal #goScannerRestart::before{
+  content:"↻";display:inline-grid;place-items:center;flex:0 0 27px;width:27px;height:27px;
+  border-radius:9px;background:rgba(132,221,235,.13);border:1px solid rgba(132,221,235,.28);
+  color:#a9f0fa;font-size:21px;font-weight:700;
+}
+#goScannerModal .go-scanner-actions button:active{transform:translateY(1px) scale(.985);filter:brightness(.96)}
+#goScannerModal .go-scanner-actions button:focus-visible{outline:3px solid rgba(255,220,145,.85);outline-offset:3px}
+#goScannerModal #goScannerStatus{
+  margin-top:10px;padding:11px 13px;border-radius:13px;
+  background:rgba(224,178,95,.085);border:1px solid rgba(224,178,95,.2);
+  color:#f3d99e;
+}
+#goScannerModal .go-scanner-error{padding-top:3px;font-weight:650}
+@media(max-width:420px){
+  #goScannerModal .go-scanner-card{padding:14px}
+  #goScannerModal .go-scanner-actions{gap:9px}
+  #goScannerModal .go-scanner-actions button{min-height:72px;padding:10px 8px;font-size:13px;border-radius:15px}
+}
+@media(prefers-reduced-motion:reduce){#goScannerModal .go-scanner-actions button{transition:none}}
+
 </style>
 <title>ПАР ОРДО PRO — Система управления баней</title>
 <link rel="icon" href="./assets/par-ordo-logo.png">
