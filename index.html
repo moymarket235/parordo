@@ -11,14 +11,13 @@
 <meta name="apple-mobile-web-app-title" content="ПАР ОРДО PRO">
 <meta name="format-detection" content="telephone=no">
  <script>
-document.documentElement.classList.add('po121-boot');
+(function(){try{if(sessionStorage.getItem('parordo_admin_token'))return}catch(e){}
+var h=document.documentElement;h.classList.add('po-vault-boot');
+setTimeout(function(){h.classList.remove('po-vault-boot')},6000)})();
 </script>
 <style>
-html.po121-boot #loginView{
-  visibility:hidden!important;
-  opacity:0!important;
-  pointer-events:none!important
-}
+html.po-vault-boot #loginView{visibility:hidden!important;opacity:0!important;pointer-events:none!important}
+html.po-vault-boot::after{content:"";position:fixed;inset:0;z-index:2147480000;background:#050403}
 
 /* PAR ORDO GO staff QR scanner */
 .go-scanner-modal{position:fixed;inset:0;z-index:1600;background:rgba(4,6,9,.82);display:none;align-items:center;justify-content:center;padding:14px;backdrop-filter:blur(12px)}
@@ -1898,6 +1897,12 @@ main{padding-top:16px;padding-bottom:22px}
 </style>
 
 <link rel="stylesheet" href="./par-ordo-ceo-v1.css?v=1.0.1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oranienbaum&display=swap">
+<link rel="stylesheet" href="./par-ordo-vault-v1.css?v=1.0.0">
+<link rel="preload" as="image" href="./assets/vault-marble.webp">
+<link rel="preload" as="image" href="./assets/vault-logo.webp">
 </head>
 <body>
 <div id="loginView" class="login-view">
@@ -3524,9 +3529,7 @@ html body #addModal #addProductGrid > .add-product-tile > .product-edit-actions 
 <style>@import url('./par-ordo-pc-glass-v109.css?v=109');</style>
 <script src="./pwa-init.js?v=1.0.0"></script>
 <script src="./par-ordo-bracelet-rules-v108.js?v=108"></script>
-<script src="./par-ordo-performance-guard-v1.js?v=1.0.0" defer></script>
-<script src="./par-ordo-grand-luxury-portal-v119.js?v=119" defer></script>
-<script src="./par-ordo-grand-luxury-portal-enhancer-v121.js?v=121" defer></script>
+<script src="./par-ordo-vault-v1.js?v=1.0.0" defer onerror="document.documentElement.classList.remove('po-vault-boot')"></script>
 <script src="./par-ordo-day-cleanup-v113.js?v=113"></script>
 <script src="./par-ordo-whatsapp-invitations-v117.js?v=117"></script>
 <script src="./par-ordo-customer-features-v118.js?v=118"></script>
