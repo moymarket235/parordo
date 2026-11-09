@@ -2541,13 +2541,13 @@ function renderClientModal(){
 function renderVisitCustomerLink(c){
  const customer=customerBaseEntries.find(x=>String(x.id)===String(c.customerBaseId||''));
  const bonusInThisVisit=(c.items||[]).some(i=>i?.isLoyaltyBonus===true);
- const roleCanEdit=currentRole()!=='manager';
+ const roleCanEdit=['admin','staff'].includes(currentRole());
  let bonusHtml='';
  if(customer&&bonusInThisVisit)bonusHtml='<div class="visit-bonus-status applied">✓ Бесплатный вход уже добавлен в чек</div>';
  else if(customer&&customer.bonusAvailable)bonusHtml='<button type="button" class="visit-bonus-button" id="applyLoyaltyBonus">🎁 Применить бесплатный вход — 5-й визит</button>';
  else if(customer)bonusHtml=`<div class="visit-bonus-status">${Number(customer.bonusUsedThisMonth||0)>0?'Бесплатный вход уже использован в этом месяце':(customer.bonusEligible?'4 входа выполнены. Руководитель/сотрудник должен активировать бонус в базе клиентов.':`В этом месяце посещений: ${Number(customer.visitsThisMonth||0)} из 4 до бонуса`)}</div>`;
  if(customer){
-  return `<section class="visit-customer-panel"><div class="visit-customer-heading"><div><div class="eyebrow">ПОСТОЯННЫЙ КЛИЕНТ</div><strong>${escapeHtml(customer.name)}</strong><small>${customer.phone?escapeHtml(customer.phone):'Телефон не указан'}</small></div>${roleCanEdit?'<button type="button" class="visit-customer-unlink" id="unlinkVisitCustomer">Отвязать</button>':''}</div><div class="visit-customer-metrics"><span>Посещений: <b>${Number(customer.visitsTotal||0)}</b></span><span>В этом месяце: <b>${Number(customer.visitsThisMonth||0)}</b></span><span>Всего оплачено: <b>${money(customer.totalSpent||0)}</b></span></div>${bonusHtml}</section>`;
+  return `<section class="visit-customer-panel"><div class="visit-customer-heading"><div><div class="eyebrow">ПОСТОЯННЫЙ КЛИЕНТ</div><strong>${escapeHtml(customer.name)}</strong><small>${customer.phone?escapeHtml(customer.phone):'Телефон не указан'}</small></div>${roleCanEdit?'<button type="button" class="visit-customer-unlink" id="unlinkVisitCustomer">Убрать с браслета</button>':''}</div><div class="visit-customer-metrics"><span>Посещений: <b>${Number(customer.visitsTotal||0)}</b></span><span>В этом месяце: <b>${Number(customer.visitsThisMonth||0)}</b></span><span>Всего оплачено: <b>${money(customer.totalSpent||0)}</b></span></div>${bonusHtml}</section>`;
  }
  if(!roleCanEdit)return '<section class="visit-customer-panel"><div class="visit-customer-heading"><strong>Клиент не привязан к базе</strong></div></section>';
  return `<section class="visit-customer-panel"><div class="visit-customer-heading"><div><div class="eyebrow">ПРОГРАММА ЛОЯЛЬНОСТИ</div><strong>Привязать клиента к посещению</strong><small>Зарегистрируйте клиента, чтобы учитывать визиты и бонусы.</small></div></div><button type="button" class="visit-register-customer" id="registerVisitCustomer">＋ Зарегистрировать клиента</button><input id="visitCustomerSearch" class="visit-customer-search" type="search" placeholder="Введите имя или телефон…" autocomplete="off"><div id="visitCustomerMatches" class="visit-customer-matches"></div></section>`;
@@ -2555,7 +2555,7 @@ function renderVisitCustomerLink(c){
 function bindVisitCustomerLink(c){
  const search=$('#visitCustomerSearch');if(search){search.addEventListener('input',renderVisitCustomerMatches);renderVisitCustomerMatches()}
  $$('[data-link-visit-customer]').forEach(b=>b.onclick=()=>attachCustomerToVisit(b.dataset.linkVisitCustomer));
- const unlink=$('#unlinkVisitCustomer');if(unlink)unlink.onclick=()=>attachCustomerToVisit('');
+ const unlink=$('#unlinkVisitCustomer');if(unlink)unlink.onclick=removeCustomerFromBracelet;
  const bonus=$('#applyLoyaltyBonus');if(bonus)bonus.onclick=addLoyaltyBonusToCurrentVisit;
  const register=$('#registerVisitCustomer');if(register)register.onclick=()=>openCustomerBase();
 }
@@ -2568,6 +2568,23 @@ function renderVisitCustomerMatches(){
  $$('[data-link-visit-customer]').forEach(b=>b.onclick=()=>attachCustomerToVisit(b.dataset.linkVisitCustomer));
  const register=$('#registerVisitCustomer');if(register)register.onclick=()=>openCustomerBase();
 }
+async function removeCustomerFromBracelet(){
+ const c=db.clients.find(x=>x.id===currentClientId&&x.status==='active');if(!c)return;
+ if(!c.customerBaseId&&!c.goAccountId){toast('Клиент уже не привязан к этому браслету.');return}
+ if(!confirm('Убрать клиента только с этого браслета?\n\nЗапись клиента, имя и телефон в Базе клиентов сохранятся. Само посещение и покупки останутся на браслете.'))return;
+ const button=$('#unlinkVisitCustomer');if(button){button.disabled=true;button.textContent='Снимаем…'}
+ try{
+  const result=await api(`/api/admin/control/clients/${encodeURIComponent(c.id)}/detach-customer`,{method:'POST',body:JSON.stringify({})});
+  if(result.client){const at=db.clients.findIndex(x=>x.id===c.id);if(at>=0)db.clients[at]=result.client;}
+  else{c.customerBaseId='';c.customerBaseName='';c.customerBasePhone='';c.goAccountId='';}
+  saveLocal();await loadCustomerBaseEntries();renderClientModal();renderHome();
+  toast(result.message||'Клиент убран с браслета. Запись в Базе клиентов сохранена.');
+ }catch(e){
+  if(button){button.disabled=false;button.textContent='Убрать с браслета'}
+  toast('Не удалось убрать клиента с браслета: '+e.message);
+ }
+}
+
 async function attachCustomerToVisit(customerId){
  const c=db.clients.find(x=>x.id===currentClientId&&x.status==='active');if(!c)return;
  const old={id:c.customerBaseId,name:c.customerBaseName,phone:c.customerBasePhone};
