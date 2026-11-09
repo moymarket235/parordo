@@ -19,6 +19,24 @@ html.po121-boot #loginView{
   opacity:0!important;
   pointer-events:none!important
 }
+
+/* PAR ORDO GO staff QR scanner */
+.go-scanner-modal{position:fixed;inset:0;z-index:1600;background:rgba(4,6,9,.82);display:none;align-items:center;justify-content:center;padding:14px;backdrop-filter:blur(12px)}
+.go-scanner-modal.open{display:flex}
+.go-scanner-card{width:min(100%,520px);max-height:92vh;overflow:auto;background:#101820;border:1px solid rgba(240,185,90,.32);border-radius:22px;padding:17px;box-shadow:0 24px 90px #000b}
+.go-scanner-card h2{font-size:22px;margin:4px 0 8px}.go-scanner-muted{color:#a9b5c0;font-size:13px;line-height:1.5}
+.go-scanner-video-wrap{position:relative;background:#030609;border-radius:18px;overflow:hidden;aspect-ratio:4/3;margin:14px 0}
+.go-scanner-video{width:100%;height:100%;object-fit:cover;display:block}.go-scanner-frame{position:absolute;inset:18%;border:2px solid #e7bd68;border-radius:20px;box-shadow:0 0 0 999px #0005;pointer-events:none}
+.go-scanner-actions{display:flex;gap:9px;margin-top:12px}.go-scanner-actions button{flex:1;min-height:46px;border-radius:13px;padding:10px 12px;font-weight:700}
+.go-scanner-primary{background:linear-gradient(135deg,#f3cf7a,#d58d31);color:#211607}.go-scanner-secondary{background:#26333f;border:1px solid #405262}.go-scanner-danger{background:#4b2224;border:1px solid #9b4d4d}
+.go-scanner-input{width:100%;min-height:46px;border:1px solid #405262;border-radius:12px;padding:10px 12px;background:#091017;color:#fff;margin-top:8px}
+.go-scan-result{margin-top:13px;padding:14px;border-radius:15px;background:#1a2832;border:1px solid rgba(255,255,255,.1)}
+.go-scan-result .go-person{font-size:20px;font-weight:800;margin-bottom:5px}.go-scan-result .go-phone{color:#d4dde4;font-size:15px}
+.go-room-select{width:100%;min-height:48px;margin-top:10px;padding:8px 10px;border-radius:12px;background:#091017;color:#fff;border:1px solid #526474}
+.go-scanner-error{color:#ffb4a9;font-size:13px;margin-top:9px;white-space:pre-wrap}
+.go-scanner-menu{border:1px solid rgba(240,185,90,.25)!important;background:rgba(240,185,90,.08)!important}
+@media(max-width:420px){.go-scanner-card{padding:13px}.go-scanner-actions{flex-wrap:wrap}.go-scanner-actions button{min-width:42%}}
+
 </style>
 <title>ПАР ОРДО PRO — Система управления баней</title>
 <link rel="icon" href="./assets/par-ordo-logo.png">
@@ -54,6 +72,7 @@ main{width:min(1180px,100%);padding:13px;margin:auto}.view{display:none}.view.ac
 .add-stock{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:5px;margin-top:7px}.add-stock input{width:100%;min-width:0;padding:9px 8px;border:1px solid #49341f;border-radius:10px;background:#fff;color:#16100a;font-size:11px}.add-stock button{border:1px solid #b37a23;border-radius:10px;background:#70460e;color:#fff1d0;padding:7px 9px;font-size:9px;font-weight:900}
 .list{display:grid;gap:9px}.history-card{padding:12px;border:1px solid #4b331d;border-radius:17px;background:linear-gradient(145deg,#180f08,#0d0805)}.history-top{display:flex;align-items:start;justify-content:space-between;gap:10px}.history-top b{font-size:12px}.history-top strong{font-size:15px;color:#ffdc81;white-space:nowrap}.history-meta{color:var(--muted);font-size:9px;margin-top:4px}.history-lines{display:grid;gap:6px;margin-top:10px}.history-line{display:flex;justify-content:space-between;gap:8px;padding-bottom:6px;border-bottom:1px solid #2f2115;font-size:10px}.history-line:last-child{border-bottom:0;padding-bottom:0}.pay-tag{display:inline-block;margin-left:4px;padding:3px 5px;border-radius:999px;font-size:8px;font-weight:900;white-space:nowrap}.pay-tag.cash{background:#14522f;color:#8af3af}.pay-tag.transfer{background:#183464;color:#a1c3ff}.pay-tag.pending{background:#4b3711;color:#ffe08a}.history-bottom{display:flex;gap:10px;flex-wrap:wrap;margin-top:9px;padding-top:8px;border-top:1px solid #3e2a19;color:#c3b096;font-size:9px}
 .report-panel{padding:15px;border:1px solid #614221;border-radius:21px;background:linear-gradient(150deg,#1a1008,#0b0705);box-shadow:0 15px 36px #0006}.report-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}.report-tile{padding:13px;border:1px solid #3f2d1c;border-radius:15px;background:#0d0805}.report-tile small{font-size:9px;color:var(--muted)}.report-tile b{display:block;font-size:20px;margin-top:5px}.report-tile.cash b{color:#83f2a9}.report-tile.transfer b{color:#91b8ff}.report-total{margin-top:9px;padding:19px 10px;text-align:center;border:1px solid #b78028;border-radius:17px;background:linear-gradient(145deg,#291906,#100a05)}.report-total small{color:#d1b16f;font-size:10px;font-weight:900;letter-spacing:.1em}.report-total strong{display:block;margin-top:5px;font-size:30px;color:#ffda73}.finish{width:100%;margin-top:10px;min-height:48px}
+.historical-report-admin{margin-top:17px;padding:14px;border:1px solid rgba(219,166,73,.48);border-radius:17px;background:linear-gradient(150deg,#211507,#100a05)}.historical-report-admin h3{margin:6px 0;font:700 18px/1.2 Georgia,serif;color:#ffe2a1}.historical-report-admin>p{margin:6px 0 12px;color:var(--muted);font-size:10px;line-height:1.55}.historical-report-controls{display:grid;grid-template-columns:minmax(0,1fr);gap:7px}.historical-report-controls label{font-size:9px;font-weight:900;letter-spacing:.1em;color:#d2b47e}.historical-report-controls input{width:100%;min-width:0;padding:11px;border:1px solid #654622;border-radius:11px;background:#fff;color:#17100a;font-size:13px}.historical-report-controls button{width:100%;min-height:41px}.historical-report-preview{margin-top:10px}.historical-report-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin:9px 0}.historical-report-stat{padding:9px;border:1px solid #3f2d1c;border-radius:11px;background:#0c0805}.historical-report-stat small{display:block;color:var(--muted);font-size:8px}.historical-report-stat b{display:block;margin-top:4px;color:#ffe0a0;font-size:13px;overflow-wrap:anywhere}.historical-report-issues{margin:9px 0;padding:10px;border:1px solid #76502c;border-radius:11px;background:#28190b;color:#f3d5a1;font-size:10px;line-height:1.55}.historical-report-create{width:100%;margin-top:7px;min-height:44px}
 .bottom-nav{position:fixed;left:0;right:0;bottom:0;z-index:25;display:grid;grid-template-columns:repeat(5,1fr);height:72px;padding-bottom:env(safe-area-inset-bottom);background:#080604f5;border-top:1px solid #51381f;backdrop-filter:blur(12px)}.nav-item{border:0;background:transparent;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:#988a76;font-size:18px}.nav-item small{font-size:9px}.nav-item.active{color:#ffdc81}.nav-item.active span{filter:drop-shadow(0 0 8px #f6bd4770)}
 .drawer{position:fixed;inset:0;z-index:40;display:none;background:#000b}.drawer.open{display:block}.drawer-panel{width:min(86%,350px);height:100%;padding:22px 17px;background:linear-gradient(180deg,#1a1008,#070504);border-right:1px solid #6a4822;box-shadow:20px 0 55px #000}.drawer-brand{text-align:center;padding:24px 0 14px}.drawer-brand img{width:89px;height:89px;object-fit:contain;border:2px solid #d79e35;border-radius:50%}.drawer-brand h2{font:700 24px Georgia,serif;margin:8px 0 1px}.drawer-brand small{color:var(--gold2);letter-spacing:.2em;font-size:9px}.drawer-links{display:grid;gap:7px;margin-top:8px}.drawer-links button{min-height:47px;text-align:left;border:1px solid #4a321c;border-radius:12px;background:#120b07;color:#f1e4d0;padding:0 13px;font-size:11px}.drawer-links .logout{color:#ffaaa3;border-color:#632a25}.user-caption{text-align:center;color:var(--muted);font-size:9px}
 .modal{position:fixed;inset:0;z-index:50;display:none;align-items:flex-end;justify-content:center;background:#000c;padding:9px}.modal.open{display:flex}.modal-card{width:min(100%,720px);max-height:92dvh;overflow:auto;border:1px solid #765025;border-radius:23px 23px 16px 16px;padding:15px;background:linear-gradient(155deg,#1b1008,#0b0705);box-shadow:0 -20px 65px #000}
@@ -1627,7 +1646,14 @@ main{padding-top:16px;padding-bottom:22px}
    <div id="archiveList" class="list"></div>
   </section>
   <section id="reportView" class="view">
-   <div class="report-panel"><div class="eyebrow">КАССА · ЗАВЕРШЕНИЕ СМЕНЫ</div><div class="section-head" style="margin-top:5px"><h2>Итог текущей смены</h2><button id="refreshReport" class="ghost">↻</button></div><div id="reportContent"></div><button id="finishWork" class="primary finish">✓ Завершить смену и отправить отчёт руководителю</button></div>
+   <div class="report-panel"><div class="eyebrow">КАССА · ЗАВЕРШЕНИЕ СМЕНЫ</div><div class="section-head" style="margin-top:5px"><h2>Итог текущей смены</h2><button id="refreshReport" class="ghost">↻</button></div><div id="reportContent"></div><button id="finishWork" class="primary finish">✓ Завершить смену и отправить отчёт руководителю</button>
+    <section id="historicalReportAdmin" class="historical-report-admin" hidden aria-label="Добавление отчёта за прошедшую дату">
+     <div class="eyebrow">ADMIN ONLY · ТОЛЬКО АДМИНИСТРАТОР</div><h3>Добавить отчёт за прошлую дату</h3>
+     <p>Отчёт формируется по клиентам, сохранённым на сервере за выбранный день. Текущая смена и браслеты не изменяются.</p>
+     <div class="historical-report-controls"><label for="historicalReportDate">ДАТА ОТЧЁТА</label><input id="historicalReportDate" type="date" required><button id="previewHistoricalReport" class="ghost" type="button">Проверить данные</button></div>
+     <div id="historicalReportPreview" class="historical-report-preview" aria-live="polite"></div>
+    </section>
+   </div>
   </section>
   <section id="expensesView" class="view">
    <div class="section-head"><div><div class="eyebrow">УПРАВЛЕНИЕ БАНЕЙ</div><h2>Расходы</h2></div><button id="refreshExpenses" class="ghost" type="button">↻ Обновить</button></div>
@@ -1664,6 +1690,7 @@ main{padding-top:16px;padding-bottom:22px}
   <button data-drawer-view="homeView"><span class="drawer-link-icon"><svg class="ui-icon" viewBox="0 0 24 24"><path d="M3.5 10.2 12 3.5l8.5 6.7M5.8 9.2v10.3h12.4V9.2M9.3 19.5v-6.3h5.4v6.3"/></svg></span><span>Номера 1—36</span><svg class="drawer-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg></button>
   <button data-drawer-view="productsView"><span class="drawer-link-icon"><svg class="ui-icon" viewBox="0 0 24 24"><path d="m12 3 8 4.2v9.6L12 21l-8-4.2V7.2L12 3Z"/><path d="m4.4 7.3 7.6 4 7.6-4M12 11.3V21"/></svg></span><span>Товары и поступления</span><svg class="drawer-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg></button>
   <button data-drawer-view="historyView"><span class="drawer-link-icon"><svg class="ui-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.6"/><path d="M12 7v5l3.4 2"/></svg></span><span>История клиентов</span><svg class="drawer-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg></button>
+  <button id="openGoScanner" type="button" class="go-scanner-menu" style="display:none"><span class="drawer-link-icon"><svg class="ui-icon" viewBox="0 0 24 24"><rect x="4" y="4" width="6" height="6"/><rect x="14" y="4" width="6" height="6"/><rect x="4" y="14" width="6" height="6"/><path d="M14 14h2v2h-2zM18 14v2M14 18h6M18 18v2"/></svg></span><span>PAR ORDO GO · QR сканер</span><svg class="drawer-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg></button>
   <button data-drawer-view="archiveView"><span class="drawer-link-icon"><svg class="ui-icon" viewBox="0 0 24 24"><path d="M4 7h16v13H4zM3 4h18v3H3zM9 11h6"/></svg></span><span>Архив</span><svg class="drawer-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg></button>
   <button data-drawer-view="reportView"><span class="drawer-link-icon"><svg class="ui-icon" viewBox="0 0 24 24"><path d="M6.5 3.5h11v17h-11zM9 8h6M9 12h6M9 16h3"/></svg></span><span>Отчёт и завершение смены</span><svg class="drawer-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg></button>
   <button data-drawer-view="expensesView"><span class="drawer-link-icon"><svg class="ui-icon" viewBox="0 0 24 24"><rect x="3.5" y="5.5" width="17" height="14" rx="2"/><path d="M7 9h10M8 14h.01M12 14h4"/></svg></span><span>Расходы бани</span><svg class="drawer-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg></button>
@@ -1676,6 +1703,18 @@ main{padding-top:16px;padding-bottom:22px}
 <div id="customerBaseModal" class="modal"><div id="customerBaseModalCard" class="modal-card customer-base-modal"></div></div>
 <div id="productStatsModal" class="modal"><div id="productStatsModalCard" class="modal-card customer-base-modal product-stats-modal"></div></div>
 <div id="addModal" class="modal"><div id="addModalCard" class="modal-card"></div></div>
+<div id="goScannerModal" class="go-scanner-modal" role="dialog" aria-modal="true" aria-label="PAR ORDO GO QR сканер">
+ <div class="go-scanner-card">
+  <div class="modal-head"><div><div class="eyebrow">PAR ORDO PRO · GO INTEGRATION</div><h2>QR сканер</h2><div class="go-scanner-muted">Сканерлөөдө телефон номери База клиентов менен салыштырылат.</div></div><button type="button" class="close" id="closeGoScanner">×</button></div>
+  <div class="go-scanner-video-wrap"><video id="goScannerVideo" class="go-scanner-video" playsinline muted></video><div class="go-scanner-frame"></div></div>
+  <div class="go-scanner-muted" id="goScannerStatus">Камераны ачууга даяр.</div>
+  <div class="go-scanner-muted" style="margin-top:10px">Камера иштебесе, QR коддун текстин төмөнкү жерге киргизиңиз.</div>
+  <input id="goScannerManual" class="go-scanner-input" type="text" autocomplete="off" placeholder="PARORDO-GO:…">
+  <div class="go-scanner-actions"><button type="button" id="goScannerManualBtn" class="go-scanner-secondary">Кодду текшерүү</button><button type="button" id="goScannerRestart" class="go-scanner-secondary">Камераны кайра ачуу</button></div>
+  <div id="goScannerResult" class="go-scan-result" hidden></div>
+  <div id="goScannerError" class="go-scanner-error" role="alert"></div>
+ </div>
+</div>
 <div id="confirmModal" class="modal"><div id="confirmModalCard" class="modal-card"></div></div>
 <div id="managerLoginModal" class="modal"><form id="managerLoginForm" class="modal-card manager-login-card" style="padding:18px"><div class="modal-head"><div><div class="eyebrow">ПАР ОРДО · БЕЗОПАСНЫЙ ВХОД</div><h2>Руководитель панели</h2><div class="history-meta">Введите логин и пароль руководителя</div></div><button class="close" id="closeManagerLogin" type="button">×</button></div><div class="customer-base-form"><div class="customer-base-field"><label for="managerLoginUser">ЛОГИН</label><input id="managerLoginUser" autocomplete="username" value="admin1" required></div><div class="customer-base-field"><label for="managerLoginPass">ПАРОЛЬ</label><input id="managerLoginPass" type="password" autocomplete="current-password" required></div><div id="managerLoginError" class="login-error"></div><button id="managerLoginSubmit" class="primary" type="submit">Войти в панель руководителя →</button></div></form></div>
 
@@ -1745,7 +1784,7 @@ async function api(path,options={}){
  return data;
 }
 function showLogin(){ $('#loginView').classList.remove('hidden');$('#appView').classList.add('hidden') }
-function showApp(){ $('#loginView').classList.add('hidden');$('#appView').classList.remove('hidden');$('#appView').classList.toggle('manager-readonly',currentRole()==='manager');document.body.classList.toggle('manager-readonly',currentRole()==='manager') }
+function showApp(){ $('#loginView').classList.add('hidden');$('#appView').classList.remove('hidden');$('#appView').classList.toggle('manager-readonly',currentRole()==='manager');document.body.classList.toggle('manager-readonly',currentRole()==='manager');const goScan=$('#openGoScanner');if(goScan)goScan.style.display=['admin','staff'].includes(currentRole())?'flex':'none' }
 function products(){return db.products||[]}
 function isCurrentShiftClient(c){
  if(!shiftState.isOpen||!shiftState.openedAt||!c?.startedAt)return false;
@@ -2614,7 +2653,53 @@ async function archiveToday(){
   saveLocal();renderHistory();renderArchive();renderReport();toast(`В архив перенесено: ${arr.length} клиентов ✅`);
  }catch(e){toast('Не удалось сохранить архив: '+e.message)}
 }
+function previousLocalDayKey(){const d=new Date();d.setDate(d.getDate()-1);return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
+function renderHistoricalReportAdmin(){
+ const root=$('#historicalReportAdmin'),input=$('#historicalReportDate'),preview=$('#historicalReportPreview');
+ if(!root)return;
+ const isAdmin=currentRole()==='admin';root.hidden=!isAdmin;
+ if(!isAdmin){if(preview)preview.innerHTML='';return}
+ if(input){input.max=previousLocalDayKey()}
+}
+function historicalReportPreviewHtml(data){
+ const issues=Array.isArray(data?.reasons)?data.reasons:[];
+ const stat=(label,value)=>`<div class="historical-report-stat"><small>${label}</small><b>${value}</b></div>`;
+ const issueHtml=issues.length?`<div class="historical-report-issues">${issues.map(x=>`<div>• ${escapeHtml(x)}</div>`).join('')}</div>`:`<div class="history-meta">Данные проверены. Отчёт можно сохранить.</div>`;
+ return `<div class="historical-report-stats">${stat('КЛИЕНТОВ',Number(data.clientCount||0))}${stat('НАЛИЧНЫЕ',money(data.cashTotal))}${stat('ПЕРЕВОД',money(data.transferTotal))}${stat('ПОЛУЧЕНО',money(data.paidTotal))}${stat('НЕ ОПЛАЧЕНО',money(data.pendingTotal))}${stat('ЗАВЕРШЕНО',Number(data.completedCount||0))}</div>${issueHtml}${data.canCreate?`<button type="button" class="primary historical-report-create" data-create-historical-report>＋ Сохранить архивный отчёт</button>`:''}`;
+}
+async function previewHistoricalReport(){
+ if(currentRole()!=='admin'){toast('Функция доступна только администратору.');return}
+ const day=$('#historicalReportDate')?.value||'';const root=$('#historicalReportPreview');const button=$('#previewHistoricalReport');
+ if(!day){toast('Выберите прошедшую дату.');return}
+ if(day>=todayKey()){toast('Выберите дату до сегодняшнего дня.');return}
+ if(button){button.disabled=true;button.textContent='Проверяем…'}
+ if(root)root.innerHTML='<div class="history-meta">Проверяем сохранённые данные на сервере…</div>';
+ try{
+  const data=await api(`/api/admin/control/reports/backfill?day=${encodeURIComponent(day)}`);
+  if(root)root.innerHTML=historicalReportPreviewHtml(data);
+ }catch(e){if(root)root.innerHTML=`<div class="historical-report-issues">${escapeHtml(e.message)}</div>`;toast('Проверка не выполнена: '+e.message)}
+ finally{if(button){button.disabled=false;button.textContent='Проверить данные'}}
+}
+let historicalReportSubmitting=false;
+async function createHistoricalReport(){
+ if(currentRole()!=='admin'){toast('Функция доступна только администратору.');return}
+ if(historicalReportSubmitting)return;
+ const day=$('#historicalReportDate')?.value||'';const button=$('[data-create-historical-report]');
+ if(!day||day>=todayKey()){toast('Выберите прошедшую дату.');return}
+ if(!confirm(`Сохранить архивный отчёт за ${day}?\n\nБудут использованы только данные клиентов, уже сохранённые на сервере. Текущая смена не изменится.`))return;
+ historicalReportSubmitting=true;if(button){button.disabled=true;button.textContent='Сохраняем отчёт…'}
+ try{
+  const result=await api('/api/admin/control/reports/backfill',{method:'POST',body:JSON.stringify({day})});
+  if(!result?.ok||!result?.report)throw new Error('Сервер не подтвердил сохранение отчёта.');
+  const root=$('#historicalReportPreview');
+  if(root)root.innerHTML=`<div class="historical-report-issues">✓ Архивный отчёт за ${escapeHtml(day)} сохранён. Клиентов: ${Number(result.report.clientCount||0)} · Получено: ${money(result.report.paidTotal)}. Текущая смена не затронута.</div>`;
+  toast(`Архивный отчёт за ${day} сохранён ✅`);
+  await syncShiftState();renderReport();
+ }catch(e){toast('Не удалось сохранить отчёт: '+e.message);await previewHistoricalReport()}
+ finally{historicalReportSubmitting=false;const b=$('[data-create-historical-report]');if(b){b.disabled=false;b.textContent='＋ Сохранить архивный отчёт'}}
+}
 function renderReport(){
+ renderHistoricalReportAdmin();
  const cs=completedToday(),totalClients=allTodayClients(),paymentsTotal=totalClients.reduce((acc,c)=>{const p=payments(c);acc.cash+=p.cash;acc.transfer+=p.transfer;return acc},{cash:0,transfer:0});
  const sum=paymentsTotal.cash+paymentsTotal.transfer;
  const finish=$('#finishWork');
@@ -2638,6 +2723,7 @@ function logout(){
  sessionStorage.removeItem(TOKEN_KEY);sessionStorage.removeItem(USER_KEY);sessionStorage.removeItem(ROLE_KEY);sessionStorage.removeItem(MANAGER_PORTAL_KEY);syncManagerPortalChrome();showLogin();
 }
 document.addEventListener('click',e=>{
+ const historicalCreateBtn=e.target.closest('[data-create-historical-report]');if(historicalCreateBtn){e.preventDefault();createHistoricalReport();return}
  const openShiftBtn=e.target.closest('[data-open-shift]');if(openShiftBtn){e.preventDefault();requestOpenShift();return}
  const shiftReportBtn=e.target.closest('[data-shift-report]');if(shiftReportBtn){e.preventDefault();navigate('reportView');return}
  const pay=e.target.closest('[data-payment]');if(pay){const [id,method]=pay.dataset.payment.split('|');itemPayment(id,method)}
@@ -2646,6 +2732,93 @@ document.addEventListener('click',e=>{
 });
 $$('[data-filter]').forEach(b=>b.onclick=()=>setFilter(b.dataset.filter));
 $$('[data-view]').forEach(b=>b.onclick=()=>navigate(b.dataset.view));
+
+// -------------------- PAR ORDO GO staff QR scanner --------------------
+let goScannerStream=null,goScannerRaf=0,goScannerDetector=null,goScannerBusy=false,goScannerRequest=null,goScannerFrame=0,goQrLibPromise=null;
+function stopGoScannerCamera(){
+ if(goScannerRaf)cancelAnimationFrame(goScannerRaf);goScannerRaf=0;
+ if(goScannerStream){goScannerStream.getTracks().forEach(t=>t.stop());goScannerStream=null}
+ const v=$('#goScannerVideo');if(v){try{v.pause()}catch(e){}v.srcObject=null}
+}
+function closeGoScanner(){stopGoScannerCamera();goScannerBusy=false;goScannerRequest=null;$('#goScannerModal').classList.remove('open')}
+function freeGoRooms(){const active=new Set(currentShiftClients().filter(c=>c.status==='active').map(c=>Number(c.room)));return Array.from({length:36},(_,i)=>i+1).filter(n=>!active.has(n))}
+function renderGoScanRequest(req){
+ goScannerRequest=req;const box=$('#goScannerResult');box.hidden=false;
+ if(!req.customerFound){
+  box.innerHTML=`<div class="go-person">${escapeHtml(req.name||'Клиент База клиентов бөлүмүнөн табылган жок')}</div><div class="go-phone">${escapeHtml(req.phone||'')}</div><p class="go-scanner-error">Бул номер База клиентов бөлүмүнөн табылган жок. Визитти кабыл алууга болбойт.</p><div class="go-scanner-actions"><button type="button" id="goRejectVisit" class="go-scanner-danger">Отклонить</button></div>`;
+  $('#goRejectVisit').onclick=()=>rejectGoVisitRequest(req.id);return;
+ }
+ const rooms=freeGoRooms();
+ box.innerHTML=`<div class="eyebrow">КЛИЕНТ НАЙДЕН В БАЗЕ КЛИЕНТОВ</div><div class="go-person">${escapeHtml(req.name)}</div><div class="go-phone">${escapeHtml(req.phone)}</div><p class="go-scanner-muted">Перед нажатием «Принять» сверьте имя и номер с клиентом. После первого подтверждения GO откроет историю его посещений и покупок.</p><label class="go-scanner-muted" for="goBraceletSelect" style="display:block;margin-top:12px">Выберите номер браслета</label><select id="goBraceletSelect" class="go-room-select">${rooms.length?rooms.map(n=>`<option value="${n}">Браслет №${n}</option>`).join(''):'<option value="">Свободных браслетов нет</option>'}</select><div class="go-scanner-actions"><button type="button" id="goAcceptVisit" class="go-scanner-primary" ${rooms.length?'':'disabled'}>Принять</button><button type="button" id="goRejectVisit" class="go-scanner-danger">Отклонить</button></div>`;
+ $('#goAcceptVisit').onclick=()=>acceptGoVisitRequest(req.id);
+ $('#goRejectVisit').onclick=()=>rejectGoVisitRequest(req.id);
+}
+async function submitGoScan(raw){
+ if(goScannerBusy)return;const qr=String(raw||'').trim();if(!qr){$('#goScannerError').textContent='QR кодду окуу мүмкүн болгон жок.';return}
+ goScannerBusy=true;$('#goScannerError').textContent='';$('#goScannerStatus').textContent='QR текшерилип жатат…';
+ try{const result=await api('/api/admin/go/scan',{method:'POST',body:JSON.stringify({token:qr})});renderGoScanRequest(result.request);$('#goScannerStatus').textContent=result.message||'QR сканерленди.';stopGoScannerCamera()}
+ catch(e){$('#goScannerError').textContent=e.message;$('#goScannerStatus').textContent='QR кабыл алынган жок.';goScannerBusy=false}
+}
+async function loadGoQrDecoder(){
+ if(typeof window.jsQR==='function')return true;
+ if(!goQrLibPromise)goQrLibPromise=new Promise(resolve=>{
+  const script=document.createElement('script');script.src='https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js';script.async=true;
+  script.onload=()=>resolve(typeof window.jsQR==='function');script.onerror=()=>resolve(false);document.head.appendChild(script);
+ });
+ return goQrLibPromise;
+}
+async function startGoScannerCamera(){
+ stopGoScannerCamera();goScannerBusy=Boolean(goScannerRequest);const video=$('#goScannerVideo');
+ if(!navigator.mediaDevices?.getUserMedia){$('#goScannerStatus').textContent='Бул браузер камерага кире албайт. QR текстин кол менен киргизиңиз.';return}
+ try{
+  goScannerStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'}},audio:false});video.srcObject=goScannerStream;await video.play();
+  goScannerDetector=null;
+  if('BarcodeDetector' in window){try{goScannerDetector=new BarcodeDetector({formats:['qr_code']})}catch(e){goScannerDetector=null}}
+  if(!goScannerDetector&&!(await loadGoQrDecoder())){$('#goScannerStatus').textContent='Камера ачылды, бирок QR декодер жүктөлгөн жок. Интернетти текшериңиз же QR текстин кол менен киргизиңиз.';return}
+  const canvas=document.createElement('canvas'),ctx=canvas.getContext('2d',{willReadFrequently:true});
+  $('#goScannerStatus').textContent='Камера даяр. QR кодду рамканын ичине алып келиңиз.';
+  const tick=async()=>{
+   if(!goScannerStream||goScannerBusy)return;
+   goScannerFrame=(goScannerFrame+1)%3;
+   if(goScannerFrame===0&&video.readyState>=2){
+    try{
+     let value='';
+     if(goScannerDetector){const codes=await goScannerDetector.detect(video);if(codes.length)value=codes[0].rawValue||''}
+     if(!value&&typeof window.jsQR==='function'){
+      const scale=Math.min(1,640/Math.max(1,video.videoWidth));canvas.width=Math.max(1,Math.round(video.videoWidth*scale));canvas.height=Math.max(1,Math.round(video.videoHeight*scale));
+      ctx.drawImage(video,0,0,canvas.width,canvas.height);const pixels=ctx.getImageData(0,0,canvas.width,canvas.height);
+      const found=window.jsQR(pixels.data,pixels.width,pixels.height,{inversionAttempts:'attemptBoth'});if(found)value=found.data||'';
+     }
+     if(value){await submitGoScan(value);return}
+    }catch(e){}
+   }
+   goScannerRaf=requestAnimationFrame(tick);
+  };
+  goScannerRaf=requestAnimationFrame(tick);
+ }catch(e){stopGoScannerCamera();$('#goScannerStatus').textContent='Камераны ачуу мүмкүн болгон жок. HTTPS жана камера уруксатын текшериңиз же QR текстин кол менен киргизиңиз.'}
+}
+async function openGoScanner(){
+ if(!['admin','staff'].includes(currentRole())){toast('QR сканер персонал жана администратор үчүн гана.');return}
+ $('#drawer').classList.remove('open');$('#goScannerError').textContent='';$('#goScannerResult').hidden=true;$('#goScannerManual').value='';goScannerRequest=null;goScannerBusy=false;$('#goScannerModal').classList.add('open');
+ await startGoScannerCamera();
+}
+async function acceptGoVisitRequest(requestId){
+ const room=Number($('#goBraceletSelect')?.value);if(!room){$('#goScannerError').textContent='Бош браслет номерин тандаңыз.';return}
+ const btn=$('#goAcceptVisit');if(btn)btn.disabled=true;
+ try{const d=await api(`/api/admin/go/visits/${encodeURIComponent(requestId)}/accept`,{method:'POST',body:JSON.stringify({room})});await syncControlData();await syncShiftState();renderHome();renderHistory();renderReport();closeGoScanner();toast(d.message||'PAR ORDO GO визити кабыл алынды ✅')}
+ catch(e){$('#goScannerError').textContent=e.message;if(btn)btn.disabled=false}
+}
+async function rejectGoVisitRequest(requestId){
+ try{await api(`/api/admin/go/visits/${encodeURIComponent(requestId)}/reject`,{method:'POST',body:'{}'});goScannerRequest=null;$('#goScannerResult').hidden=true;$('#goScannerManual').value='';$('#goScannerError').textContent='';$('#goScannerStatus').textContent='Өтүнүч четке кагылды. Кийинки QR сканерлеңиз.';goScannerBusy=false;await startGoScannerCamera();toast('GO өтүнүчү четке кагылды.')}
+ catch(e){$('#goScannerError').textContent=e.message}
+}
+$('#openGoScanner').onclick=openGoScanner;
+$('#closeGoScanner').onclick=closeGoScanner;
+$('#goScannerModal').addEventListener('click',e=>{if(e.target.id==='goScannerModal')closeGoScanner()});
+$('#goScannerManualBtn').onclick=()=>submitGoScan($('#goScannerManual').value);
+$('#goScannerRestart').onclick=()=>{goScannerRequest=null;goScannerBusy=false;$('#goScannerResult').hidden=true;$('#goScannerError').textContent='';startGoScannerCamera()};
+// ------------------ end PAR ORDO GO staff QR scanner ------------------
+
 $$('[data-drawer-view]').forEach(b=>b.onclick=()=>navigate(b.dataset.drawerView));
 $('#loginForm').addEventListener('submit',loginHandler);
 $('#menuButton').onclick=()=>$('#drawer').classList.add('open');$('#closeDrawer').onclick=()=>$('#drawer').classList.remove('open');
@@ -2758,6 +2931,8 @@ async function finishShiftAndSendReport(){
  }
 }
 $('#finishWork').onclick=()=>confirmAction('Завершить рабочую смену?','Отчёт будет сохранён на сервере и появится у руководителя. В него попадут только клиенты текущей открытой смены. После успешного закрытия касса очистится для нового учёта, а предыдущие отчёты останутся в истории.','Завершить и отправить отчёт',finishShiftAndSendReport);
+$('#previewHistoricalReport').onclick=previewHistoricalReport;
+$('#historicalReportDate').addEventListener('change',()=>{const preview=$('#historicalReportPreview');if(preview)preview.innerHTML=''});
 $('#clientModal').addEventListener('click',e=>{if(e.target.id==='clientModal')closeModal('#clientModal')});
 $('#addModal').addEventListener('click',e=>{if(e.target.id==='addModal')closeModal('#addModal')});
 $('#confirmModal').addEventListener('click',e=>{if(e.target.id==='confirmModal')closeModal('#confirmModal')});
