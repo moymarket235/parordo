@@ -35,6 +35,18 @@ html.po121-boot #loginView{
 .go-room-select{width:100%;min-height:48px;margin-top:10px;padding:8px 10px;border-radius:12px;background:#091017;color:#fff;border:1px solid #526474}
 .go-scanner-error{color:#ffb4a9;font-size:13px;margin-top:9px;white-space:pre-wrap}
 .go-scanner-menu{border:1px solid rgba(240,185,90,.25)!important;background:rgba(240,185,90,.08)!important}
+
+/* PAR ORDO GO — prominent PRO home-screen shortcut */
+.go-scanner-quick-wrap{display:block;margin:12px 0 4px}
+.go-scanner-quick-wrap[hidden]{display:none!important}
+.go-scanner-quick{width:100%;display:flex;align-items:center;gap:12px;min-height:66px;padding:12px 15px;border-radius:17px;border:1px solid rgba(240,185,90,.55);background:linear-gradient(115deg,#47300d,#211506 62%,#15100a);color:#ffe5a1;text-align:left;box-shadow:0 8px 24px #0005}
+.go-scanner-quick-icon{width:42px;height:42px;flex:0 0 42px;display:grid;place-items:center;border-radius:12px;background:#f2bd5540;border:1px solid #e9bd68;color:#ffe7a5}
+.go-scanner-quick-icon svg{width:25px;height:25px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.go-scanner-quick-copy{display:block;flex:1;min-width:0}
+.go-scanner-quick-copy strong{display:block;font-size:13px;font-weight:950;letter-spacing:.02em}
+.go-scanner-quick-copy small{display:block;margin-top:3px;color:#d3bd91;font-size:10px;line-height:1.35}
+.go-scanner-quick-arrow{font-size:22px;color:#f5cb76}
+.go-scanner-quick:active{transform:scale(.99)}
 @media(max-width:420px){.go-scanner-card{padding:13px}.go-scanner-actions{flex-wrap:wrap}.go-scanner-actions button{min-width:42%}}
 
 </style>
@@ -1621,6 +1633,13 @@ main{padding-top:16px;padding-bottom:22px}
   <section id="homeView" class="view active">
    <div class="hero"><div><div class="eyebrow">УПРАВЛЕНИЕ СЕГОДНЯ</div><h1>Номера и клиенты</h1><p>Быстро выдавайте браслет, добавляйте покупки и отмечайте оплату.</p></div><div class="live-badge"><strong id="activeCount">0</strong><span>активных</span></div></div>
    <div id="shiftControl" class="shift-control-slot" aria-live="polite"></div>
+   <div id="goScannerQuickWrap" class="go-scanner-quick-wrap" hidden>
+    <button id="openGoScannerQuick" type="button" class="go-scanner-quick" aria-label="Открыть QR-сканер PAR ORDO GO">
+     <span class="go-scanner-quick-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="6.5" height="6.5" rx="1"/><rect x="14" y="3.5" width="6.5" height="6.5" rx="1"/><rect x="3.5" y="14" width="6.5" height="6.5" rx="1"/><path d="M14 14h2v2h-2zM18 14h2.5M14 18h2M18 18v2.5M20.5 20.5h-3"/></svg></span>
+     <span class="go-scanner-quick-copy"><strong>PAR ORDO GO · QR СКАНЕР</strong><small>Сканировать QR клиента · проверить номер · выбрать браслет</small></span>
+     <span class="go-scanner-quick-arrow" aria-hidden="true">›</span>
+    </button>
+   </div>
    <div class="kpis" id="homeKpis"></div>
    <div class="customer-base-launch-wrap">
     <button id="openCustomerBase" type="button" class="customer-base-launch" aria-label="Открыть базу клиентов и зарегистрировать клиента">
@@ -1784,7 +1803,7 @@ async function api(path,options={}){
  return data;
 }
 function showLogin(){ $('#loginView').classList.remove('hidden');$('#appView').classList.add('hidden') }
-function showApp(){ $('#loginView').classList.add('hidden');$('#appView').classList.remove('hidden');$('#appView').classList.toggle('manager-readonly',currentRole()==='manager');document.body.classList.toggle('manager-readonly',currentRole()==='manager');const goScan=$('#openGoScanner');if(goScan)goScan.style.display=['admin','staff'].includes(currentRole())?'flex':'none' }
+function showApp(){ const canGoScan=['admin','staff'].includes(currentRole());$('#loginView').classList.add('hidden');$('#appView').classList.remove('hidden');$('#appView').classList.toggle('manager-readonly',currentRole()==='manager');document.body.classList.toggle('manager-readonly',currentRole()==='manager');const goScan=$('#openGoScanner');if(goScan)goScan.style.display=canGoScan?'flex':'none';const quick=$('#goScannerQuickWrap');if(quick)quick.hidden=!canGoScan }
 function products(){return db.products||[]}
 function isCurrentShiftClient(c){
  if(!shiftState.isOpen||!shiftState.openedAt||!c?.startedAt)return false;
@@ -2813,6 +2832,7 @@ async function rejectGoVisitRequest(requestId){
  catch(e){$('#goScannerError').textContent=e.message}
 }
 $('#openGoScanner').onclick=openGoScanner;
+$('#openGoScannerQuick').onclick=openGoScanner;
 $('#closeGoScanner').onclick=closeGoScanner;
 $('#goScannerModal').addEventListener('click',e=>{if(e.target.id==='goScannerModal')closeGoScanner()});
 $('#goScannerManualBtn').onclick=()=>submitGoScan($('#goScannerManual').value);
