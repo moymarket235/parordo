@@ -1,0 +1,57 @@
+/* PAR ORDO PRO — DEAL V1 · «Браслет таратуу»
+   The cards of «Номера и клиенты» gather into a PAR ORDO deck and are dealt back
+   to their places face-up. Decoration only: remove this file and par-ordo-deal-v1.js
+   and the panel works exactly as before. */
+
+/* The waiting deck: shown while the panel data loads, then becomes the deck. */
+.po-deal-deck{
+  position:fixed;left:50%;top:50%;z-index:15;
+  width:128px;height:172px;margin:-86px 0 0 -64px;
+  pointer-events:none;
+  animation:poDealBreathe 1.8s ease-in-out infinite;
+}
+.po-deal-deck span{position:absolute;inset:0;border-radius:18px}
+.po-deal-deck span:nth-child(1){transform:rotate(-8deg) translate(-7px,5px);opacity:.5}
+.po-deal-deck span:nth-child(2){transform:rotate(5deg) translate(6px,3px);opacity:.72}
+.po-deal-deck span:nth-child(3){display:grid;place-items:center;box-shadow:inset 0 0 0 1.5px rgba(246,189,71,.66),inset 0 0 0 5px rgba(10,7,4,.92),inset 0 0 0 6px rgba(246,189,71,.24),0 22px 46px rgba(0,0,0,.55),0 0 42px rgba(246,189,71,.14)}
+.po-deal-deck i{width:66px;height:66px}
+@keyframes poDealBreathe{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+
+/* Card back, used while a card is face-down. It is mirrored on purpose:
+   it is only visible while its card is turned over (rotateY > 90°). */
+.po-deal-back{
+  position:absolute;inset:0;z-index:60;
+  display:grid;place-items:center;
+  overflow:hidden;pointer-events:none;
+  transform:scaleX(-1);
+  box-shadow:inset 0 0 0 1.5px rgba(246,189,71,.62),inset 0 0 0 5px rgba(10,7,4,.92),inset 0 0 0 6px rgba(246,189,71,.22);
+}
+.po-deal-back,
+.po-deal-deck span{
+  background:
+    radial-gradient(circle at 50% 50%,rgba(246,189,71,.24),transparent 60%),
+    repeating-linear-gradient(45deg,rgba(246,189,71,.085) 0 2px,transparent 2px 12px),
+    linear-gradient(160deg,#1e150a,#0a0705);
+}
+.po-deal-back i,
+.po-deal-deck i{
+  display:block;border-radius:50%;
+  background:url("./assets/par-ordo-deal-logo.webp") center/cover no-repeat;
+  box-shadow:0 0 0 1.5px #d9a441,0 0 18px rgba(246,189,71,.45);
+}
+.po-deal-back i{width:var(--po-deal-logo,64px);height:var(--po-deal-logo,64px)}
+
+/* Landing accents */
+.po-deal-glint{
+  position:absolute;top:0;bottom:0;left:0;z-index:3;width:46%;
+  pointer-events:none;
+  background:linear-gradient(100deg,transparent,rgba(255,236,190,.55),transparent);
+}
+.po-deal-rim{
+  position:absolute;inset:0;z-index:4;border-radius:inherit;pointer-events:none;
+  box-shadow:inset 0 0 0 2px rgba(90,255,165,.85),inset 0 0 28px rgba(45,240,130,.45);
+}
+
+@media (prefers-reduced-motion:reduce){
+  .po-deal-deck{display:none}
+}

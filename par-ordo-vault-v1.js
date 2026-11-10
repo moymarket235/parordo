@@ -201,11 +201,13 @@ async function enter(){if(!gl){plainEnter();return}phase='enter';setSkip(false);
   FX.shake(13);buzz(30);S.seam=1.7;S.haze=.5;const c=project(0,0,0);FX.glow(c.x,c.y,S.R*2,{life:.5,a:.42});
   flyLogo(820,40);
   tl(1240,k=>{S.swing=E.io3(k)*1.92;S.haze=mix(.5,1.15,ss(0,.6,k))});
-  await wait(620);arrive(false);const cz0=fp()/S.R;
+  await wait(620);handOff(false);const cz0=fp()/S.R;
   await tl(980,k=>{S.diveZ=-(cz0+1.2)*E.in3(k);S.haze=mix(1.15,0,ss(.45,1,k))});
   finish();
 }
-function plainEnter(){phase='enter';arrive(true);finish()}
+/* V1.1: the panel's cards are dealt from the PAR ORDO deck (par-ordo-deal-v1.js); the old arrival stays as the fallback */
+function handOff(fade){const D=window.PARORDODeal;if(D&&typeof D.arrive==='function'){try{if(D.arrive({source:fade?'plain':'vault'}))return}catch(e){console.warn('vault deal',e)}}arrive(fade)}
+function plainEnter(){phase='enter';handOff(true);finish()}
 function finish(){const ok=hasToken();dispose();if(ok)loginView.classList.add('hidden')}
 
 /* ---------- plain marble login when there is no door ---------- */
@@ -248,7 +250,7 @@ if(typeof showAppO!=='function'||typeof showLoginO!=='function'){release();retur
 window.showApp=function(){const r=showAppO.apply(this,arguments);try{if(phase==='login'||phase==='open'||phase==='plain'){if(phase==='plain')plainEnter();else enter()}}catch(e){console.warn('vault',e);dispose()}return r};
 if(typeof bootAppO==='function')window.bootApp=function(){const p=bootAppO.apply(this,arguments);bootP=p;return p};
 window.showLogin=function(){const r=showLoginO.apply(this,arguments);try{start('quick')}catch(e){console.warn('vault',e);dispose()}return r};
-window.PARORDOVault=Object.freeze({version:'1.0.0',level:()=>Perf.level,phase:()=>phase});
+window.PARORDOVault=Object.freeze({version:'1.1.0',level:()=>Perf.level,phase:()=>phase});
 if(hasToken()){release();return}
 try{start('auto')}catch(e){console.warn('vault',e);release();dispose()}
 })();

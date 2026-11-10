@@ -15,7 +15,14 @@
 var h=document.documentElement;h.classList.add('po-vault-boot');
 setTimeout(function(){h.classList.remove('po-vault-boot')},6000)})();
 </script>
+<script>
+/* PAR ORDO PRO DEAL V1: with a saved session the panel's cards wait face-down for the deal (par-ordo-deal-v1.js). */
+(function(){try{if(!sessionStorage.getItem('parordo_admin_token'))return;if(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+var h=document.documentElement;h.classList.add('po-deal-armed');
+setTimeout(function(){h.classList.remove('po-deal-armed')},6000)}catch(e){}})();
+</script>
 <style>
+html.po-deal-armed #homeView>*{opacity:0!important}
 html.po-vault-boot #loginView{visibility:hidden!important;opacity:0!important;pointer-events:none!important}
 html.po-vault-boot::after{content:"";position:fixed;inset:0;z-index:2147480000;background:#050403}
 
@@ -1901,6 +1908,8 @@ main{padding-top:16px;padding-bottom:22px}
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oranienbaum&display=swap">
 <link rel="stylesheet" href="./par-ordo-vault-v1.css?v=1.0.0">
+<link rel="stylesheet" href="./par-ordo-deal-v1.css?v=1.0.0">
+<link rel="preload" as="image" href="./assets/par-ordo-deal-logo.webp">
 <link rel="preload" as="image" href="./assets/vault-marble.webp">
 <link rel="preload" as="image" href="./assets/vault-logo.webp">
 </head>
@@ -3529,7 +3538,8 @@ html body #addModal #addProductGrid > .add-product-tile > .product-edit-actions 
 <style>@import url('./par-ordo-pc-glass-v109.css?v=109');</style>
 <script src="./pwa-init.js?v=1.0.0"></script>
 <script src="./par-ordo-bracelet-rules-v108.js?v=108"></script>
-<script src="./par-ordo-vault-v1.js?v=1.0.0" defer onerror="document.documentElement.classList.remove('po-vault-boot')"></script>
+<script src="./par-ordo-vault-v1.js?v=1.1.0" defer onerror="document.documentElement.classList.remove('po-vault-boot')"></script>
+<script src="./par-ordo-deal-v1.js?v=1.0.0" defer onerror="document.documentElement.classList.remove('po-deal-armed')"></script>
 <script src="./par-ordo-day-cleanup-v113.js?v=113"></script>
 <script src="./par-ordo-whatsapp-invitations-v117.js?v=117"></script>
 <script src="./par-ordo-customer-features-v118.js?v=118"></script>
