@@ -137,7 +137,7 @@
     const caption = rows.length
       ? `${rows.length} отчётов закрытых смен · ${days.size} календарных дней с данными.`
       : 'За выбранный месяц закрытых смен в отчётах нет.';
-    const headline = rows.length ? money(estimate) : 'Нет данных';
+    const headline = rows.length ? money(Math.round(estimate)) : 'Нет данных';
     $('#poCeoForecast',overlay).innerHTML = `<div class="po-ceo-forecast"><small>${isCurrent?'Ожидаемая выручка к концу месяца':'Фактическая выручка по отчётам'}</small><strong>${headline}</strong><p>${caption}</p><div class="po-ceo-progress"><span style="width:${progress}%"></span></div><div class="po-ceo-note">Выручка за период: ${money(revenue)} · Среднее за день с отчётом: ${money(Math.round(averagePerRecordedDay))}</div></div>
       <div class="po-ceo-kpis" style="margin-top:9px"><div class="po-ceo-kpi green"><small>Фактическая выручка</small><strong>${money(revenue)}</strong></div><div class="po-ceo-kpi blue"><small>Средний чек</small><strong>${avgValue?money(Math.round(avgValue)):'—'}</strong></div></div>`;
     $('#poCeoProfitNote',overlay).innerHTML = '<b>Чистая прибыль пока не рассчитывается.</b> В текущем менеджерском API доступны отчёты выручки, клиенты и товары, но не подтверждённые расходы и себестоимость. Не показываем выручку как прибыль.';
