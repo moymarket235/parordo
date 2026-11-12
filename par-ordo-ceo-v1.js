@@ -281,29 +281,35 @@
 })();
 
 
-  // Load PAR ORDO LIVE DIGITAL TWIN assets
-  (function loadLiveDigitalTwin() {
+  // Load PAR ORDO LIVE DIGITAL TWIN assets (the previous 3D map).
+  // TWIN V1 (par-ordo-twin-v1.js, loaded before this file) replaces it; if TWIN V1 is missing
+  // or fails, this loader runs as before.
+  window.PARORDOLoadLegacyTwin = function loadLiveDigitalTwin() {
+    if (window.__poLegacyTwinLoaded) return;
+    window.__poLegacyTwinLoaded = true;
     const css = document.createElement('link');
     css.rel = 'stylesheet';
     css.href = './par-ordo-ceo-live3d-v1.css?v=1.0.0';
     document.head.appendChild(css);
 
-     const layoutV4 = document.createElement('script');
-layoutV4.src = './par-ordo-live3d-map-v4.js?v=8.0.0';
-layoutV4.async = true;
-document.head.appendChild(layoutV4);
+    const layoutV4 = document.createElement('script');
+    layoutV4.src = './par-ordo-live3d-map-v4.js?v=8.0.0';
+    layoutV4.async = true;
+    document.head.appendChild(layoutV4);
 
-     const fitScreenV10 = document.createElement('script');
-fitScreenV10.src = './par-ordo-dt-fit-screen-v10.js?v=10.0.0';
-fitScreenV10.async = true;
-document.head.appendChild(fitScreenV10);
+    const fitScreenV10 = document.createElement('script');
+    fitScreenV10.src = './par-ordo-dt-fit-screen-v10.js?v=10.0.0';
+    fitScreenV10.async = true;
+    document.head.appendChild(fitScreenV10);
 
     const script = document.createElement('script');
     script.src = './par-ordo-ceo-live3d-v1.js?v=1.0.0';
     script.async = true;
     document.head.appendChild(script);
-     const enhancement = document.createElement('script');
-enhancement.src = './par-ordo-live3d-fullscreen-v1.js?v=1.0.0';
-enhancement.async = true;
-document.head.appendChild(enhancement);
-  })();
+
+    const enhancement = document.createElement('script');
+    enhancement.src = './par-ordo-live3d-fullscreen-v1.js?v=1.0.0';
+    enhancement.async = true;
+    document.head.appendChild(enhancement);
+  };
+  if (!(window.PARORDOTwin && window.PARORDOTwin.active)) window.PARORDOLoadLegacyTwin();

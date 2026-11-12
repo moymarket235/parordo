@@ -1,6 +1,6 @@
 /* PAR ORDO PRO + OWNER — conservative offline app-shell cache V2 */
 'use strict';
-const CACHE_NAME = 'par-ordo-pro-shell-v2';
+const CACHE_NAME = 'par-ordo-pro-shell-v3';
 const APP_SHELL = [
   './index.html','./manager.html','./manifest.webmanifest','./owner.webmanifest',
   './pwa-init.js','./par-ordo-ceo-v1.css','./par-ordo-ceo-v1.js',
