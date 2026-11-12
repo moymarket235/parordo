@@ -17,7 +17,7 @@
   'use strict';
   if (window.PARORDOBonus) return;
 
-  const VERSION = '1.0.0';
+  const VERSION = '1.0.1';
   const RATE = 0.03;
   const MANAGER_ROOM = 3;                        // браслет руководителя: всё бесплатно, бонус не нужен
   const MARK = /\s*·\s*бонус\s+(\d+)\s*$/u;      // «Чай · бонус 45»
@@ -144,6 +144,7 @@
         const d = await api('/api/admin/control/reports');
         L.data = d && Array.isArray(d.reports) ? d : { reports: [] };
         L.err = '';
+        publishShifts(L.data.reports);
       } catch (e) {
         // staff without access to reports: the visit list itself carries the history
         L.err = (e && e.message) || 'ошибка';
@@ -157,6 +158,17 @@
       return L.data;
     })();
     return L.pending;
+  }
+  /* the closed shifts also number the guests of past shifts in «История» (shiftClientNo in index.html) */
+  let shiftSig = '';
+  function publishShifts(reports) {
+    const sig = reports.length + '|' + reports.map(r => `${r && r.shiftStartAt}:${r && Array.isArray(r.clients) ? r.clients.length : 0}`).join(',');
+    if (sig === shiftSig) return;
+    shiftSig = sig;
+    window.__poShiftReports = reports;
+    window.__poReportShiftVer = (Number(window.__poReportShiftVer) || 0) + 1;
+    call('renderHistory');
+    call('renderArchive');
   }
   async function refreshCustomers() {
     try {

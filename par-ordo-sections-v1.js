@@ -15,7 +15,7 @@
   'use strict';
   if (window.PARORDOSections) return;
 
-  const VERSION = '1.0.1';
+  const VERSION = '1.0.2';
   const root = document.documentElement;
   const reduced = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
   const canAnimate = typeof Element !== 'undefined' && typeof Element.prototype.animate === 'function';
@@ -105,7 +105,9 @@
       .filter(c => c && c.status === 'completed' && (archived ? arch.has(c.id) : !arch.has(c.id)))
       .sort((a, b) => new Date(b.endedAt) - new Date(a.endedAt));
   }
-  const sigOf = list => list.map(c => `${c.id}~${c.endedAt}~${c.room}~${itemsOf(c).map(i => `${i.name}|${i.qty}|${i.price}|${i.method || ''}`).join(',')}`).join(';');
+  /* «Клиент N» within its shift and bracelet (shiftClientNo in index.html); the server's number stays as a fallback */
+  const noOf = c => { try { return typeof shiftClientNo === 'function' ? shiftClientNo(c) : c.clientNo; } catch (_) { return c.clientNo; } };
+  const sigOf = list => (window.__poReportShiftVer || 0) + '^' + list.map(c => `${c.id}~${c.endedAt}~${c.room}~${itemsOf(c).map(i => `${i.name}|${i.qty}|${i.price}|${i.method || ''}`).join(',')}`).join(';');
 
   /* ---------- icons ---------- */
   const svg = (body, cls = 'sx-ico') => `<svg class="${cls}" viewBox="0 0 24 24" aria-hidden="true">${body}</svg>`;
@@ -246,7 +248,7 @@
     return `<article class="px-item">
       <div class="px-time"><i class="px-dot"></i><span>${hhmm(c.endedAt)}</span></div>
       <div class="px-wrap"><i class="px-slot" aria-hidden="true"></i><div class="px-paper">
-        <div class="px-top"><span class="px-badge">№${esc(c.room)}</span><div class="px-who"><b>Клиент ${esc(c.clientNo)}</b><small>${hhmm(c.startedAt)} — ${hhmm(c.endedAt)}</small></div><span class="px-pill">${svg(I.clock)}${durText(m)}</span></div>
+        <div class="px-top"><span class="px-badge">№${esc(c.room)}</span><div class="px-who"><b>Клиент ${esc(noOf(c))}</b><small>${hhmm(c.startedAt)} — ${hhmm(c.endedAt)}</small></div><span class="px-pill">${svg(I.clock)}${durText(m)}</span></div>
         <div class="px-dur"><div class="px-dur-top"><span>Время сеанса</span><span>${over ? 'больше 3 ч' : 'лимит 3 ч'}</span></div><div class="px-bar${over ? ' is-over' : ''}"><i style="width:${pct.toFixed(1)}%"></i></div></div>
         <div class="px-lines">${items.length ? items.map(lineHtml).join('') : '<div class="px-none">Покупок нет</div>'}</div>
         <div class="px-total"><span>Итого</span><b>${sum(totalOf(c))}</b></div>
@@ -308,7 +310,7 @@
      ===================================================================== */
   const ax = { query: '', limit: 10, open: new Set(), openRows: new Set(), seeded: false, all: [], groups: [], sig: '', bound: false };
   const axMatch = (c, q) => [
-    `№${c.room}`, `клиент ${c.clientNo}`, dayLabel((dt(c.endedAt) && dayKey(dt(c.endedAt))) || 'none'), fullDate(c.endedAt),
+    `№${c.room}`, `клиент ${noOf(c)}`, dayLabel((dt(c.endedAt) && dayKey(dt(c.endedAt))) || 'none'), fullDate(c.endedAt),
     ...itemsOf(c).map(i => i.name)
   ].join(' ').toLowerCase().includes(q);
   function axDetail(c) {
@@ -319,7 +321,7 @@
     const open = ax.openRows.has(String(c.id));
     const n = itemsOf(c).length;
     return `<div class="ax-row${open ? ' is-open' : ''}" data-ax-row="${esc(c.id)}">
-      <button type="button" class="ax-row-head" data-ax-row-toggle aria-expanded="${open}"><span class="ax-no">№${esc(c.room)}</span><span class="ax-who"><b>Клиент ${esc(c.clientNo)}</b><small>${hhmm(c.startedAt)} — ${hhmm(c.endedAt)} · ${n} ${plural(n, 'позиция', 'позиции', 'позиций')}</small></span><span class="ax-amount">${sum(totalOf(c))}${svg(I.caret, 'sx-ico ax-chev')}</span></button>
+      <button type="button" class="ax-row-head" data-ax-row-toggle aria-expanded="${open}"><span class="ax-no">№${esc(c.room)}</span><span class="ax-who"><b>Клиент ${esc(noOf(c))}</b><small>${hhmm(c.startedAt)} — ${hhmm(c.endedAt)} · ${n} ${plural(n, 'позиция', 'позиции', 'позиций')}</small></span><span class="ax-amount">${sum(totalOf(c))}${svg(I.caret, 'sx-ico ax-chev')}</span></button>
       <div class="ax-detail"><div class="ax-detail-in">${open ? axDetail(c) : ''}</div></div>
     </div>`;
   }

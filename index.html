@@ -2150,6 +2150,49 @@ function isCurrentShiftClient(c){
  return Number.isFinite(started)&&Number.isFinite(opened)&&started>=opened;
 }
 function currentShiftClients(){return shiftState.isOpen?db.clients.filter(isCurrentShiftClient):[]}
+/* «Клиент N» — номер гостя внутри своей смены, отдельно по каждому браслету: первый гость новой смены на №6 —
+   «Клиент 1 (№6)». Смена закрылась — счёт начинается заново. c.clientNo с сервера не меняется: это внутренний
+   сквозной номер браслета, он остаётся в данных. Прошлые смены берутся из отчётов (window.__poShiftReports),
+   без них — по дню визита. */
+let shiftNoCache={sig:'',arr:null,map:new Map()},reportShiftCache={ver:-1,map:new Map()};
+function reportShiftOf(c){
+ const ver=Number(window.__poReportShiftVer||0);
+ if(ver!==reportShiftCache.ver){
+  const map=new Map();
+  for(const r of (Array.isArray(window.__poShiftReports)?window.__poShiftReports:[]))
+   for(const x of (Array.isArray(r?.clients)?r.clients:[]))if(x?.id!=null&&r.shiftStartAt)map.set(String(x.id),String(r.shiftStartAt));
+  reportShiftCache={ver,map};
+ }
+ return reportShiftCache.map.get(String(c?.id))||'';
+}
+function shiftKeyOf(c){
+ const t=Date.parse(c?.startedAt);if(!Number.isFinite(t))return 'na';
+ const o=Date.parse(shiftState.openedAt||'');
+ if(Number.isFinite(o)&&t>=o)return 'cur:'+shiftState.openedAt;
+ const r=reportShiftOf(c);if(r)return 'rep:'+r;
+ return 'day:'+(c.startedDay||new Date(t).toLocaleDateString('sv-SE'));
+}
+function shiftClientNo(c){
+ if(!c)return '';
+ const list=Array.isArray(db.clients)?db.clients:[];
+ const sig=`${list.length}|${list.length?list[list.length-1]?.id:''}|${shiftState.openedAt||''}|${window.__poReportShiftVer||0}`;
+ if(sig!==shiftNoCache.sig||list!==shiftNoCache.arr){
+  const groups=new Map();
+  for(const x of list){
+   if(!x||(x.status!=='active'&&x.status!=='completed'))continue;
+   const k=shiftKeyOf(x)+'#'+Number(x.room);
+   if(!groups.has(k))groups.set(k,[]);
+   groups.get(k).push(x);
+  }
+  const map=new Map();
+  for(const arr of groups.values()){
+   arr.sort((a,b)=>(Date.parse(a.startedAt)||0)-(Date.parse(b.startedAt)||0)||(Number(a.clientNo)||0)-(Number(b.clientNo)||0));
+   arr.forEach((x,i)=>map.set(String(x.id),i+1));
+  }
+  shiftNoCache={sig,arr:list,map};
+ }
+ return shiftNoCache.map.get(String(c.id))??c.clientNo;
+}
 function clientForRoom(n){return currentShiftClients().find(c=>Number(c.room)===Number(n)&&c.status==='active')||null}
 function total(c){return c.items.reduce((s,i)=>s+Number(i.price||0)*Number(i.qty||0),0)}
 function payments(c){return c.items.reduce((a,i)=>{const amount=Number(i.price||0)*Number(i.qty||0);if(i.method==='cash')a.cash+=amount;else if(i.method==='transfer')a.transfer+=amount;else a.pending+=amount;return a},{cash:0,transfer:0,pending:0})}
@@ -2504,7 +2547,7 @@ function renderRooms(){
  if(filterMode==='free')nums=nums.filter(n=>!clientForRoom(n));
  $('#roomsGrid').innerHTML=nums.map(n=>{
  const c=clientForRoom(n),p=c?payments(c):{cash:0,transfer:0,pending:0};
- const title=c?`Клиент ${c.clientNo} (№${n})`:`№${n}`;
+ const title=c?`Клиент ${shiftClientNo(c)} (№${n})`:`№${n}`;
  const count=c?c.items.reduce((s,i)=>s+i.qty,0):0;
  const purchaseNames=c?c.items.map(i=>`${i.name} ×${i.qty}`).slice(0,3).join(' · '):'Номер свободен';
  return `<article class="room ${c?'active':'free'}">
@@ -2534,7 +2577,7 @@ async function activateRoom(n){
   const d=await api('/api/admin/control/clients',{method:'POST',body:JSON.stringify({room:n,startedAt:now,startedDay:todayKey()})});
   const c=d.client;
   db.seq[n]=c.clientNo;db.rooms[String(n)]=c.id;db.clients.push(c);
-  saveLocal();renderHome();toast(`№${n} · Клиент ${c.clientNo} активирован и сохранён ✅`);
+  saveLocal();renderHome();toast(`№${n} · Клиент ${shiftClientNo(c)} активирован и сохранён ✅`);
  }catch(e){toast('Не удалось выдать браслет: '+e.message)}
 }
 function deactivateRoom(n){
@@ -2546,7 +2589,7 @@ function openClient(id){const c=db.clients.find(x=>x.id===id&&x.status==='active
 function renderClientModal(){
  const c=db.clients.find(x=>x.id===currentClientId);if(!c)return;
  const p=payments(c);
- $('#clientModalCard').innerHTML=`<div class="modal-head"><div><div class="eyebrow">АКТИВНЫЙ КЛИЕНТ · №${c.room}</div><h2>Клиент ${c.clientNo}</h2><div class="history-meta">Начало: ${fmtDate(c.startedAt)}</div></div><button class="close" type="button" data-close-client>×</button></div>
+ $('#clientModalCard').innerHTML=`<div class="modal-head"><div><div class="eyebrow">АКТИВНЫЙ КЛИЕНТ · №${c.room}</div><h2>Клиент ${shiftClientNo(c)}</h2><div class="history-meta">Начало: ${fmtDate(c.startedAt)}</div></div><button class="close" type="button" data-close-client>×</button></div>
  <div class="client-balance"><div class="balance-row"><span>Оплачено наличными</span><strong>${money(p.cash)}</strong></div><div class="balance-row"><span>Оплачено переводом</span><strong>${money(p.transfer)}</strong></div><div class="balance-row"><span>Ожидает оплаты</span><strong>${money(p.pending)}</strong></div><div class="balance-row balance-total"><span>ОБЩИЙ ЧЕК</span><strong>${money(total(c))}</strong></div></div>
  ${renderVisitCustomerLink(c)}
  <div class="section-head"><div><div class="eyebrow">ПОКУПКИ</div><h2>Что приобрёл</h2></div><button class="primary" type="button" id="addPurchaseFromClient">＋ Добавить</button></div>
@@ -2804,7 +2847,7 @@ async function openAdd(clientId){
  const addOpenToken = (window.__PAR_ORDO_ADD_OPEN_TOKEN = Number(window.__PAR_ORDO_ADD_OPEN_TOKEN || 0) + 1);
  const addOpenClientId = String(clientId); // Обновляем каталог в фоновом режиме после открытия модального окна.
  addProductCategory='Все';
- $('#addModalCard').innerHTML=`<div class="modal-head"><div><div class="eyebrow">ДОБАВИТЬ ПОКУПКУ</div><h2>Клиент ${c.clientNo} (№${c.room})</h2></div><button class="close" type="button" data-close-add>×</button></div>
+ $('#addModalCard').innerHTML=`<div class="modal-head"><div><div class="eyebrow">ДОБАВИТЬ ПОКУПКУ</div><h2>Клиент ${shiftClientNo(c)} (№${c.room})</h2></div><button class="close" type="button" data-close-add>×</button></div>
  <div class="entry-add-wrap">
   <button class="entry-add" type="button" id="addEntry"><b>Вход</b><span>300 сом　＋</span></button>
   <button class="entry-add" type="button" id="addChildEntry"><b>Вход детский</b><span>200 сом　＋</span></button>
@@ -2947,7 +2990,7 @@ async function changeQty(id,delta){
 async function completeClient(){
  const c=db.clients.find(x=>x.id===currentClientId);if(!c)return;
  if(c.items.some(i=>i.method==='pending')){toast('Есть неоплаченные позиции. Отметьте оплату.');return}
- if(!confirm(`Завершить Клиент ${c.clientNo} (№${c.room}) на ${money(total(c))}?`))return;
+ if(!confirm(`Завершить Клиент ${shiftClientNo(c)} (№${c.room}) на ${money(total(c))}?`))return;
  const oldStatus=c.status,oldEnd=c.endedAt;c.status='completed';c.endedAt=stamp();
  try{
   await persistClient(c);
@@ -3015,7 +3058,7 @@ async function addStock(id){
 }
 function recordCard(c,isArchive){
  const ps=payments(c);
- return `<article class="history-card"><div class="history-top"><div><b>Клиент ${c.clientNo} (№${c.room})</b><div class="history-meta">${fmtDate(c.startedAt)}${c.endedAt?' — '+fmtDate(c.endedAt):''}</div></div><strong>${money(total(c))}</strong></div><div class="history-lines">${c.items.map(i=>`<div class="history-line"><span>${escapeHtml(i.name)} ×${i.qty}</span><span>${money(i.price*i.qty)} <em class="pay-tag ${i.method||'pending'}">${i.method==='cash'?'Наличные':i.method==='transfer'?'Перевод':'Ожидает'}</em></span></div>`).join('')||'<div class="history-meta">Покупок нет</div>'}</div><div class="history-bottom"><span>💵 ${money(ps.cash)}</span><span>💳 ${money(ps.transfer)}</span><span>${isArchive?'📦 Архив':'✓ Завершён'}</span></div></article>`;
+ return `<article class="history-card"><div class="history-top"><div><b>Клиент ${shiftClientNo(c)} (№${c.room})</b><div class="history-meta">${fmtDate(c.startedAt)}${c.endedAt?' — '+fmtDate(c.endedAt):''}</div></div><strong>${money(total(c))}</strong></div><div class="history-lines">${c.items.map(i=>`<div class="history-line"><span>${escapeHtml(i.name)} ×${i.qty}</span><span>${money(i.price*i.qty)} <em class="pay-tag ${i.method||'pending'}">${i.method==='cash'?'Наличные':i.method==='transfer'?'Перевод':'Ожидает'}</em></span></div>`).join('')||'<div class="history-meta">Покупок нет</div>'}</div><div class="history-bottom"><span>💵 ${money(ps.cash)}</span><span>💳 ${money(ps.transfer)}</span><span>${isArchive?'📦 Архив':'✓ Завершён'}</span></div></article>`;
 }
 function renderHistory(){const arr=db.clients.filter(c=>c.status==='completed'&&!db.archived.includes(c.id)).sort((a,b)=>new Date(b.endedAt)-new Date(a.endedAt));$('#historyList').innerHTML=arr.length?arr.map(c=>recordCard(c,false)).join(''):'<div class="empty-state">История пока пустая. Завершённые клиенты появятся здесь.</div>'}
 function renderArchive(){const arr=db.clients.filter(c=>c.status==='completed'&&db.archived.includes(c.id)).sort((a,b)=>new Date(b.endedAt)-new Date(a.endedAt));$('#archiveList').innerHTML=arr.length?arr.map(c=>recordCard(c,true)).join(''):'<div class="empty-state">Архив пока пуст.</div>'}
@@ -3543,7 +3586,7 @@ html body #addModal #addProductGrid > .add-product-tile > .product-edit-actions 
 </style>
 <style>@import url('./par-ordo-pc-glass-v109.css?v=109');</style>
 <script src="./pwa-init.js?v=1.0.0"></script>
-<script src="./par-ordo-bracelet-rules-v108.js?v=108"></script>
+<script src="./par-ordo-bracelet-rules-v108.js?v=108.1"></script>
 <script src="./par-ordo-vault-v1.js?v=1.1.0" defer onerror="document.documentElement.classList.remove('po-vault-boot')"></script>
 <script src="./par-ordo-deal-v1.js?v=1.0.0" defer onerror="document.documentElement.classList.remove('po-deal-armed')"></script>
 <script src="./par-ordo-day-cleanup-v113.js?v=113"></script>
@@ -3635,9 +3678,9 @@ html body #addModal #addProductGrid > .add-product-tile > .product-edit-actions 
 })();
 </script>
 <script src="./po-daily-report-two-days-v1.js?v=3"></script>
-<script src="./par-ordo-sections-v1.js?v=1.0.1" defer></script>
+<script src="./par-ordo-sections-v1.js?v=1.0.2" defer></script>
 <script src="./par-ordo-expenses-v1.js?v=1.0.0" defer></script>
 <script src="./par-ordo-briefing-v1.js?v=1.0.0" defer></script>
 <script src="./par-ordo-inner-v1.js?v=1.0.1" defer></script>
-<script src="./par-ordo-bonus-v1.js?v=1.0.0" defer></script>
+<script src="./par-ordo-bonus-v1.js?v=1.0.1" defer></script>
 </body></html>

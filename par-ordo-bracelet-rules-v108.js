@@ -230,7 +230,7 @@
           const meta = head.querySelector('.history-meta');
           if (eyebrow) eyebrow.textContent = 'РУКОВОДИТЕЛЬ · БРАСЛЕТ №3';
           if (title) title.textContent = 'Руководитель · Бесплатно';
-          if (meta) meta.textContent = `Без ограничения времени · Клиент №${client.clientNo}`;
+          if (meta) meta.textContent = `Без ограничения времени · Клиент №${typeof shiftClientNo === 'function' ? shiftClientNo(client) : client.clientNo}`;
           const banner = document.createElement('div');
           banner.className = 'par-ordo-manager-free-banner';
           banner.innerHTML = '<span aria-hidden="true">✦</span><span>ВСЁ БЕСПЛАТНО<small>Товары записываются и списываются со склада. Оплата не взимается; доход = 0 сом.</small></span>';
