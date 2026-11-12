@@ -291,8 +291,11 @@
     });
   }
 
+  // PRODUCT ICONS V1 draws the product pictures now; this module keeps only «Удалить товар».
+  const iconsActive = () => !!window.PARORDOProductIcons;
+
   function decorate(root = document) {
-    applyProductVisuals(root);
+    if (!iconsActive()) applyProductVisuals(root);
     addDeleteButtons(root);
     bindLogoFallbacks(root);
   }
@@ -350,7 +353,7 @@
     const original = typeof window.productPhotoMarkup === 'function'
       ? window.productPhotoMarkup.bind(window)
       : null;
-    if (original) {
+    if (original && !iconsActive()) {
       window.productPhotoMarkup = (product, extraClass = '') => {
         const brandMarkup = productLogoMarkup(product, extraClass);
         return brandMarkup || original(product, extraClass);

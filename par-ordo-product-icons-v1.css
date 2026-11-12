@@ -1,0 +1,118 @@
+/* PAR ORDO PRO · PRODUCT ICONS V1 — styles for par-ordo-product-icons-v1.js.
+   The tile, the motion vocabulary (bubbles, steam, sway, fizz, mist, flame…) and the spacing fix
+   between the icon and the product title. Motion runs only while .is-live (on screen). */
+
+/* ---------- the tile ---------- */
+.product-photo-wrap.po-pi,
+#productsView .po-si-mobile-product-icon.po-pi{
+  position:relative;display:grid!important;place-items:center;overflow:hidden;isolation:isolate;box-sizing:border-box;
+  padding:0!important;border:1px solid rgba(214,166,84,.78)!important;border-radius:15px!important;
+  background:radial-gradient(120% 95% at 50% 14%,#2c210e 0%,#120e07 56%,#060705 100%)!important;
+  box-shadow:inset 0 1px rgba(255,236,190,.18),inset 0 -12px 18px rgba(0,0,0,.45),0 5px 14px rgba(0,0,0,.45)!important;
+  color:inherit;font-size:0!important;line-height:0!important;
+}
+.product-photo-wrap.po-pi::after,
+#productsView .po-si-mobile-product-icon.po-pi::after{
+  content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:2;
+  background:linear-gradient(160deg,rgba(255,255,255,.12),transparent 36%);
+}
+.po-pi>.pi-svg{display:block;width:100%;height:100%;overflow:visible}
+.po-pi>img{display:block!important;width:100%!important;height:100%!important;object-fit:cover!important;border:0!important;border-radius:inherit!important;padding:0!important;background:none!important}
+.po-pi .pi-gloss{position:absolute;inset:-20% auto -20% -60%;width:38%;z-index:3;pointer-events:none;
+  background:linear-gradient(100deg,transparent,rgba(255,255,255,.38),transparent);transform:skewX(-14deg)}
+.po-pi.is-live .pi-gloss{animation:piGloss 4.8s ease-in-out infinite}
+@keyframes piGloss{0%,58%{left:-60%}100%{left:130%}}
+
+/* sizes per place */
+#productsView .po-si-mobile-product-icon.po-pi{width:58px!important;height:58px!important;flex:0 0 58px!important;min-width:58px}
+#addModal .add-product .product-photo-wrap.po-pi{width:58px!important;height:58px!important;flex:0 0 58px!important}
+/* the picker tiles pin their picture to 42px with padding; the live icon needs the room */
+html body #addModal #addProductGrid > .add-product-tile > .add-product .product-photo-wrap.product-icon-wrap.po-pi{
+  width:60px!important;height:60px!important;min-width:60px!important;min-height:60px!important;max-width:60px!important;max-height:60px!important;flex:0 0 60px!important;
+  padding:0!important;margin:0 auto 4px!important;border-radius:15px!important;border:1px solid rgba(214,166,84,.78)!important;
+  background:radial-gradient(120% 95% at 50% 14%,#2c210e 0%,#120e07 56%,#060705 100%)!important}
+@media(max-width:380px){html body #addModal #addProductGrid > .add-product-tile > .add-product .product-photo-wrap.product-icon-wrap.po-pi{width:54px!important;height:54px!important;min-width:54px!important;min-height:54px!important;max-width:54px!important;max-height:54px!important;flex-basis:54px!important}}
+@media(min-width:900px){html body #addModal #addProductGrid > .add-product-tile > .add-product .product-photo-wrap.product-icon-wrap.po-pi{width:66px!important;height:66px!important;min-width:66px!important;min-height:66px!important;max-width:66px!important;max-height:66px!important;flex-basis:66px!important}}
+
+/* ---------- the title never touches the icon ---------- */
+/* the inventory design injects «46px 9px» later in <head>; a longer selector wins */
+html body #productsView .po-si-mobile-product .po-si-mobile-product-main{grid-template-columns:58px minmax(0,1fr)!important;column-gap:14px!important;gap:14px!important;align-items:center!important}
+html body #productsView .po-si-mobile-product .po-si-mobile-product-main>div{padding-left:0!important;margin-left:0!important}
+#addModal .add-product{gap:12px!important}
+#clientModal .purchase{column-gap:14px!important}
+
+/* ---------- motion vocabulary ---------- */
+/* only the moving parts get their own box: static groups keep their SVG rotate(a cx cy)/translate() as written */
+.po-pi .pi-svg [class^="pi-"],.po-pi .pi-svg [class*=" pi-"]{transform-box:fill-box;transform-origin:50% 50%}
+.po-pi.is-in>.pi-svg{animation:piIn .8s cubic-bezier(.2,.9,.25,1.25) both}
+@keyframes piIn{0%{transform:scale(.55) translateY(6px);opacity:0;filter:brightness(2)}60%{opacity:1}100%{transform:none;opacity:1;filter:none}}
+
+.po-pi.is-live .pi-aura{animation:piAura 4.6s ease-in-out infinite}
+.po-pi.is-live .pi-tw{animation:piTw var(--d,2.6s) var(--dl,0s) infinite ease-in-out}
+.po-pi.is-live .pi-bub{animation:piBub var(--d,2.4s) var(--dl,0s) infinite ease-in}
+.po-pi.is-live .pi-steam{animation:piSteam var(--d,2.8s) var(--dl,0s) infinite ease-out}
+.po-pi.is-live .pi-shine{animation:piShine var(--d,4.6s) var(--dl,0s) infinite ease-in-out}
+.po-pi.is-live .pi-wave{animation:piWave var(--d,2.2s) linear infinite}
+.po-pi.is-live .pi-slosh{animation:piSlosh var(--d,3.6s) ease-in-out infinite}
+.po-pi.is-live .pi-bob{animation:piBob var(--d,3s) var(--dl,0s) infinite ease-in-out}
+.po-pi.is-live .pi-swing{animation:piSwing var(--d,3s) var(--dl,0s) infinite ease-in-out}
+.po-pi.is-live .pi-flutter{animation:piFlutter var(--d,2.6s) var(--dl,0s) infinite ease-in-out}
+.po-pi.is-live .pi-wobble{animation:piWobble var(--d,3s) var(--dl,0s) infinite ease-in-out}
+.po-pi.is-live .pi-drop{animation:piDrop var(--d,2.4s) var(--dl,0s) infinite ease-in}
+.po-pi.is-live .pi-slide{animation:piSlide var(--d,3.6s) var(--dl,0s) infinite ease-in}
+.po-pi.is-live .pi-puff{animation:piPuff var(--d,1.6s) var(--dl,0s) infinite ease-out}
+.po-pi.is-live .pi-flame{animation:piFlame var(--d,1s) var(--dl,0s) infinite ease-in-out}
+.po-pi.is-live .pi-pulse{animation:piPulse var(--d,2.2s) var(--dl,0s) infinite ease-in-out}
+.po-pi.is-live .pi-spin{animation:piSpin var(--d,8s) linear infinite}
+.po-pi.is-live .pi-leaf{animation:piLeaf var(--d,4s) var(--dl,0s) infinite ease-in}
+.po-pi.is-live .pi-step{animation:piStep var(--d,1.8s) var(--dl,0s) infinite ease-in-out}
+.po-pi.is-live .pi-press{animation:piPress var(--d,2.6s) var(--dl,0s) infinite ease-in-out}
+.po-pi.is-live .pi-foam{animation:piFoam var(--d,2.8s) var(--dl,0s) infinite ease-in-out}
+.po-pi.is-live .pi-drip{animation:piDrip var(--d,3.4s) var(--dl,0s) infinite ease-in-out}
+.po-pi.is-live .pi-pop{animation:piPop var(--d,2.4s) var(--dl,0s) infinite cubic-bezier(.3,.7,.4,1)}
+.po-pi.is-live .pi-hop{animation:piHop var(--d,1.6s) var(--dl,0s) infinite ease-in-out}
+.po-pi.is-live .pi-ring{animation:piRing var(--d,3s) var(--dl,0s) infinite ease-out}
+.po-pi.is-live .pi-ripple{animation:piRipple var(--d,2.6s) var(--dl,0s) infinite ease-out}
+.po-pi.is-live .pi-squish{animation:piSquish var(--d,2.6s) var(--dl,0s) infinite ease-in-out}
+.po-pi.is-live .pi-dust{animation:piDust var(--d,2s) var(--dl,0s) infinite ease-out}
+
+@keyframes piAura{0%,100%{transform:scale(.92);opacity:.75}50%{transform:scale(1.06);opacity:1}}
+@keyframes piTw{0%,100%{transform:scale(.15) rotate(0);opacity:0}45%{transform:scale(1) rotate(45deg);opacity:1}70%{opacity:.6}}
+@keyframes piBub{0%{transform:translate(0,0) scale(.35);opacity:0}15%{opacity:.95}80%{opacity:.8}100%{transform:translate(var(--sx,0px),calc(var(--rise,16px) * -1)) scale(1);opacity:0}}
+@keyframes piSteam{0%{transform:translateY(5px) scaleY(.55);opacity:0}30%{opacity:.85}100%{transform:translateY(-9px) scaleY(1.15) skewX(-6deg);opacity:0}}
+@keyframes piShine{0%,52%{transform:translateX(-14px)}100%{transform:translateX(66px)}}
+@keyframes piWave{from{transform:translateX(0)}to{transform:translateX(-16px)}}
+@keyframes piSlosh{0%,100%{transform:rotate(-2.6deg)}50%{transform:rotate(2.6deg)}}
+@keyframes piBob{0%,100%{transform:translateY(0)}50%{transform:translateY(var(--b,-2px))}}
+@keyframes piSwing{0%,100%{transform:rotate(calc(var(--a,6deg) * -1))}50%{transform:rotate(var(--a,6deg))}}
+@keyframes piFlutter{0%,100%{transform:skewX(0) scaleY(1)}25%{transform:skewX(3deg) scaleY(.985)}75%{transform:skewX(-3deg) scaleY(1.01)}}
+@keyframes piWobble{0%,100%{transform:rotate(calc(var(--a,5deg) * -1))}50%{transform:rotate(var(--a,5deg))}}
+@keyframes piDrop{0%{transform:translateY(0) scale(.4);opacity:0}25%{transform:translateY(0) scale(1);opacity:1}100%{transform:translateY(var(--fall,12px)) scale(.9);opacity:0}}
+@keyframes piSlide{0%{transform:translateY(0);opacity:0}15%{opacity:.75}85%{opacity:.6}100%{transform:translateY(var(--fall,12px));opacity:0}}
+@keyframes piPuff{0%{transform:translate(0,0) scale(.3);opacity:.9}100%{transform:translate(var(--tx,10px),var(--ty,-4px)) scale(1.6);opacity:0}}
+@keyframes piFlame{0%,100%{transform:scaleY(1) skewX(0)}25%{transform:scaleY(1.18) skewX(4deg)}50%{transform:scaleY(.88) skewX(-3deg)}75%{transform:scaleY(1.1) skewX(2deg)}}
+@keyframes piPulse{0%,100%{transform:scale(1);opacity:.8}50%{transform:scale(1.14);opacity:1}}
+@keyframes piSpin{to{transform:rotate(360deg)}}
+@keyframes piLeaf{0%{transform:translate(0,0) rotate(0);opacity:0}12%{opacity:1}100%{transform:translate(var(--lx,-8px),var(--ly,22px)) rotate(var(--lr,220deg));opacity:0}}
+@keyframes piStep{0%,100%{transform:translateY(0) rotate(0)}30%{transform:translateY(-3.4px) rotate(-4deg)}60%{transform:translateY(0) rotate(0)}}
+@keyframes piPress{0%,60%,100%{transform:translateY(0)}70%{transform:translateY(2.4px)}82%{transform:translateY(0)}}
+@keyframes piFoam{0%,100%{transform:scaleY(1) scaleX(1)}50%{transform:scaleY(1.1) scaleX(1.02)}}
+@keyframes piDrip{0%,100%{transform:scaleY(.55)}50%{transform:scaleY(1.15)}}
+@keyframes piPop{0%,100%{transform:translateY(0) rotate(0)}35%{transform:translateY(var(--h,-5px)) rotate(14deg)}60%{transform:translateY(0) rotate(0)}}
+@keyframes piHop{0%,100%{transform:translateY(0)}40%{transform:translateY(var(--h,-4px))}}
+@keyframes piRing{0%{transform:translate(0,0) scale(.5);opacity:.9}100%{transform:translate(6px,-8px) scale(2.2);opacity:0}}
+@keyframes piRipple{0%{transform:scale(.4);opacity:.9}100%{transform:scale(2.3);opacity:0}}
+@keyframes piSquish{0%,100%{transform:scale(1,1)}45%{transform:scale(1.07,.93)}65%{transform:scale(.97,1.04)}}
+@keyframes piDust{0%{transform:translate(0,0);opacity:0}20%{opacity:1}100%{transform:translate(var(--tx,6px),14px);opacity:0}}
+
+@media (prefers-reduced-motion:reduce){
+  .po-pi *,.po-pi>.pi-svg{animation:none!important}
+}
+
+/* ---------- the wide (PC) inventory table ---------- */
+#productsView td.po-si-name .pi-namewrap{display:flex;align-items:center;gap:12px;min-width:0}
+#productsView td.po-si-name .pi-name-text{min-width:0}
+#productsView td.po-si-name .po-pi.pi-row{width:42px;height:42px;flex:0 0 42px;border-radius:12px!important;
+  position:relative;display:grid!important;place-items:center;overflow:hidden;isolation:isolate;
+  border:1px solid rgba(214,166,84,.78);background:radial-gradient(120% 95% at 50% 14%,#2c210e 0%,#120e07 56%,#060705 100%);
+  box-shadow:inset 0 1px rgba(255,236,190,.18),0 3px 10px rgba(0,0,0,.45)}
