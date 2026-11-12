@@ -1,0 +1,129 @@
+/* PAR ORDO PRO · BONUS V1 — бонусный счёт 3% на браслете (styles for par-ordo-bonus-v1.js).
+   Scoped to #clientModalCard, #poBnSheet and the history pay tag. */
+
+/* ---------- the account inside «Постоянный клиент» ---------- */
+#clientModalCard .po-bn-acct{
+  position:relative;overflow:hidden;margin-top:12px;padding:13px 14px 12px;border-radius:16px;
+  border:1px solid rgba(246,189,71,.58);
+  background:radial-gradient(120% 140% at 0% 0%,rgba(246,189,71,.2),transparent 55%),linear-gradient(150deg,rgba(43,30,11,.97),rgba(9,14,10,.97));
+  box-shadow:inset 0 1px 0 rgba(255,236,190,.1),0 10px 22px rgba(0,0,0,.25);
+}
+#clientModalCard .po-bn-acct::after{
+  content:"";position:absolute;top:-40%;left:-30%;width:40%;height:180%;pointer-events:none;
+  background:linear-gradient(100deg,transparent,rgba(255,236,190,.1),transparent);transform:rotate(12deg);
+  animation:poBnSheen 5.5s ease-in-out infinite;
+}
+@keyframes poBnSheen{0%,62%{left:-40%}100%{left:130%}}
+#clientModalCard .po-bn-top{display:flex;align-items:center;gap:11px}
+#clientModalCard .po-bn-coin{
+  flex:none;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;
+  background:radial-gradient(circle at 35% 30%,#fff3c4,#f6bd47 46%,#a86f1c);color:#2a1705;
+  font-size:13px;font-weight:900;letter-spacing:-.02em;
+  box-shadow:0 0 0 2px rgba(255,215,122,.32),0 6px 16px rgba(246,189,71,.32),inset 0 -3px 6px rgba(120,70,10,.35);
+}
+#clientModalCard .po-bn-tt{flex:1;min-width:0}
+#clientModalCard .po-bn-tt small{display:block;font-size:10px!important;font-weight:800!important;letter-spacing:.16em;text-transform:uppercase;color:#d8b46a!important}
+#clientModalCard .po-bn-tt b{display:block;margin-top:2px;font-size:26px;line-height:1.05;font-weight:900;letter-spacing:-.03em;color:#ffe08a;font-variant-numeric:tabular-nums;white-space:nowrap}
+#clientModalCard .po-bn-acct.wait .po-bn-tt b{color:#bfae86}
+#clientModalCard .po-bn-here{flex:none;font-style:normal;padding:4px 9px;border-radius:999px;background:rgba(53,240,138,.14);color:#7ff5b4;font-size:10.5px;font-weight:800;white-space:nowrap}
+#clientModalCard .po-bn-bar{position:relative;height:6px;margin-top:11px;border-radius:9px;background:rgba(255,255,255,.09);overflow:hidden}
+#clientModalCard .po-bn-bar i{position:absolute;left:0;top:0;bottom:0;border-radius:inherit;background:linear-gradient(90deg,#a86f1c,#ffd77a);box-shadow:0 0 10px rgba(246,189,71,.45);transition:width .6s cubic-bezier(.16,1,.3,1)}
+#clientModalCard .po-bn-meta{display:flex;flex-wrap:wrap;gap:4px 14px;margin-top:8px;font-size:11px;line-height:1.4;color:#c7d0c3}
+#clientModalCard .po-bn-meta b{color:#fff0d0;font-weight:800}
+#clientModalCard .po-bn-meta b.g{color:#7ff5b4}
+#clientModalCard .po-bn-hint{margin:8px 0 0;font-size:11px;line-height:1.45;color:#d9c9a3;font-weight:600}
+#clientModalCard .po-bn-warn{margin:8px 0 0;padding:7px 9px;border-radius:10px;background:rgba(90,24,16,.5);border:1px solid rgba(255,120,100,.4);font-size:11px;line-height:1.4;color:#ffc4b8}
+#clientModalCard .po-bn-invite{display:flex;gap:8px;align-items:flex-start;margin:10px 0 0;padding:9px 11px;border-radius:12px;border:1px dashed rgba(246,189,71,.45);font-size:11px;line-height:1.45;color:#ffe2a6;font-weight:650}
+#clientModalCard #applyLoyaltyBonus{font-size:11px}
+
+/* ---------- «🎁 Оплатить бонусом» under the three payment buttons ---------- */
+#clientModal .pay-methods button.po-bn-pay{
+  grid-column:1/-1;display:flex;align-items:center;gap:10px;min-height:50px;padding:8px 12px;border-radius:12px;text-align:left;
+  background:linear-gradient(135deg,#3d2b0e,#1b1308)!important;color:#ffe08a!important;border-color:transparent!important;
+  --payment-border-main:#ffc94d;--payment-border-light:#fff2c4;
+}
+#clientModal .pay-methods button.po-bn-pay .po-bn-gift{flex:none;font-size:20px;line-height:1}
+#clientModal .pay-methods button.po-bn-pay .po-bn-pt{min-width:0}
+#clientModal .pay-methods button.po-bn-pay b{display:block;font-size:12.5px;line-height:1.2;font-weight:900;letter-spacing:.01em;color:#ffe08a}
+#clientModal .pay-methods button.po-bn-pay small{display:block;margin-top:2px;font-size:10.5px;line-height:1.25;font-weight:700;color:#d8bf86;white-space:normal}
+#clientModal .pay-methods button.po-bn-pay.off{filter:saturate(.35);opacity:.62}
+#clientModal .pay-methods button.po-bn-pay.off::after{animation:none;opacity:.3}
+
+/* ---------- a line paid with bonus ---------- */
+#clientModal .purchase.po-bn-paid{
+  border-color:rgba(246,189,71,.62)!important;
+  background:radial-gradient(110% 120% at 100% 0%,rgba(246,189,71,.16),transparent 55%),linear-gradient(145deg,rgba(32,25,12,.97),rgba(9,12,8,.97))!important;
+}
+#clientModal .purchase.po-bn-paid .purchase-price{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:4px 10px}
+#clientModal .po-bn-was{color:#b9ad92;font-size:11.5px}
+#clientModal .po-bn-was s{color:#a1977f;text-decoration-thickness:1.5px}
+#clientModal .po-bn-now{color:#d6cfbd;font-size:11.5px}
+#clientModal .po-bn-now b{color:#7ff5b4;font-size:13px;font-weight:900}
+#clientModal .po-bn-state{display:flex;align-items:center;gap:8px;margin-top:9px}
+#clientModal .po-bn-chip{
+  flex:1;min-width:0;display:inline-flex;align-items:center;gap:7px;min-height:38px;padding:7px 11px;border-radius:11px;box-sizing:border-box;
+  background:linear-gradient(135deg,#f6bd47,#ffe08a);color:#2a1705;font-size:12px;font-weight:900;line-height:1.2;
+  box-shadow:0 6px 16px rgba(246,189,71,.22),inset 0 1px 0 rgba(255,255,255,.5);
+}
+#clientModal .po-bn-undo{flex:none;min-height:38px;padding:7px 13px;border-radius:11px;border:1px solid rgba(255,190,170,.45);background:rgba(60,18,12,.6);color:#ffcabd;font-size:11.5px;font-weight:800}
+#clientModal .po-bn-undo:active{transform:scale(.97)}
+#clientModal .po-bn-rest{margin-top:9px;font-size:11px;line-height:1.4;color:#e8d6ad;font-weight:650}
+#clientModal .po-bn-rest b{color:#ffe08a}
+#clientModal .po-bn-hide{display:none!important}
+#clientModal .purchase.po-bn-fresh{animation:poBnGlow 1.2s ease-out}
+#clientModal .purchase.po-bn-fresh .po-bn-chip{animation:poBnPop .7s cubic-bezier(.2,.9,.25,1.25)}
+@keyframes poBnPop{0%{transform:scale(.6);opacity:0}100%{transform:none;opacity:1}}
+@keyframes poBnGlow{0%{box-shadow:0 0 0 0 rgba(246,189,71,.75)}100%{box-shadow:0 0 0 18px rgba(246,189,71,0)}}
+
+/* ---------- history (the plain cards and the SECTIONS receipts) ---------- */
+.pay-tag.bonus{background:linear-gradient(135deg,#f6bd47,#ffd77a)!important;color:#2a1705!important;border:1px solid #ffe08a!important;font-style:normal}
+.sx-m.bonus{background:#ffd77a;box-shadow:0 0 6px rgba(255,215,122,.8)}
+.px-line .sx-bn{flex:none;align-self:center;font-style:normal;padding:1px 7px;border-radius:999px;background:rgba(246,189,71,.18);border:1px solid rgba(246,189,71,.35);color:#ffe08a;font-size:10.5px;font-weight:700;white-space:nowrap}
+
+/* ---------- the confirmation sheet ---------- */
+.po-bn-sheet{position:fixed;inset:0;z-index:90;display:flex;align-items:flex-end;justify-content:center;font-family:inherit}
+.po-bn-sheet[hidden]{display:none!important}
+.po-bn-scrim{position:absolute;inset:0;background:rgba(0,0,0,.68);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
+.po-bn-card{
+  position:relative;box-sizing:border-box;width:min(calc(100% - 16px),460px);max-height:calc(100% - 24px);overflow:auto;
+  margin:0 0 calc(8px + env(safe-area-inset-bottom));padding:22px 18px 16px;border-radius:24px;
+  border:1px solid rgba(246,189,71,.6);text-align:center;color:#f3e6c8;
+  background:radial-gradient(120% 70% at 50% 0%,rgba(246,189,71,.22),transparent 60%),linear-gradient(170deg,#21170a,#0b0805);
+  box-shadow:0 -10px 50px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,236,190,.12);
+}
+.po-bn-big{
+  display:grid;place-items:center;width:66px;height:66px;margin:0 auto 10px;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,#fff3c4,#f6bd47 46%,#a86f1c);color:#2a1705;font-size:19px;font-weight:900;letter-spacing:-.03em;
+  box-shadow:0 0 0 3px rgba(255,215,122,.25),0 10px 30px rgba(246,189,71,.45),inset 0 -4px 8px rgba(120,70,10,.35);
+}
+.po-bn-big.back{background:radial-gradient(circle at 35% 30%,#d9ffe8,#4ff09a 46%,#1f9e5c);color:#062a15;font-size:28px;box-shadow:0 0 0 3px rgba(127,245,180,.25),0 10px 30px rgba(53,240,138,.35)}
+.po-bn-kick{display:block;font-size:10px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:#d8b46a}
+.po-bn-card h3{margin:6px 0 14px;font:700 21px/1.25 Georgia,'Times New Roman',serif;color:#fff2d8;overflow-wrap:anywhere}
+.po-bn-rows{border-radius:16px;border:1px solid rgba(246,189,71,.25);background:rgba(0,0,0,.3);padding:2px 14px;text-align:left}
+.po-bn-r{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding:11px 0;border-bottom:1px solid rgba(246,189,71,.14);font-size:13px}
+.po-bn-r:last-child{border-bottom:0}
+.po-bn-r span{color:#cbbf9f;font-weight:650}
+.po-bn-r b{color:#fff2d8;font-size:15px;font-weight:900;white-space:nowrap;font-variant-numeric:tabular-nums}
+.po-bn-r.g b{color:#7ff5b4}
+.po-bn-r.a b{color:#ffcf6e}
+.po-bn-r.z b{color:#ff9f8f}
+.po-bn-after{display:flex;align-items:baseline;justify-content:center;flex-wrap:wrap;gap:6px 9px;margin-top:14px;font-size:12px;color:#cbbf9f;font-weight:700}
+.po-bn-after b{font-size:23px;font-weight:900;color:#fff2d8;font-variant-numeric:tabular-nums}
+.po-bn-after b.g{color:#ffe08a;text-shadow:0 0 18px rgba(246,189,71,.45)}
+.po-bn-after i{font-style:normal;color:#d8b46a;font-size:17px}
+.po-bn-note{margin:10px 4px 0;font-size:12px;line-height:1.5;color:#d6c8a6;font-weight:600}
+.po-bn-ok{display:block;width:100%;min-height:54px;margin-top:16px;border:0;border-radius:15px;background:linear-gradient(180deg,#ffd77a,#e0a43a);color:#2a1705;font-size:15px;font-weight:900;letter-spacing:.01em;box-shadow:0 10px 26px rgba(246,189,71,.3);cursor:pointer}
+.po-bn-ok.back{background:linear-gradient(180deg,#9ff5c2,#2fbf72);color:#062a15;box-shadow:0 10px 26px rgba(53,240,138,.25)}
+.po-bn-ok:active,.po-bn-cancel:active{transform:scale(.985)}
+.po-bn-cancel{display:block;width:100%;min-height:48px;margin-top:8px;border-radius:14px;border:1px solid rgba(246,189,71,.35);background:transparent;color:#e9d7ad;font-size:13.5px;font-weight:800;cursor:pointer}
+.po-bn-cancel.solo{margin-top:16px}
+.po-bn-ok:focus-visible,.po-bn-cancel:focus-visible,.po-bn-pay:focus-visible,.po-bn-undo:focus-visible{outline:2px solid #ffe08a;outline-offset:2px}
+.po-bn-load{display:flex;align-items:center;justify-content:center;gap:10px;margin:6px 0 4px;font-size:13px;color:#d6c8a6;font-weight:650}
+.po-bn-load i{width:16px;height:16px;border-radius:50%;border:2px solid rgba(246,189,71,.3);border-top-color:#ffd77a;animation:poBnSpin .8s linear infinite}
+@keyframes poBnSpin{to{transform:rotate(360deg)}}
+@media(min-width:860px){.po-bn-sheet{align-items:center}.po-bn-card{margin:0}}
+@media(prefers-reduced-motion:reduce){
+  #clientModalCard .po-bn-acct::after{animation:none;display:none}
+  #clientModal .purchase.po-bn-fresh,#clientModal .purchase.po-bn-fresh .po-bn-chip{animation:none}
+  .po-bn-load i{animation-duration:2.4s}
+}

@@ -15,7 +15,7 @@
   'use strict';
   if (window.PARORDOSections) return;
 
-  const VERSION = '1.0.0';
+  const VERSION = '1.0.1';
   const root = document.documentElement;
   const reduced = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
   const canAnimate = typeof Element !== 'undefined' && typeof Element.prototype.animate === 'function';
@@ -211,9 +211,20 @@
   }
 
   /* ---------- shared markup ---------- */
+  /* a line paid with the 3% bonus (par-ordo-bonus-v1.js) is named «Чай · бонус 45» */
+  const BONUS_MARK = /\s*·\s*бонус\s+(\d+)\s*$/u;
+  const bonusOfLine = i => {
+    const f = Math.floor(Number(i && i.bonusPaid));
+    if (Number.isFinite(f) && f > 0) return f;
+    const m = String((i && i.name) || '').match(BONUS_MARK);
+    return m ? (Number(m[1]) || 0) : 0;
+  };
+  const baseNameOf = i => String((i && i.bonusBaseName) || '').trim() || String((i && i.name) || '').replace(BONUS_MARK, '').trim();
   function lineHtml(i) {
-    const m = mkey(i);
-    return `<div class="px-line"><span class="sx-m ${m}" role="img" aria-label="${METHOD[m]}" title="${METHOD[m]}"></span><span>${esc(i.name)} ×${num(i.qty)}</span><i></i><b>${sum(amountOf(i))}</b></div>`;
+    const b = bonusOfLine(i);
+    const m = b && amountOf(i) <= 0 ? 'bonus' : mkey(i);
+    const label = m === 'bonus' ? 'Оплачено бонусом' : METHOD[m];
+    return `<div class="px-line${b ? ' is-bonus' : ''}"><span class="sx-m ${m}" role="img" aria-label="${label}" title="${label}"></span><span>${esc(b ? baseNameOf(i) : i.name)} ×${num(i.qty)}</span>${b ? `<em class="sx-bn">🎁 бонус ${num(b)}</em>` : ''}<i></i><b>${sum(amountOf(i))}</b></div>`;
   }
   function footHtml(p) {
     return `<span><i class="sx-m cash"></i>Наличные <b>${sum(p.cash)}</b></span><span><i class="sx-m transfer"></i>Перевод <b>${sum(p.transfer)}</b></span>${p.pending ? `<span><i class="sx-m pending"></i>Ожидает <b>${sum(p.pending)}</b></span>` : ''}`;

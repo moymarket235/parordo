@@ -24,7 +24,7 @@
   'use strict';
   if (window.PARORDOInner) return;
 
-  const VERSION = '1.0.0';
+  const VERSION = '1.0.1';
   const HOST = 'https://par-ordo-api.moimarketjibekjolu.workers.dev';
   const BONUS_RATE = 0.03;
   const reduced = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
@@ -226,7 +226,17 @@
 
   /* ---------- shared business rules (the same as the app's report modules) ---------- */
   const ADMISSION = new Set(['вход', 'вход детский', 'бонусный вход (5-й визит)', 'бонусный вход']);
-  const isAdmission = it => ADMISSION.has(lower(it && it.name));
+  /* a line paid with the 3% bonus (par-ordo-bonus-v1.js) is named «Чай · бонус 45» and costs less */
+  const BONUS_MARK = /\s*·\s*бонус\s+(\d+)\s*$/u;
+  function bonusPaidOf(it) {
+    if (!it) return 0;
+    const f = Math.floor(Number(it.bonusPaid));
+    if (Number.isFinite(f) && f > 0) return f;
+    const m = String(it.name || '').match(BONUS_MARK);
+    return m ? (Number(m[1]) || 0) : 0;
+  }
+  const nameOf = it => String(it && it.bonusBaseName || '').trim() || String(it && it.name || '').replace(BONUS_MARK, '').trim();
+  const isAdmission = it => ADMISSION.has(lower(nameOf(it)));
   function paid(it) {
     const qty = Math.max(1, Math.floor(Number(it && it.qty || 1)));
     const price = Math.max(0, Number(it && it.price || 0));
@@ -254,7 +264,7 @@
   const findProduct = (idx, id, name) => (id != null && idx.byId.get(String(id))) || idx.byName.get(lower(name)) || null;
   function costOf(it, idx) {
     if (validCost(it && it.costPrice)) return Number(it.costPrice);
-    const p = findProduct(idx, it && it.productId, it && it.name);
+    const p = findProduct(idx, it && it.productId, nameOf(it));
     return p && validCost(p.costPrice) ? Number(p.costPrice) : null;
   }
   const haveCosts = () => catalog().some(p => p && validCost(p.costPrice));
@@ -283,22 +293,26 @@
   const RP = { modal: null, panel: null, open: false, day: '', tog: '', openedAt: 0, rendered: false, fallbackT: 0, busyT: 0, model: null };
 
   function rpModelFor(day, ctx) {
-    const m = { day, reports: [], live: null, entry: 0, products: 0, total: 0, guests: 0, pending: 0, rows: [], shifts: [], receipts: [], cost: 0, costRev: 0, profit: 0, missQty: 0 };
+    const m = { day, reports: [], live: null, entry: 0, products: 0, total: 0, guests: 0, pending: 0, bonus: 0, rows: [], shifts: [], receipts: [], cost: 0, costRev: 0, profit: 0, missQty: 0 };
     const items = new Map();
     const add = (clients, isLive, sink) => {
       for (const c of clients || []) {
         for (const it of (Array.isArray(c && c.items) ? c.items : [])) {
+          const bz = bonusPaidOf(it);
+          m.bonus += bz;
           const p = paid(it);
           if (!p) { if (isLive) m.pending += Math.max(0, Number(it.price || 0)) * Math.max(1, Math.floor(Number(it.qty || 1))); continue; }
           if (isAdmission(it)) { m.entry += p.amount; if (sink) sink.entry += p.amount; continue; }
-          if (p.amount <= 0) continue;
+          // a product given for bonus brings no money, but it left the shelf: its purchase price is a real cost
+          if (p.amount <= 0 && !bz) continue;
           m.products += p.amount;
           if (sink) sink.products += p.amount;
-          const prod = findProduct(ctx.idx, it.productId, it.name);
-          const key = prod ? 'id:' + prod.id : 'n:' + lower(it.name);
-          const row = items.get(key) || { name: String((prod && prod.name) || it.name || 'Товар').trim() || 'Товар', qty: 0, rev: 0, cost: 0, costRev: 0, missQty: 0 };
+          const prod = findProduct(ctx.idx, it.productId, nameOf(it));
+          const key = prod ? 'id:' + prod.id : 'n:' + lower(nameOf(it));
+          const row = items.get(key) || { name: String((prod && prod.name) || nameOf(it) || 'Товар').trim() || 'Товар', qty: 0, rev: 0, cost: 0, costRev: 0, missQty: 0, bonus: 0 };
           row.qty += p.qty;
           row.rev += p.amount;
+          row.bonus += bz;
           const cost = costOf(it, ctx.idx);
           if (cost != null) { row.cost += cost * p.qty; row.costRev += p.amount; } else row.missQty += p.qty;
           items.set(key, row);
@@ -320,7 +334,8 @@
     }
     m.total = m.entry + m.products;
     m.rows = [...items.values()].sort((a, b) => b.rev - a.rev || b.qty - a.qty);
-    for (const r of m.rows) { m.cost += r.cost; m.costRev += r.costRev; m.missQty += r.missQty; }
+    m.known = 0;
+    for (const r of m.rows) { m.cost += r.cost; m.costRev += r.costRev; m.missQty += r.missQty; m.known += r.qty - r.missQty; }
     m.profit = m.costRev - m.cost;
     m.shifts.sort((a, b) => new Date(a.closedAt) - new Date(b.closedAt));
     m.receipts = ctx.audit.filter(e => e && e.action === 'stock_receipt' && dayKey(e.createdAt) === day)
@@ -432,8 +447,8 @@
   function rpCell(v, cls, m, kind) {
     if (!m.reports.length && !m.live) return `<b class="tn${cls}">—</b>`;
     if (kind === 'cost' || kind === 'prof') {
-      if (!m.products) return `<b class="tn${cls}">0</b>`;
-      if (!m.costRev) return `<b class="tn${cls}">—</b>`;
+      if (!m.products && !m.rows.length) return `<b class="tn${cls}">0</b>`;
+      if (!m.known) return `<b class="tn${cls}">—</b>`;
       const star = m.missQty ? '<small>*</small>' : '';
       return `<b class="tn${cls}">${kind === 'prof' ? sgn(v) : num(v)}${star}</b>`;
     }
@@ -442,7 +457,7 @@
   function rpRow(label, kind, a, b, va, vb) {
     const max = Math.max(Math.abs(va), Math.abs(vb), 1);
     const w = v => Math.max(0, Math.min(100, Math.round(Math.abs(v) / max * 100)));
-    const cls = kind === 'cost' ? ' cost' : kind === 'prof' ? ' prof' : '';
+    const cls = kind === 'cost' ? ' cost' : kind === 'prof' ? ' prof' : kind === 'bonus' ? ' bon' : '';
     return `<div class="rp-row${cls}"><span>${label}</span>${rpCell(va, '', a, kind)}${rpCell(vb, ' now', b, kind)}<span class="rp-pair" aria-hidden="true"><i class="y"><b style="width:${w(va)}%" data-grow></b></i><i class="t"><b style="width:${w(vb)}%" data-grow></b></i></span></div>`;
   }
   function rpMissing(S) {
@@ -461,22 +476,28 @@
     const label = m.label.toLowerCase();
     // Касса-маржа
     let wf;
+    const bonusNote = m.bonus ? `<p class="rp-basis rp-bn">🎁 Бонусом 3% оплачено ${num(m.bonus)} сом — эти товары ушли без выручки, их закуп учтён в прибыли.</p>` : '';
     if (!m.reports.length && !m.live) wf = `<div class="in-empty"><b>${esc(m.label)}</b>: отчёта пока нет.</div>`;
-    else if (!m.products) wf = `<div class="in-empty">Продаж товаров за ${esc(label === 'вчера' || label === 'сегодня' ? label : dayShort(m.day))} нет.</div>`;
-    else if (!m.costRev) {
-      wf = `<section class="in-card rp-wf"><div class="rp-wfm"><span><span class="in-kick">Чистая прибыль</span><b class="na">не рассчитана</b></span></div><p class="rp-basis">У проданных товаров нет закупочной цены. Продано на ${num(m.products)} сом.</p></section>`;
+    else if (!m.products && !m.rows.length) wf = `<div class="in-empty">Продаж товаров за ${esc(label === 'вчера' || label === 'сегодня' ? label : dayShort(m.day))} нет.</div>`;
+    else if (!m.known) {
+      wf = `<section class="in-card rp-wf"><div class="rp-wfm"><span><span class="in-kick">Чистая прибыль</span><b class="na">не рассчитана</b></span></div><p class="rp-basis">У проданных товаров нет закупочной цены. Продано на ${num(m.products)} сом.</p>${bonusNote}</section>`;
     } else {
-      const hc = Math.max(2, Math.min(100, pct(m.cost, m.costRev)));
-      const hp = Math.max(2, 100 - pct(m.cost, m.costRev));
+      const ratio = m.costRev > 0 ? m.cost / m.costRev * 100 : (m.cost > 0 ? 100 : 0);
+      const hc = Math.max(2, Math.min(100, Math.round(ratio)));
+      const hp = Math.max(2, Math.min(100, Math.round(100 - ratio)));
+      // each number sits right at the end of its own bar; a tall bar carries it inside
+      const IN = 84;
+      const labC = hc > IN ? `<span class="lab in" style="top:calc(${hc}% - 25px)">` : `<span class="lab" style="top:calc(${hc}% + 6px)">`;
+      const labP = hp > IN ? `<span class="lab in" style="bottom:calc(${hp}% - 25px)">` : `<span class="lab" style="bottom:calc(${hp}% + 6px)">`;
       const basis = m.missQty ? `<p class="rp-basis">По товарам с закупочной ценой: ${num(m.costRev)} из ${num(m.products)} сом выручки.</p>` : '';
       wf = `<section class="in-card rp-wf" aria-label="Продажа минус закуп равно прибыль">
         <div class="rp-wfm"><span><span class="in-kick">Чистая прибыль · ${esc(label)}</span><b>${sgn(m.profit)} сом</b></span><em>маржа ${pct(m.profit, m.costRev)}%</em></div>
         <div class="rp-plot">
           <div class="rp-c s"><span class="wb" style="height:100%" data-rise></span><span class="lab">${num(m.costRev)}</span></div>
-          <div class="rp-c c"><span class="wb" style="height:${hc}%" data-rise="50% 0"></span><span class="lab">−${num(m.cost)}</span></div>
-          <div class="rp-c p"><span class="wb" style="height:${hp}%" data-rise></span><span class="lab">${sgn(m.profit)}</span></div>
+          <div class="rp-c c"><span class="wb" style="height:${hc}%" data-rise="50% 0"></span>${labC}−${num(m.cost)}</span></div>
+          <div class="rp-c p"><span class="wb" style="height:${hp}%" data-rise></span>${labP}${sgn(m.profit)}</span></div>
         </div>
-        <div class="rp-x"><span>Продажа</span><span>Закуп</span><span>Прибыль</span></div>${basis}
+        <div class="rp-x"><span>Продажа</span><span>Закуп</span><span>Прибыль</span></div>${basis}${bonusNote}
       </section>`;
     }
     // по товарам
@@ -484,14 +505,19 @@
     if (m.rows.length) {
       goods = '<div class="rp-mg">' + m.rows.map(r => {
         const unit = r.qty ? Math.round(r.rev / r.qty) : 0;
-        if (r.missQty && !r.costRev) {
-          return `<div class="rp-it"><div class="rp-itop"><b>${esc(r.name)} × ${r.qty}</b><em class="na">нет закупа</em></div><div class="rp-mbar"><i class="na">закупочная цена не указана</i></div><div class="rp-meta"><span>цена ${num(unit)} сом · выручка ${num(r.rev)}</span><span>прибыль <b class="na">—</b></span></div></div>`;
+        const bn = r.bonus ? ` · 🎁 бонус ${num(r.bonus)}` : '';
+        if (r.missQty && !r.costRev && r.qty === r.missQty) {
+          return `<div class="rp-it"><div class="rp-itop"><b>${esc(r.name)} × ${r.qty}</b><em class="na">нет закупа</em></div><div class="rp-mbar"><i class="na">закупочная цена не указана</i></div><div class="rp-meta"><span>цена ${num(unit)} сом · выручка ${num(r.rev)}${bn}</span><span>прибыль <b class="na">—</b></span></div></div>`;
         }
         const costUnit = r.qty - r.missQty > 0 ? r.cost / (r.qty - r.missQty) : 0;
-        const cw = Math.max(8, Math.min(92, pct(r.cost, r.costRev)));
         const pr = r.costRev - r.cost;
-        const star = r.missQty ? `<em class="na">${r.missQty} шт. без закупа</em>` : `<em>${pct(pr, r.costRev)}%</em>`;
-        return `<div class="rp-it"><div class="rp-itop"><b>${esc(r.name)} × ${r.qty}</b>${star}</div><div class="rp-mbar"><i class="c" style="width:${cw}%">закуп ${num(costUnit)}</i><i class="p" style="width:${100 - cw}%">${sgn(unit - costUnit)}</i></div><div class="rp-meta"><span>цена ${num(unit)} сом · выручка ${num(r.rev)}</span><span>прибыль <b>${sgn(pr)}</b></span></div></div>`;
+        if (r.rev <= 0 && r.bonus) {
+          // all of it went for bonus: no money, only the purchase price
+          return `<div class="rp-it rp-itb"><div class="rp-itop"><b>${esc(r.name)} × ${r.qty}</b><em class="bn">за бонус</em></div><div class="rp-mbar"><i class="b" style="width:100%">🎁 оплачено бонусом ${num(r.bonus)} сом</i></div><div class="rp-meta"><span>выручка 0 · закуп ${num(r.cost)}</span><span>прибыль <b class="neg">${sgn(pr)}</b></span></div></div>`;
+        }
+        const cw = Math.max(8, Math.min(92, r.costRev > 0 ? pct(r.cost, r.costRev) : 92));
+        const star = r.missQty ? `<em class="na">${r.missQty} шт. без закупа</em>` : `<em${pr < 0 ? ' class="neg"' : ''}>${pct(pr, r.costRev)}%</em>`;
+        return `<div class="rp-it"><div class="rp-itop"><b>${esc(r.name)} × ${r.qty}</b>${star}</div><div class="rp-mbar"><i class="c" style="width:${cw}%">закуп ${num(costUnit)}</i><i class="p${unit - costUnit < 0 ? ' neg' : ''}" style="width:${100 - cw}%">${sgn(unit - costUnit)}</i></div><div class="rp-meta"><span>цена ${num(unit)} сом · выручка ${num(r.rev)}${bn}</span><span>прибыль <b${pr < 0 ? ' class="neg"' : ''}>${sgn(pr)}</b></span></div></div>`;
       }).join('') + '</div>';
     } else goods = `<div class="in-empty">Товаров за этот день не продано.</div>`;
     // поступления
@@ -532,6 +558,7 @@
           ${rpRow('Продажи товаров', '', a, b, a.products, b.products)}
           ${rpRow('Закуп проданного', 'cost', a, b, a.cost, b.cost)}
           ${rpRow('Чистая прибыль с товаров', 'prof', a, b, a.profit, b.profit)}
+          ${a.bonus || b.bonus ? rpRow('Оплачено бонусом 3%', 'bonus', a, b, a.bonus, b.bonus) : ''}
         </div>
       </section>
       ${rpMissing(S)}
@@ -701,7 +728,13 @@
      2 · БАЗА КЛИЕНТОВ · «Клуб · бонус 3%»
      ===================================================================== */
   const CL = { orig: {}, amt: 1000, open: false, openIds: new Set(), introCard: null };
-  const bonusOf = c => Math.floor(Math.max(0, Number(c && c.totalSpent || 0)) * BONUS_RATE);
+  /* the account comes from par-ordo-bonus-v1.js (earned − spent on bracelets); without it — earned only */
+  function accOf(c) {
+    try { if (window.PARORDOBonus && typeof window.PARORDOBonus.account === 'function') return window.PARORDOBonus.account(c); } catch (_) {}
+    const earned = Math.floor(Math.max(0, Number(c && c.totalSpent || 0)) * BONUS_RATE);
+    return { earned, used: 0, available: earned, ready: true };
+  }
+  const bonusOf = c => accOf(c).available;
   const clEntries = () => { try { return Array.isArray(customerBaseEntries) ? customerBaseEntries : []; } catch (_) { return []; } };
   const clSummary = () => { try { return customerBaseSummary || null; } catch (_) { return null; } };
   const clLoaded = () => { try { return !!customerBaseLoaded; } catch (_) { return false; } };
@@ -729,12 +762,12 @@
       <header class="in-head" data-in="1"><span class="in-kick">Пар Ордо · клуб гостей</span><h1 class="in-h1">База клиентов</h1></header>
       <div data-in="2" data-cl="cardwrap">${clCardHtml(null, ' data-cl="card"')}</div>
       <div class="cl-tiers" data-in="3">
-        <div class="cl-tier a"><b data-cl="t1">—</b><small>сом бонусов накоплено</small></div>
+        <div class="cl-tier a"><b data-cl="t1">—</b><small>сом бонусов на счетах</small></div>
         <div class="cl-tier b"><b data-cl="t2">—</b><small>посещений всего</small></div>
         <div class="cl-tier c"><b data-cl="t3">—</b><small>сом покупок клиентов</small></div>
       </div>
       <section class="in-card cl-rule" data-in="4"><span class="in-kick">Как копится бонус</span>
-        <p>С <b>любой суммы</b> покупки — <b>3%</b> на бонусный счёт гостя. Без минимума, с каждого визита.</p>
+        <p>С <b>любой суммы</b> покупки — <b>3%</b> на бонусный счёт гостя. Без минимума, с каждого визита. Потратить — на браслете: <b>«🎁 Оплатить бонусом»</b> у товара или входа, остаток копится дальше.</p>
         <div class="cl-amts" role="group" aria-label="Сумма чека">${AMTS.map(v => `<button type="button" class="in-chip${v === CL.amt ? ' on' : ''}" data-cl-amt="${v}" aria-pressed="${v === CL.amt}">${num(v)}</button>`).join('')}</div>
         <div class="cl-calc" aria-live="polite"><span class="cl-coin" aria-hidden="true">3%</span><span><span class="q" data-cl="q"></span><span class="r" data-cl="r"></span></span></div>
       </section>
@@ -745,7 +778,7 @@
       const sec = document.createElement('div');
       sec.className = 'in-sec cl-sec';
       sec.setAttribute('data-in', '6');
-      sec.innerHTML = '<h2>Бонусный счёт</h2><i></i><em>накоплено, сом</em>';
+      sec.innerHTML = '<h2>Бонусный счёт</h2><i></i><em>доступно, сом</em>';
       card.insertBefore(sec, tabs);
       const t1 = $('[data-customer-base-tab="clients"]', tabs), t2 = $('[data-customer-base-tab="bonuses"]', tabs);
       if (t1) t1.textContent = 'Все клиенты';
@@ -754,7 +787,7 @@
     if (list) {
       const foot = document.createElement('p');
       foot.className = 'in-note cl-foot';
-      foot.textContent = 'Бонус — 3% от всех оплаченных покупок гостя: входы и товары, по истории визитов в базе.';
+      foot.textContent = 'Бонус — 3% от всех оплаченных покупок гостя (входы и товары) минус то, что уже оплачено бонусом на браслетах.';
       list.insertAdjacentElement('afterend', foot);
     }
     $('[data-cl=back]', top).addEventListener('click', () => { const c = $('#closeCustomerBase'); if (c) c.click(); else call('closeModal', '#customerBaseModal'); });
@@ -805,33 +838,30 @@
     [['t1', bonus], ['t2', visits], ['t3', spent]].forEach(([k, v]) => { const el = $(`[data-cl=${k}]`, card); if (el) countTo(el, v, first ? 900 : 0, first ? 250 : 0); });
     if (CL.introCard) { const b = $('[data-cl-i=n]', CL.introCard); if (b) b.textContent = num(count); const nn = $('[data-cl=num]', CL.introCard); if (nn) nn.textContent = `${String(count).padStart(4, '0')} · ${new Date().getFullYear()}`; const cap = $('[data-cl-i=cap]', CL.introCard); if (cap) cap.textContent = `${num(count)} ${plural(count, 'гость', 'гостя', 'гостей')} Пар Ордо`; }
   }
-  function clOldStatus(c) {
-    if (Number(c.bonusUsedThisMonth || 0) > 0) return 'уже применён в этом месяце';
-    if (c.bonusActive) return 'активирован · можно применить на 5-й вход';
-    if (c.bonusStatus === 'stopped' && c.bonusEligible) return 'остановлен · можно активировать снова';
-    if (c.bonusEligible) return '4 посещения выполнены · ждёт активации';
-    return `до активации: ${Math.max(0, 4 - Number(c.visitsThisMonth || 0))} посещ.`;
-  }
   function clRow(c, max, canEdit) {
     const id = String(c.id);
-    const b = bonusOf(c);
+    const acc = accOf(c);
+    const b = acc.available;
     const open = CL.openIds.has(id);
     const visits = Number(c.visitsTotal || 0), month = Number(c.visitsThisMonth || 0), spent = Number(c.totalSpent || 0);
     const w = max > 0 ? Math.max(b > 0 ? 3 : 0, Math.round(b / max * 100)) : 0;
     const created = (() => { try { return typeof fmtDate === 'function' ? fmtDate(c.createdAt) : ''; } catch (_) { return ''; } })();
-    const control = canEdit && Number(c.bonusUsedThisMonth || 0) === 0 && c.bonusEligible
-      ? `<button type="button" class="customer-bonus-control ${c.bonusActive ? 'stop' : ''}" data-customer-bonus="${esc(id)}" data-bonus-status="${c.bonusActive ? 'stopped' : 'active'}">${c.bonusActive ? '■ Остановить' : '✓ Активировать'}</button>` : '';
+    // the 3% account replaced «5-й вход бесплатно»; a reward that was already activated stays visible until used
+    const oldLive = c.bonusActive === true && Number(c.bonusUsedThisMonth || 0) === 0;
+    const sub = acc.used > 0 ? `списано ${num(acc.used)}` : (month ? `в этом месяце: ${month}` : '3% с покупок');
     return `<article class="cl-row" data-id="${esc(id)}">
       <button type="button" class="cl-rmain" aria-expanded="${open}"><span class="cl-av" aria-hidden="true">${esc((String(c.name || '?').trim()[0] || '?').toUpperCase())}</span>
         <span class="cl-rtx"><strong>${esc(c.name)}</strong><small>${visits} ${plural(visits, 'визит', 'визита', 'визитов')} · потрачено ${num(spent)} сом</small><span class="cl-bar"><i style="width:${w}%"></i></span></span>
-        <span class="cl-bal${b ? '' : ' zero'}"><b>${num(b)} сом</b><em>${month ? `в этом месяце: ${month}` : '3% с покупок'}</em></span></button>
+        <span class="cl-bal${b ? '' : ' zero'}"><b>${num(b)} сом</b><em>${esc(sub)}</em></span></button>
       <div class="cl-det"${open ? '' : ' hidden'}>
         <div class="cl-kv"><span>Телефон</span><b>${c.phone ? esc(c.phone) : 'не указан'}</b></div>
         ${created ? `<div class="cl-kv"><span>Добавлен</span><b>${esc(created)}</b></div>` : ''}
         <div class="cl-kv"><span>Посещений · всего / в месяце</span><b>${visits} / ${month}</b></div>
-        <div class="cl-kv"><span>Бонусный счёт</span><b class="g">3% × ${num(spent)} = ${num(b)} сом</b></div>
+        <div class="cl-kv"><span>Накоплено · 3% × ${num(spent)}</span><b>${num(acc.earned)} сом</b></div>
+        <div class="cl-kv"><span>Оплачено бонусом</span><b>${acc.used ? '−' + num(acc.used) : '0'} сом</b></div>
+        <div class="cl-kv"><span>Доступно сейчас</span><b class="g">${acc.ready === false ? '…' : num(b) + ' сом'}</b></div>
         ${c.note ? `<div class="cl-nt">${esc(c.note)}</div>` : ''}
-        <div class="cl-old"><span>Бесплатный 5-й вход: ${esc(clOldStatus(c))}</span>${control}</div>
+        ${oldLive ? `<div class="cl-old"><span>Старая акция: бесплатный 5-й вход активирован — его можно применить на браслете.</span></div>` : ''}
         ${canEdit ? `<div class="cl-acts"><button type="button" data-cl-edit="${esc(id)}">✎ Изменить</button></div>` : ''}
       </div>
     </article>`;
@@ -976,9 +1006,9 @@
       for (const c of clients || []) for (const it of (Array.isArray(c && c.items) ? c.items : [])) {
         if (isAdmission(it)) continue;
         const p = paid(it);
-        if (!p || p.amount <= 0) continue;
-        const prod = findProduct(idx, it.productId, it.name);
-        const key = prod ? 'id:' + prod.id : 'n:' + lower(it.name);
+        if (!p || (p.amount <= 0 && !bonusPaidOf(it))) continue;   // a bonus line also took the item off the shelf
+        const prod = findProduct(idx, it.productId, nameOf(it));
+        const key = prod ? 'id:' + prod.id : 'n:' + lower(nameOf(it));
         let v = map.get(key);
         if (!v) { v = { qty: 0, d: new Array(WINDOW).fill(0), last: '' }; map.set(key, v); }
         v.qty += p.qty;
@@ -1013,8 +1043,29 @@
     const every = Math.max(2, Math.round(span / v.qty));
     return `1 шт за ~${every} дн.${v.last ? ` · посл. ${dayShort(v.last)}` : ''}`;
   }
+  /* the server may count «Чай · бонус 45» as its own product: fold it back into «Чай» */
+  function gdMergeBonus(rows) {
+    if (!rows.some(r => r && BONUS_MARK.test(String(r.name || '')))) return rows;
+    const out = [], at = new Map();
+    for (const r of rows) {
+      if (!r) continue;
+      const base = String(r.name || '').replace(BONUS_MARK, '').trim();
+      const k = lower(base);
+      const have = at.get(k);
+      if (have) {
+        have.soldQty = Number(have.soldQty || 0) + Number(r.soldQty || 0);
+        have.revenue = Number(have.revenue || 0) + Number(r.revenue || 0);
+        if (Number(r.rank) && (!Number(have.rank) || Number(r.rank) < Number(have.rank))) have.rank = r.rank;
+        continue;
+      }
+      const copy = Object.assign({}, r, { name: base });
+      at.set(k, copy);
+      out.push(copy);
+    }
+    return out;
+  }
   function gdModel() {
-    const rows = GD.ana && Array.isArray(GD.ana.products) ? GD.ana.products : [];
+    const rows = gdMergeBonus(GD.ana && Array.isArray(GD.ana.products) ? GD.ana.products : []);
     const idx = pIndex();
     const vel = GD.rep ? gdVelocity(GD.rep, idx) : null;
     const span = vel ? vel.span : WINDOW;
