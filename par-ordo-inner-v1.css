@@ -372,6 +372,56 @@
 .po-gd .gd-tape{position:absolute;right:20px;top:212px;width:2px;height:28px;background:#ff6a5e;transform-origin:50% 0}
 
 /* =====================================================================
+   1.0.2 · ЕЖЕДНЕВНЫЙ ОТЧЁТ · «Проверка закрытия» (report.closingChecklist)
+   Каждая закрытая смена: печать, счёт «8/8», полоса из 8 ламп, замечания, все ответы.
+   ===================================================================== */
+.rp-cc-chip{display:flex;align-items:center;gap:7px;width:max-content;max-width:100%;margin-top:8px;padding:6px 11px 6px 9px;border:1px solid;border-radius:999px;font-size:10.5px;font-weight:700;line-height:1.25;text-align:left;white-space:normal;box-sizing:border-box}
+.rp-cc-chip i{flex:none;width:8px;height:8px;border-radius:50%}
+.rp-cc-chip.ok{border-color:rgba(79,240,154,.45);background:rgba(79,240,154,.1);color:var(--gr)}
+.rp-cc-chip.ok i{background:#35f08a;box-shadow:0 0 8px #35f08a}
+.rp-cc-chip.bad{border-color:rgba(255,106,92,.55);background:rgba(255,106,92,.14);color:var(--rd)}
+.rp-cc-chip.bad i{background:var(--rd2);box-shadow:0 0 8px var(--rd2)}
+.rp-cc-chip:focus-visible{outline:2px solid var(--g2);outline-offset:2px}
+.rp-cc-sec{scroll-margin-top:12px}
+.rp-cc{display:flex;flex-direction:column;padding:2px 14px}
+.rp-cc-row{padding:14px 0;border-bottom:1px solid rgba(246,189,71,.12)}
+.rp-cc-row:last-child{border-bottom:0}
+.rp-cc-head{display:grid;grid-template-columns:38px minmax(0,1fr) auto;gap:11px;align-items:center}
+.rp-cc-seal{width:38px;height:38px;display:grid;place-items:center;border-radius:50%;border:1px dashed rgba(246,189,71,.35);color:var(--mu);font-weight:700}
+.rp-cc-seal svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+.rp-cc-seal.ok,.rp-cc-seal.bad{border:0;color:#fbf2dd;box-shadow:0 4px 10px rgba(0,0,0,.45),inset 0 0 0 2px rgba(255,255,255,.16),inset 0 0 0 4px rgba(0,0,0,.12)}
+.rp-cc-seal.ok{background:radial-gradient(circle at 38% 32%,#34a56b,#116840 55%,#073c24)}
+.rp-cc-seal.bad{background:radial-gradient(circle at 38% 32%,#c8483d,#8b2019 55%,#4c0f0c)}
+.rp-cc-seal.live i{width:9px;height:9px;border-radius:50%;background:#35f08a;box-shadow:0 0 9px #35f08a}
+.rp-cc-meta{min-width:0}
+.rp-cc-meta b{display:block;font-size:13.5px;font-weight:600;color:#fff0d6}
+.rp-cc-meta small{display:block;margin-top:2px;font-size:11px;color:var(--mu);overflow-wrap:anywhere}
+.rp-cc-score{font-family:var(--f-disp);font-variant-numeric:tabular-nums;font-weight:700;line-height:1;white-space:nowrap}
+.rp-cc-score b{font-size:23px;letter-spacing:-.02em}
+.rp-cc-score small{margin-left:1px;font-size:12px;color:var(--mu)}
+.rp-cc-score.ok b{color:var(--gr)}
+.rp-cc-score.bad b{color:var(--rd2)}
+.rp-cc-lamps{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:5px;margin-top:11px}
+.rp-cc-lamp{display:grid;place-items:center;height:30px;border:1px solid rgba(246,189,71,.2);border-radius:9px;background:rgba(10,8,6,.7);color:var(--mu)}
+.rp-cc-lamp svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.rp-cc-lamp.ok{color:#d4ffe6;border-color:rgba(79,240,154,.5);background:linear-gradient(180deg,rgba(79,240,154,.26),rgba(18,86,50,.34))}
+.rp-cc-lamp.bad{color:#ffe3de;border-color:rgba(255,106,92,.65);background:linear-gradient(180deg,rgba(255,106,92,.34),rgba(110,24,20,.42));box-shadow:0 0 10px rgba(255,106,92,.22)}
+.rp-cc-probs{list-style:none;margin:10px 0 0;padding:0;display:flex;flex-direction:column;gap:7px}
+.rp-cc-probs li{display:grid;grid-template-columns:20px minmax(0,1fr);gap:9px;align-items:start;padding:9px 11px;border:1px solid rgba(255,106,92,.35);border-radius:12px;background:rgba(70,18,14,.5);color:#ffe2dc;font-size:12px;line-height:1.45}
+.rp-cc-probs li svg{width:17px;height:17px;margin-top:1px;fill:none;stroke:var(--rd2);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.rp-cc-probs li b{display:block;font-weight:700;color:#fff1ee}
+.rp-cc-probs li span{display:block;margin-top:2px;color:rgba(255,226,214,.85);overflow-wrap:anywhere}
+.rp-cc-all{margin-top:7px}
+.rp-cc-all summary{padding:6px 0;color:var(--g3);font-size:11.5px;font-weight:700;cursor:pointer}
+.rp-cc-all>div{display:flex;flex-direction:column;gap:7px;padding:3px 0 4px}
+.rp-cc-all p{display:grid;grid-template-columns:18px minmax(0,1fr) auto;gap:9px;align-items:start;color:var(--tx);font-size:12px;line-height:1.4}
+.rp-cc-all p svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.rp-cc-all p b{font-size:12px;font-weight:700}
+.rp-cc-all p.ok svg,.rp-cc-all p.ok b{color:var(--gr)}
+.rp-cc-all p.bad svg,.rp-cc-all p.bad b{color:var(--rd2)}
+.rp-cc-all p small{display:block;margin-top:2px;color:var(--mu);font-size:11px;overflow-wrap:anywhere}
+
+/* =====================================================================
    reduced motion: the new design, no movement
    ===================================================================== */
 @media (prefers-reduced-motion:reduce){

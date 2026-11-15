@@ -2,6 +2,8 @@
    Three inner screens of the manager panel get the «Брифинг» look and their own openings:
    1 · Ежедневный отчёт «Касса-маржа» — two days side by side, purchase cost and net profit,
        margin by product, stock receipts and shifts.
+       1.0.2: «Проверка закрытия» — the shift-closing checklist (report.closingChecklist:
+       Да / Нет + comments) per closed shift; a chip on each day's column opens that day.
    2 · База клиентов «Клуб · бонус 3%» — the club card, the 3% rule and every guest's bonus
        account in som (3% of all paid purchases).
    3 · Статистика товаров «Гонка + прибыль» — purchase / sale price / net profit per product,
@@ -24,7 +26,7 @@
   'use strict';
   if (window.PARORDOInner) return;
 
-  const VERSION = '1.0.1';
+  const VERSION = '1.0.2';
   const HOST = 'https://par-ordo-api.moimarketjibekjolu.workers.dev';
   const BONUS_RATE = 0.03;
   const reduced = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
@@ -292,8 +294,33 @@
      ===================================================================== */
   const RP = { modal: null, panel: null, open: false, day: '', tog: '', openedAt: 0, rendered: false, fallbackT: 0, busyT: 0, model: null };
 
+  /* проверка закрытия смены: report.closingChecklist (index.html, чек-лист перед закрытием) —
+     ответы «Да / Нет» и комментарии. Только чтение; текст всегда экранируется при выводе. */
+  function ccOf(r) {
+    const c = r && r.closingChecklist;
+    if (!c || typeof c !== 'object' || !Array.isArray(c.items)) return null;
+    const items = c.items.filter(x => x && typeof x === 'object').slice(0, 30).map(x => {
+      const answer = x.answer === 'yes' || x.answer === 'no' ? x.answer : '';
+      return { key: String(x.key || ''), q: String(x.question || x.key || 'Пункт проверки'), answer, ok: answer === 'yes', comment: String(x.comment || '').slice(0, 500) };
+    });
+    if (!items.length) return null;
+    return { items, problems: items.filter(x => !x.ok), by: String(c.completedBy || '') };
+  }
+  const CC_ICONS = {
+    fire: '<path d="M12 3c.6 3.2 3.9 5 5 8.3A6.5 6.5 0 1 1 5.6 13c.3-1.9 1.4-3.3 2.6-4.3.2 1.6.9 2.7 2 3.2C10 9 10.8 5.6 12 3Z"/><path d="M12 20.4a2.5 2.5 0 0 1-2.5-2.5c0-1.4.9-2.3 1.8-3.2.2.9.7 1.4 1.3 1.6.1-.8.5-1.6 1.1-2.1.5.9.8 1.7.8 2.7a2.5 2.5 0 0 1-2.5 3.5Z"/>',
+    steamGenerator: '<rect x="4.5" y="12" width="15" height="8.5" rx="2"/><path d="M8 16.2h8"/><path d="M8 9.5c-1-1.1-1-2.4 0-3.5s1-2.4 0-3.5M12 9.5c-1-1.1-1-2.4 0-3.5s1-2.4 0-3.5M16 9.5c-1-1.1-1-2.4 0-3.5s1-2.4 0-3.5"/>',
+    hotWater: '<path d="M12 3.5c3 3.6 5.5 6.6 5.5 10a5.5 5.5 0 0 1-11 0c0-3.4 2.5-6.4 5.5-10Z"/><path d="M9.6 14.2a2.6 2.6 0 0 0 2.4 2.6"/>',
+    gas: '<path d="M2.5 15.5h5M16.5 15.5h5"/><rect x="7.5" y="12" width="9" height="7" rx="1.8"/><path d="M12 12V8.2M8.2 6.2h7.6"/>',
+    steamRoomHood: '<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="1.6"/><path d="M12 10.4c-.3-2.6.6-4.4 2.6-4.9 1.4-.3 2.4.7 1.9 2-.6 1.6-2.4 2.6-4.5 2.9ZM13.4 12.8c2.4 1 3.5 2.7 2.9 4.6-.4 1.4-1.8 1.7-2.7.6-1.1-1.3-1.1-3.4-.2-5.2ZM10.6 12.9c-2 1.7-4 2-5.4.6-1-1-.6-2.4.8-2.7 1.7-.4 3.6.4 4.6 2.1Z"/>',
+    lights: '<path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.6 10.8c.8.6 1.1 1.4 1.1 2.2h5c0-.8.3-1.6 1.1-2.2A6 6 0 0 0 12 3Z"/>',
+    bathHood: '<path d="M3.5 8.5h10a2.5 2.5 0 1 0-2.5-2.5"/><path d="M3.5 12.5h14a2.5 2.5 0 1 1-2.5 2.5"/><path d="M3.5 16.5h7"/>',
+    doors: '<rect x="5" y="10.5" width="14" height="10" rx="2"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/><path d="M12 14.5v2.5"/>',
+    check: '<rect x="4.5" y="4.5" width="15" height="15" rx="3"/><path d="m8.5 12.2 2.4 2.4 4.6-5"/>'
+  };
+  const ccIc = key => svg(CC_ICONS[key] || CC_ICONS.check);
+  const CC_MARK = { ok: '<path d="m6 12.5 4 4L18.5 8"/>', bad: '<path d="M12 6.5v7"/><path d="M12 17.5h.01"/>' };
   function rpModelFor(day, ctx) {
-    const m = { day, reports: [], live: null, entry: 0, products: 0, total: 0, guests: 0, pending: 0, bonus: 0, rows: [], shifts: [], receipts: [], cost: 0, costRev: 0, profit: 0, missQty: 0 };
+    const m = { day, reports: [], live: null, entry: 0, products: 0, total: 0, guests: 0, pending: 0, bonus: 0, rows: [], shifts: [], receipts: [], cost: 0, costRev: 0, profit: 0, missQty: 0, ccDone: 0, ccProblems: 0 };
     const items = new Map();
     const add = (clients, isLive, sink) => {
       for (const c of clients || []) {
@@ -323,7 +350,9 @@
       if (ctx.dayOf(r) !== day) continue;
       m.reports.push(r);
       m.guests += Number(r.clientCount || (Array.isArray(r.clients) ? r.clients.length : 0)) || 0;
-      const one = { entry: 0, products: 0, closedAt: r.closedAt };
+      const cc = ccOf(r);
+      const one = { entry: 0, products: 0, closedAt: r.closedAt, by: String(r.closedBy || ''), cc };
+      if (cc) { m.ccDone += 1; m.ccProblems += cc.problems.length; }
       add(r.clients, false, one);
       m.shifts.push(one);
     }
@@ -442,7 +471,9 @@
         tag = `<span class="rp-tag">${m.guests} ${plural(m.guests, 'гость', 'гостя', 'гостей')}</span>`;
       }
     }
-    return `<div class="rp-col${now ? ' now' : ''}"><span class="rp-day">${esc(m.kick || m.label)}</span><div class="rp-date2">${esc(dayLong(m.day))}</div>${total}<span class="rp-cap">${esc(cap1)}</span>${tag}</div>`;
+    // проверка закрытия: чип появляется, когда у закрытых смен дня есть чек-лист
+    const cc = !m.ccDone ? '' : `<button type="button" class="rp-cc-chip ${m.ccProblems ? 'bad' : 'ok'}" data-rp-cc="${now ? 'b' : 'a'}" aria-label="Проверка закрытия смены: ${m.ccProblems ? `замечаний ${m.ccProblems}` : 'всё в порядке'}. Показать ответы"><i aria-hidden="true"></i>${m.ccProblems ? `Проверка: ${m.ccProblems} ${plural(m.ccProblems, 'замечание', 'замечания', 'замечаний')}` : 'Проверка: всё в порядке'}</button>`;
+    return `<div class="rp-col${now ? ' now' : ''}"><span class="rp-day">${esc(m.kick || m.label)}</span><div class="rp-date2">${esc(dayLong(m.day))}</div>${total}<span class="rp-cap">${esc(cap1)}</span>${tag}${cc}</div>`;
   }
   function rpCell(v, cls, m, kind) {
     if (!m.reports.length && !m.live) return `<b class="tn${cls}">—</b>`;
@@ -534,6 +565,10 @@
     const sh = m.shifts.map(s => `<div><span>Смена · закрыта ${esc(timeOf(s.closedAt))}</span><b>Входы ${num(s.entry)} · Товары ${num(s.products)}</b></div>`);
     if (m.live) sh.push(`<div class="live"><span>Смена идёт с ${esc(timeOf(m.live.openedAt))}</span><b>${num(m.entry + m.products - m.shifts.reduce((s, x) => s + x.entry + x.products, 0))} сом${m.pending ? ` · ждёт оплаты ${num(m.pending)}` : ''}</b></div>`);
     const shifts = sh.length ? `<section class="in-card rp-sh">${sh.join('')}</section>` : '';
+    // проверка закрытия смены
+    const cc = m.shifts.map(rpCcRow);
+    if (m.live) cc.push(`<div class="rp-cc-row live"><div class="rp-cc-head"><span class="rp-cc-seal live" aria-hidden="true"><i></i></span><div class="rp-cc-meta"><b>Смена идёт с ${esc(timeOf(m.live.openedAt))}</b><small>Проверку закрытия заполнят перед завершением смены</small></div></div></div>`);
+    const checks = cc.length ? `<section class="in-card rp-cc">${cc.join('')}</section>` : '';
     const rcQty = m.receipts.reduce((s, e) => s + Math.max(0, Number((e.details || {}).qty || 0)), 0);
     return `
       <section class="rp-day-part" data-rp="dayp">
@@ -545,7 +580,20 @@
         <div class="in-sec" data-in="11"><h2>Поступления</h2><i data-grow></i><em>${m.receipts.length ? `+${rcQty} шт. на склад` : 'товары на склад'}</em></div>
         <div data-in="12">${rc}</div>
         ${shifts ? `<div class="in-sec" data-in="13"><h2>Смены</h2><i data-grow></i><em>${esc(dayShort(m.day))}</em></div><div data-in="14">${shifts}</div>` : ''}
+        ${checks ? `<div class="in-sec rp-cc-sec" data-in="15" data-rp="cc"><h2>Проверка закрытия</h2><i data-grow></i><em>${m.ccProblems ? `замечаний: ${m.ccProblems}` : 'огонь, газ, двери'}</em></div><div data-in="16">${checks}</div>` : ''}
       </section>`;
+  }
+  function rpCcRow(s) {
+    const cc = s.cc;
+    const when = `Закрыта в ${esc(timeOf(s.closedAt))}`;
+    const by = esc((cc && cc.by) || s.by || 'персонал');
+    if (!cc) return `<div class="rp-cc-row none"><div class="rp-cc-head"><span class="rp-cc-seal none" aria-hidden="true">–</span><div class="rp-cc-meta"><b>${when}</b><small>Закрыл: ${by}. Проверка не передана</small></div></div></div>`;
+    const bad = cc.problems.length, n = cc.items.length;
+    const label = cc.items.map(x => `${x.q} ${x.answer === 'yes' ? 'да' : x.answer === 'no' ? 'нет' : 'нет ответа'}`).join('; ');
+    const lamps = `<div class="rp-cc-lamps" role="img" aria-label="${esc(label)}">${cc.items.map(x => `<span class="rp-cc-lamp ${x.ok ? 'ok' : 'bad'}" title="${esc(x.q)}">${ccIc(x.key)}</span>`).join('')}</div>`;
+    const probs = bad ? `<ul class="rp-cc-probs">${cc.problems.map(x => `<li>${ccIc(x.key)}<div><b>${esc(x.q)}</b><span>Ответ: ${x.answer === 'no' ? 'нет' : 'не указан'}${x.comment ? `. ${esc(x.comment)}` : ''}</span></div></li>`).join('')}</ul>` : '';
+    const all = `<details class="rp-cc-all"><summary>Все ответы</summary><div>${cc.items.map(x => `<p class="${x.ok ? 'ok' : 'bad'}">${ccIc(x.key)}<span>${esc(x.q)}${x.comment ? `<small>${esc(x.comment)}</small>` : ''}</span><b>${x.answer === 'yes' ? 'Да' : x.answer === 'no' ? 'Нет' : '—'}</b></p>`).join('')}</div></details>`;
+    return `<div class="rp-cc-row ${bad ? 'bad' : 'ok'}"><div class="rp-cc-head"><span class="rp-cc-seal ${bad ? 'bad' : 'ok'}" aria-hidden="true">${svg(bad ? CC_MARK.bad : CC_MARK.ok)}</span><div class="rp-cc-meta"><b>${when}</b><small>Закрыл: ${by}</small></div><span class="rp-cc-score ${bad ? 'bad' : 'ok'}" aria-label="В порядке ${n - bad} из ${n}"><b>${n - bad}</b><small>/${n}</small></span></div>${lamps}${probs}${all}</div>`;
   }
   function rpBody(S) {
     const a = S.a, b = S.b;
@@ -564,19 +612,25 @@
       ${rpMissing(S)}
       ${rpDayParts(S)}`;
   }
+  function rpSwitchDay(t) {
+    if (t === RP.tog) return;
+    RP.tog = t;
+    const part = $('[data-rp=dayp]', RP.panel);
+    if (!part || !RP.model) return;
+    const tmp = document.createElement('div');
+    tmp.innerHTML = rpDayParts(RP.model);
+    const next = tmp.firstElementChild;
+    part.replaceWith(next);
+    rpBind(next);
+    assemble(next, false, 'rp');
+  }
   function rpBind(scope) {
-    $$('[data-rp-tog]', scope).forEach(btn => btn.addEventListener('click', () => {
-      const t = btn.dataset.rpTog;
-      if (t === RP.tog) return;
-      RP.tog = t;
-      const part = $('[data-rp=dayp]', RP.panel);
-      if (!part || !RP.model) return;
-      const tmp = document.createElement('div');
-      tmp.innerHTML = rpDayParts(RP.model);
-      const next = tmp.firstElementChild;
-      part.replaceWith(next);
-      rpBind(next);
-      assemble(next, false, 'rp');
+    $$('[data-rp-tog]', scope).forEach(btn => btn.addEventListener('click', () => rpSwitchDay(btn.dataset.rpTog)));
+    // проверка закрытия: чип дня открывает этот день и прокручивает к ответам
+    $$('[data-rp-cc]', scope).forEach(btn => btn.addEventListener('click', () => {
+      rpSwitchDay(btn.dataset.rpCc);
+      const sec = RP.panel && $('[data-rp=cc]', RP.panel);
+      if (sec) sec.scrollIntoView({ behavior: motion ? 'smooth' : 'auto', block: 'start' });
     }));
   }
   function rpHeader() {

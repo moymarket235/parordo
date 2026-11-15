@@ -1912,7 +1912,7 @@ main{padding-top:16px;padding-bottom:22px}
 <link rel="stylesheet" href="./par-ordo-sections-v1.css?v=1.0.0">
 <link rel="stylesheet" href="./par-ordo-expenses-v1.css?v=1.0.0">
 <link rel="stylesheet" href="./par-ordo-briefing-v1.css?v=1.0.0">
-<link rel="stylesheet" href="./par-ordo-inner-v1.css?v=1.0.1">
+<link rel="stylesheet" href="./par-ordo-inner-v1.css?v=1.0.2">
 <link rel="stylesheet" href="./par-ordo-bonus-v1.css?v=1.0.0">
 <link rel="stylesheet" href="./par-ordo-product-icons-v1.css?v=1.0.0">
 <link rel="stylesheet" href="./par-ordo-twin-v1.css?v=1.0.0">
@@ -3373,10 +3373,11 @@ async function finishShiftAndSendReport(){
 }
 $('#finishWork').onclick=requestFinishShift;
 
-// -------------------- Проверка закрытия смены (чек-лист V1) --------------------
+// -------------------- Проверка закрытия смены (чек-лист V2 · «щит обхода») --------------------
 /* Перед закрытием смены сотрудник отвечает «Да / Нет» на 8 вопросов (+ комментарий, при «Нет» — обязательно).
    Ответы хранятся на этом устройстве до закрытия смены и отправляются вместе с отчётом:
-   POST /api/admin/control/reports → поле closingChecklist. Руководитель видит их в «Касса и отчёты». */
+   POST /api/admin/control/reports → поле closingChecklist (Worker V10.18 сохраняет его в отчёте).
+   Руководитель видит ответы в «Касса и отчёты» и в «Ежедневном отчёте». */
 const CLOSE_CHECK_STORE='parordo_close_checklist_v1';
 const CLOSE_CHECK_ITEMS=[
  {key:'fire',q:'Огонь выключен?'},
@@ -3388,8 +3389,30 @@ const CLOSE_CHECK_ITEMS=[
  {key:'bathHood',q:'Вытяжка бани включена?'},
  {key:'doors',q:'Двери закрыты на замок?'}
 ];
+const CLOSE_CHECK_ICONS={
+ fire:'<path d="M12 3c.6 3.2 3.9 5 5 8.3A6.5 6.5 0 1 1 5.6 13c.3-1.9 1.4-3.3 2.6-4.3.2 1.6.9 2.7 2 3.2C10 9 10.8 5.6 12 3Z"/><path d="M12 20.4a2.5 2.5 0 0 1-2.5-2.5c0-1.4.9-2.3 1.8-3.2.2.9.7 1.4 1.3 1.6.1-.8.5-1.6 1.1-2.1.5.9.8 1.7.8 2.7a2.5 2.5 0 0 1-2.5 3.5Z"/>',
+ steamGenerator:'<rect x="4.5" y="12" width="15" height="8.5" rx="2"/><path d="M8 16.2h8"/><path d="M8 9.5c-1-1.1-1-2.4 0-3.5s1-2.4 0-3.5M12 9.5c-1-1.1-1-2.4 0-3.5s1-2.4 0-3.5M16 9.5c-1-1.1-1-2.4 0-3.5s1-2.4 0-3.5"/>',
+ hotWater:'<path d="M12 3.5c3 3.6 5.5 6.6 5.5 10a5.5 5.5 0 0 1-11 0c0-3.4 2.5-6.4 5.5-10Z"/><path d="M9.6 14.2a2.6 2.6 0 0 0 2.4 2.6"/>',
+ gas:'<path d="M2.5 15.5h5M16.5 15.5h5"/><rect x="7.5" y="12" width="9" height="7" rx="1.8"/><path d="M12 12V8.2M8.2 6.2h7.6"/>',
+ steamRoomHood:'<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="1.6"/><path d="M12 10.4c-.3-2.6.6-4.4 2.6-4.9 1.4-.3 2.4.7 1.9 2-.6 1.6-2.4 2.6-4.5 2.9ZM13.4 12.8c2.4 1 3.5 2.7 2.9 4.6-.4 1.4-1.8 1.7-2.7.6-1.1-1.3-1.1-3.4-.2-5.2ZM10.6 12.9c-2 1.7-4 2-5.4.6-1-1-.6-2.4.8-2.7 1.7-.4 3.6.4 4.6 2.1Z"/>',
+ lights:'<path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.6 10.8c.8.6 1.1 1.4 1.1 2.2h5c0-.8.3-1.6 1.1-2.2A6 6 0 0 0 12 3Z"/>',
+ bathHood:'<path d="M3.5 8.5h10a2.5 2.5 0 1 0-2.5-2.5"/><path d="M3.5 12.5h14a2.5 2.5 0 1 1-2.5 2.5"/><path d="M3.5 16.5h7"/>',
+ doors:'<rect x="5" y="10.5" width="14" height="10" rx="2"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/><path d="M12 14.5v2.5"/>',
+ check:'<rect x="4.5" y="4.5" width="15" height="15" rx="3"/><path d="m8.5 12.2 2.4 2.4 4.6-5"/>'
+};
+const CLOSE_CHECK_GLYPH={
+ yes:'<path d="m5 12.5 4.2 4.2L19 7"/>',
+ no:'<path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/>',
+ note:'<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="m13.5 6.5 4 4"/>',
+ wait:'<path d="M7 3.5h10M7 20.5h10"/><path d="M8 3.5c0 4 4 5 4 8.5s-4 4.5-4 8.5M16 3.5c0 4-4 5-4 8.5s4 4.5 4 8.5"/>'
+};
+const ccSvg=body=>`<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">${body}</svg>`;
+const ccIcon=key=>ccSvg(CLOSE_CHECK_ICONS[key]||CLOSE_CHECK_ICONS.check);
+const CC_RING=157.08;
 let closeCheck={shift:'',answers:{},comments:{},updatedAt:''};
 let closeHistory={loading:false,loadedAt:0,reports:null,error:''};
+const closeCheckNotesOpen=new Set();
+let closeCheckFootSig='',closeCheckWasComplete=null;
 function closeCheckCanEdit(){return ['admin','staff'].includes(currentRole())}
 function closeCheckShiftKey(){return shiftState&&shiftState.isOpen&&shiftState.openedAt?String(shiftState.openedAt):''}
 function closeCheckLoad(key){
@@ -3399,9 +3422,9 @@ function closeCheckLoad(key){
  if(!s.comments||typeof s.comments!=='object')s.comments={};
  return s;
 }
-function closeCheckSync(){const key=closeCheckShiftKey();if(closeCheck.shift!==key)closeCheck=closeCheckLoad(key);return key}
+function closeCheckSync(){const key=closeCheckShiftKey();if(closeCheck.shift!==key){closeCheck=closeCheckLoad(key);closeCheckNotesOpen.clear()}return key}
 function closeCheckSave(){if(!closeCheck.shift)return;closeCheck.updatedAt=stamp();try{localStorage.setItem(CLOSE_CHECK_STORE,JSON.stringify(closeCheck))}catch(e){}}
-function closeCheckClear(){closeCheck={shift:'',answers:{},comments:{},updatedAt:''};try{localStorage.removeItem(CLOSE_CHECK_STORE)}catch(e){}const root=$('#shiftChecklist');if(root)root.dataset.shift=''}
+function closeCheckClear(){closeCheck={shift:'',answers:{},comments:{},updatedAt:''};closeCheckNotesOpen.clear();try{localStorage.removeItem(CLOSE_CHECK_STORE)}catch(e){}const root=$('#shiftChecklist');if(root)root.dataset.shift=''}
 function closeCheckAnswer(k){const a=closeCheck.answers[k];return a==='yes'||a==='no'?a:''}
 function closeCheckComment(k){return String(closeCheck.comments[k]||'')}
 function closeCheckIssues(){
@@ -3419,22 +3442,22 @@ function closeCheckPayload(){
   :`Проверка закрытия: все ${items.length} пунктов в порядке.`;
  return {version:1,title:'Проверка закрытия смены',shiftStartAt:shiftState.openedAt||'',completedAt:stamp(),completedBy:sessionStorage.getItem(USER_KEY)||'персонал',total:items.length,okCount:items.length-problems.length,problemCount:problems.length,allOk:!problems.length,items,summary};
 }
-function closeCheckGrow(t){if(!t)return;t.style.height='auto';t.style.height=Math.min(160,t.scrollHeight+2)+'px'}
+function closeCheckGrow(t){if(!t||t.hidden||!t.offsetParent)return;t.style.height='auto';t.style.height=Math.min(170,t.scrollHeight+2)+'px'}
+function closeCheckGrowAll(){const root=$('#shiftChecklist');if(root)root.querySelectorAll('[data-cc-comment]').forEach(closeCheckGrow)}
 function closeCheckLock(on){const root=$('#shiftChecklist');if(!root)return;root.querySelectorAll('button,textarea').forEach(el=>{el.disabled=Boolean(on)})}
 function renderShiftChecklist(){
  const root=$('#shiftChecklist');if(!root)return;
  const key=closeCheckSync();
  const show=Boolean(key)&&!shiftState.isClosing&&closeCheckCanEdit();
  root.hidden=!show;
- if(!show){if(root.innerHTML)root.innerHTML='';root.dataset.shift='';return}
+ if(!show){if(root.innerHTML)root.innerHTML='';root.dataset.shift='';closeCheckFootSig='';return}
  if(root.dataset.shift!==key||!root.querySelector('.cc-list')){
-  root.dataset.shift=key;
-  root.innerHTML=`<div class="cc-head"><div><span class="cc-kicker">Перед закрытием смены</span><h3 class="cc-title" id="closeCheckTitle">Проверка закрытия смены</h3><p class="cc-sub">Ответьте на все вопросы. Ответы и комментарии уйдут руководителю вместе с отчётом.</p></div><div class="cc-count"><b data-cc-count>0/${CLOSE_CHECK_ITEMS.length}</b><small>ответов</small></div></div>
-  <div class="cc-progress" aria-hidden="true"><i data-cc-progress></i></div>
-  <ol class="cc-list">${CLOSE_CHECK_ITEMS.map((it,i)=>`<li class="cc-item" data-cc-item="${it.key}"><div class="cc-row"><div class="cc-q"><span class="cc-num" aria-hidden="true">${i+1}</span><span id="ccQ-${it.key}">${escapeHtml(it.q)}</span></div><div class="cc-seg" role="group" aria-labelledby="ccQ-${it.key}"><button type="button" class="cc-btn cc-yes" data-cc-answer="${it.key}|yes" aria-pressed="false">Да</button><button type="button" class="cc-btn cc-no" data-cc-answer="${it.key}|no" aria-pressed="false">Нет</button></div></div><textarea class="cc-comment" data-cc-comment="${it.key}" rows="1" maxlength="500" enterkeyhint="done" aria-label="Комментарий: ${escapeHtml(it.q)}" placeholder="Комментарий (необязательно)"></textarea></li>`).join('')}</ol>
-  <div class="cc-status" data-cc-status role="status" aria-live="polite"></div>`;
+  root.dataset.shift=key;closeCheckFootSig='';closeCheckWasComplete=null;
+  const total=CLOSE_CHECK_ITEMS.length;
+  root.innerHTML=`<div class="cc-head"><div class="cc-ring" role="img" data-cc-ring aria-label="Отвечено 0 из ${total}"><svg viewBox="0 0 60 60" aria-hidden="true" focusable="false"><circle class="cc-ring-track" cx="30" cy="30" r="25"/><circle class="cc-ring-bar" cx="30" cy="30" r="25" data-cc-ring-bar/></svg><span class="cc-ring-num" aria-hidden="true"><span><b data-cc-count>0</b><small>/${total}</small></span></span></div><div><h3 class="cc-title" id="closeCheckTitle">Проверка закрытия смены</h3><p class="cc-sub">Обойдите баню и ответьте на каждый пункт. Ответы и комментарии уйдут руководителю вместе с отчётом.</p></div></div>
+  <ol class="cc-list">${CLOSE_CHECK_ITEMS.map(it=>`<li class="cc-item" data-cc-item="${it.key}"><div class="cc-line"><span class="cc-ico">${ccIcon(it.key)}</span><span class="cc-q" id="ccQ-${it.key}">${escapeHtml(it.q)}</span><span class="cc-lamp" aria-hidden="true"></span></div><div class="cc-ctrl"><div class="cc-switch" role="group" aria-labelledby="ccQ-${it.key}" data-state=""><span class="cc-thumb" aria-hidden="true"></span><button type="button" class="cc-opt cc-yes" data-cc-answer="${it.key}|yes" aria-pressed="false">${ccSvg(CLOSE_CHECK_GLYPH.yes)}Да</button><button type="button" class="cc-opt cc-no" data-cc-answer="${it.key}|no" aria-pressed="false">${ccSvg(CLOSE_CHECK_GLYPH.no)}Нет</button></div><button type="button" class="cc-note-btn" data-cc-note="${it.key}" aria-expanded="false" aria-controls="ccC-${it.key}">${ccSvg(CLOSE_CHECK_GLYPH.note)}<span>Комментарий</span></button></div><textarea class="cc-comment" id="ccC-${it.key}" data-cc-comment="${it.key}" rows="1" maxlength="500" enterkeyhint="done" aria-label="Комментарий: ${escapeHtml(it.q)}" hidden></textarea></li>`).join('')}</ol>
+  <div class="cc-foot" data-cc-foot role="status" aria-live="polite"></div>`;
   root.querySelectorAll('[data-cc-comment]').forEach(t=>{t.value=closeCheckComment(t.dataset.ccComment)});
-  requestAnimationFrame(()=>root.querySelectorAll('[data-cc-comment]').forEach(closeCheckGrow));
  }
  closeCheckUpdateUi();
  closeCheckLock(reportSubmitting);
@@ -3444,25 +3467,60 @@ function closeCheckUpdateUi(){
  const total=CLOSE_CHECK_ITEMS.length;let answered=0,problems=0;
  for(const it of CLOSE_CHECK_ITEMS){
   const li=root.querySelector(`[data-cc-item="${it.key}"]`);if(!li)continue;
-  const a=closeCheckAnswer(it.key),noComment=a==='no'&&!closeCheckComment(it.key).trim();
+  const a=closeCheckAnswer(it.key),text=closeCheckComment(it.key).trim(),noComment=a==='no'&&!text;
   if(a)answered++;if(a==='no')problems++;
   li.classList.toggle('is-yes',a==='yes');li.classList.toggle('is-no',a==='no');
   if(a&&!noComment)li.classList.remove('is-missing');
+  const sw=li.querySelector('.cc-switch');if(sw&&sw.dataset.state!==a)sw.dataset.state=a;
   li.querySelectorAll('[data-cc-answer]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.ccAnswer===`${it.key}|${a}`)));
+  const open=a==='no'||Boolean(text)||closeCheckNotesOpen.has(it.key);
   const t=li.querySelector('[data-cc-comment]');
-  if(t){t.classList.toggle('need',noComment);t.required=a==='no';t.placeholder=a==='no'?'Обязательно: что не так и почему?':'Комментарий (необязательно)'}
+  if(t){
+   t.hidden=!open;
+   t.classList.toggle('need',noComment);t.required=a==='no';
+   t.placeholder=a==='no'?'Обязательно: что не так и почему?':'Комментарий (необязательно)';
+   if(open)requestAnimationFrame(()=>closeCheckGrow(t));
+  }
+  const nb=li.querySelector('[data-cc-note]');
+  if(nb){nb.setAttribute('aria-expanded',String(open));nb.classList.toggle('has-note',Boolean(text))}
  }
  const issues=closeCheckIssues();
- const count=root.querySelector('[data-cc-count]');if(count)count.textContent=`${answered}/${total}`;
- const bar=root.querySelector('[data-cc-progress]');if(bar)bar.style.width=`${Math.round(answered/total*100)}%`;
+ const bar=root.querySelector('[data-cc-ring-bar]');if(bar)bar.style.strokeDashoffset=String(CC_RING*(1-answered/total));
+ const count=root.querySelector('[data-cc-count]');if(count)count.textContent=String(answered);
+ const ring=root.querySelector('[data-cc-ring]');if(ring)ring.setAttribute('aria-label',`Отвечено ${answered} из ${total}`);
  root.classList.toggle('is-complete',issues.ok&&!problems);
  root.classList.toggle('has-problems',problems>0);
- const st=root.querySelector('[data-cc-status]');if(!st)return;
- st.className='cc-status';
- if(issues.missing.length)st.textContent=`Осталось ответить: ${issues.missing.length} из ${total}. Пока чек-лист не заполнен, смену завершить нельзя.`;
- else if(issues.needComment.length){st.classList.add('warn');st.textContent=`Напишите комментарий к ответу «Нет»: ${issues.needComment.map(x=>x.q).join(' · ')}`}
- else if(problems){st.classList.add('warn');st.textContent=`Чек-лист заполнен. Замечаний: ${problems} — руководитель увидит их в отчёте.`}
- else{st.classList.add('ok');st.textContent='✓ Всё проверено — можно завершать смену.'}
+ closeCheckRenderFoot(root,issues,problems,total);
+}
+function closeCheckSealSvg(ok,time){
+ const mark=ok
+  ?'<path d="M38.5 47.5l7.5 7.5 15.5-17" fill="none" stroke="#fbf2dd" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>'
+  :'<path d="M50 34v14" fill="none" stroke="#fbf2dd" stroke-width="5.5" stroke-linecap="round"/><circle cx="50" cy="56.5" r="3.2" fill="#fbf2dd"/>';
+ return `<svg class="cc-seal" viewBox="0 0 100 100" role="img" aria-label="${ok?'Проверка завершена, всё в порядке':'Проверка завершена, есть замечания'}"><defs><radialGradient id="ccWaxOk" cx="38%" cy="32%" r="75%"><stop offset="0" stop-color="#34a56b"/><stop offset=".55" stop-color="#116840"/><stop offset="1" stop-color="#073c24"/></radialGradient><radialGradient id="ccWaxBad" cx="38%" cy="32%" r="75%"><stop offset="0" stop-color="#c8483d"/><stop offset=".55" stop-color="#8b2019"/><stop offset="1" stop-color="#4c0f0c"/></radialGradient><path id="ccSealArc" d="M50,50 m-36.5,0 a36.5,36.5 0 1,1 73,0 a36.5,36.5 0 1,1 -73,0"/></defs><circle cx="50" cy="50" r="47" class="${ok?'wax-ok':'wax-bad'}"/><circle cx="50" cy="50" r="43.5" class="ring dash"/><circle cx="50" cy="50" r="28.5" class="ring"/><text class="arc"><textPath href="#ccSealArc" textLength="222" lengthAdjust="spacing">ПРОВЕРКА ЗАВЕРШЕНА • ПАР ОРДО •</textPath></text>${mark}<text class="time" x="50" y="70" text-anchor="middle">${escapeHtml(time)}</text></svg>`;
+}
+function closeCheckRenderFoot(root,issues,problems,total){
+ const foot=root.querySelector('[data-cc-foot]');if(!foot)return;
+ let kind,sig,html;
+ if(issues.missing.length){
+  kind='wait';sig=`wait:${issues.missing.length}`;
+  html=`<span class="cc-foot-ico" aria-hidden="true">${ccSvg(CLOSE_CHECK_GLYPH.wait)}</span><div class="cc-foot-text"><b>Осталось ответить: ${issues.missing.length} из ${total}</b><span>Смену можно завершить, когда на все пункты есть ответ.</span></div>`;
+ }else if(issues.needComment.length){
+  kind='need';sig=`need:${issues.needComment.map(x=>x.key).join(',')}`;
+  html=`<span class="cc-foot-ico need" aria-hidden="true">${ccSvg(CLOSE_CHECK_GLYPH.note)}</span><div class="cc-foot-text"><b>Напишите комментарий</b><span>К ответу «Нет»: ${escapeHtml(issues.needComment.map(x=>x.q).join(', '))}</span></div>`;
+ }else{
+  const ok=!problems,d=closeCheck.updatedAt?new Date(closeCheck.updatedAt):new Date();
+  const time=Number.isFinite(d.getTime())?`${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`:'';
+  kind=ok?'ok':'bad';sig=`${kind}:${problems}:${time}`;
+  html=`${closeCheckSealSvg(ok,time)}<div class="cc-foot-text"><b>${ok?'Всё в порядке':`Замечаний: ${problems}`}</b><span>${ok?'Проверка завершена. Можно завершать смену.':'Проверка завершена. Руководитель увидит замечания и комментарии в отчёте.'}</span></div>`;
+ }
+ if(sig===closeCheckFootSig)return;
+ const was=closeCheckWasComplete;
+ closeCheckFootSig=sig;closeCheckWasComplete=issues.ok;
+ foot.className=`cc-foot ${kind}`;foot.innerHTML=html;
+ if(issues.ok&&was===false){
+  const seal=foot.querySelector('.cc-seal');
+  if(seal){seal.classList.add('is-stamping');seal.addEventListener('animationend',()=>seal.classList.remove('is-stamping'),{once:true})}
+ }
 }
 function showCloseCheckIssues(issues){
  renderShiftChecklist();
@@ -3478,8 +3536,8 @@ function showCloseCheckIssues(issues){
 }
 function closeCheckConfirmHtml(){
  const p=closeCheckPayload();
- const rows=p.items.map(x=>`<li class="${x.ok?'ok':'bad'}"><i aria-hidden="true">${x.ok?'✓':'✕'}</i><span>${escapeHtml(x.question)}${x.comment?`<small>${escapeHtml(x.comment)}</small>`:''}</span><b>${escapeHtml(x.answerText||'—')}</b></li>`).join('');
- return `<div class="cc-confirm ${p.allOk?'':'bad'}" role="group" aria-label="Проверка закрытия смены"><div class="cc-confirm-head"><span>Проверка закрытия</span><b>${p.allOk?`✓ ${p.total} из ${p.total} в порядке`:`⚠ Замечаний: ${p.problemCount}`}</b></div><ul class="cc-confirm-list">${rows}</ul><div class="cc-confirm-note">Эти ответы уйдут руководителю вместе с отчётом.</div></div>`;
+ const rows=p.items.map(x=>`<div class="cc-slip-row ${x.ok?'ok':'bad'}"><span>${escapeHtml(x.question.replace(/\?\s*$/,''))}</span><i aria-hidden="true"></i><b>${x.ok?'ДА':'НЕТ'}</b></div>${x.comment?`<div class="cc-slip-note">${escapeHtml(x.comment)}</div>`:''}`).join('');
+ return `<div class="cc-slip" role="group" aria-label="Проверка закрытия смены"><div class="cc-slip-paper"><div class="cc-slip-title">ПРОВЕРКА ЗАКРЫТИЯ</div><div class="cc-slip-sub">уйдёт руководителю вместе с отчётом</div><div class="cc-slip-sep"></div>${rows}<div class="cc-slip-sep"></div><div class="cc-slip-total ${p.allOk?'':'bad'}"><span>В ПОРЯДКЕ</span><b>${p.okCount} ИЗ ${p.total}</b></div></div></div>`;
 }
 function requestFinishShift(){
  const withChecklist=Boolean(shiftState.isOpen&&closeCheckCanEdit());
@@ -3487,31 +3545,33 @@ function requestFinishShift(){
  confirmAction('Завершить рабочую смену?','Отчёт будет сохранён на сервере и появится у руководителя. В него попадут только клиенты текущей открытой смены, а также ответы проверки закрытия смены. После успешного закрытия касса очистится для нового учёта, а предыдущие отчёты останутся в истории.','Завершить и отправить отчёт',finishShiftAndSendReport);
  if(withChecklist){try{const cta=$('#confirmModalCard .modal-cta');if(cta)cta.insertAdjacentHTML('beforebegin',closeCheckConfirmHtml())}catch(e){console.warn('PAR ORDO: чек-лист в окне подтверждения',e)}}
 }
-/* Руководитель и администратор: ответы чек-листа в последних отчётах («Касса и отчёты»). */
-function closeHistoryVisible(){return ['manager','admin'].includes(currentRole())}
+/* Руководитель и администратор: ответы проверки в последних отчётах («Касса и отчёты»). */
+function closeHistoryVisible(){return ['manager','admin','leader'].includes(currentRole())}
 function closeCheckFromReport(r){
  const c=r&&r.closingChecklist;
  if(!c||typeof c!=='object'||!Array.isArray(c.items)||!c.items.length)return null;
- const items=c.items.filter(x=>x&&typeof x==='object').slice(0,30).map(x=>{const answer=x.answer==='yes'||x.answer==='no'?x.answer:'';return {question:String(x.question||x.key||'Пункт проверки'),answer,ok:answer==='yes',comment:String(x.comment||'').slice(0,500)}});
+ const items=c.items.filter(x=>x&&typeof x==='object').slice(0,30).map(x=>{const answer=x.answer==='yes'||x.answer==='no'?x.answer:'';return {key:String(x.key||''),question:String(x.question||x.key||'Пункт проверки'),answer,ok:answer==='yes',comment:String(x.comment||'').slice(0,500)}});
  if(!items.length)return null;
  return {items,problems:items.filter(x=>!x.ok),completedBy:String(c.completedBy||'')};
 }
+function closeHistoryWhen(v){const d=new Date(v);return Number.isFinite(d.getTime())?d.toLocaleString('ru-RU',{day:'numeric',month:'long',hour:'2-digit',minute:'2-digit'}):''}
 function closeHistoryCard(r){
  const cl=closeCheckFromReport(r);
- const when=escapeHtml(fmtDate(r.closedAt||r.shiftStartAt)||String(r.shiftDate||''));
+ const when=escapeHtml(closeHistoryWhen(r.closedAt||r.shiftStartAt)||String(r.shiftDate||''));
  const who=escapeHtml((cl&&cl.completedBy)||r.closedBy||'персонал');
- const badge=!cl?'<span class="cch-badge none">Нет чек-листа</span>':cl.problems.length?`<span class="cch-badge bad">⚠ Замечаний: ${cl.problems.length}</span>`:`<span class="cch-badge ok">✓ ${cl.items.length}/${cl.items.length} в порядке</span>`;
- const top=`<div class="cch-top"><div><b>Смена закрыта · ${when}</b><small>Закрыл: ${who}</small></div>${badge}</div>`;
- if(!cl)return `<article class="cch-card none">${top}<div class="cch-note">К этому отчёту проверка закрытия не передана.</div></article>`;
- const problems=cl.problems.length?`<ul class="cch-problems">${cl.problems.map(x=>`<li><b>${escapeHtml(x.question)}</b> — ${x.answer==='no'?'Нет':'нет ответа'}${x.comment?`<br><span>«${escapeHtml(x.comment)}»</span>`:''}</li>`).join('')}</ul>`:'';
- const rows=cl.items.map(x=>`<div class="cch-row ${x.ok?'ok':'bad'}"><i aria-hidden="true">${x.ok?'✓':'✕'}</i><span>${escapeHtml(x.question)}${x.comment?`<small>${escapeHtml(x.comment)}</small>`:''}</span><b>${x.answer==='yes'?'Да':x.answer==='no'?'Нет':'—'}</b></div>`).join('');
- return `<article class="cch-card ${cl.problems.length?'bad':'ok'}">${top}${problems}<details><summary>Все ответы (${cl.items.length})</summary><div class="cch-rows">${rows}</div></details></article>`;
+ if(!cl)return `<article class="cch-card none"><div class="cch-top"><div><b>${when}</b><small>Закрыл: ${who}</small></div><span class="cch-score none">Без проверки</span></div><div class="cch-note">Отчёт отправлен без проверки закрытия.</div></article>`;
+ const n=cl.items.length,bad=cl.problems.length;
+ const label=cl.items.map(x=>`${x.question} ${x.answer==='yes'?'да':x.answer==='no'?'нет':'нет ответа'}`).join('; ');
+ const lamps=`<div class="cch-lamps" role="img" aria-label="${escapeHtml(label)}">${cl.items.map(x=>`<span class="cch-lamp ${x.ok?'ok':'bad'}" title="${escapeHtml(x.question)}">${ccIcon(x.key)}</span>`).join('')}</div>`;
+ const problems=bad?`<ul class="cch-problems">${cl.problems.map(x=>`<li>${ccIcon(x.key)}<div><b>${escapeHtml(x.question)}</b><span>Ответ: ${x.answer==='no'?'нет':'не указан'}${x.comment?`. ${escapeHtml(x.comment)}`:''}</span></div></li>`).join('')}</ul>`:'';
+ const rows=cl.items.map(x=>`<div class="cch-row ${x.ok?'ok':'bad'}">${ccIcon(x.key)}<span>${escapeHtml(x.question)}${x.comment?`<small>${escapeHtml(x.comment)}</small>`:''}</span><b>${x.answer==='yes'?'Да':x.answer==='no'?'Нет':'—'}</b></div>`).join('');
+ return `<article class="cch-card ${bad?'bad':'ok'}"><div class="cch-top"><div><b>${when}</b><small>Закрыл: ${who}</small></div><span class="cch-score ${bad?'bad':'ok'}" aria-label="В порядке ${n-bad} из ${n}"><b>${n-bad}</b><small>/${n}</small></span></div>${lamps}${problems}<details><summary>Все ответы</summary><div class="cch-rows">${rows}</div></details></article>`;
 }
 function renderCloseCheckHistory(){
  const root=$('#closeCheckHistory');if(!root)return;
  if(!closeHistoryVisible()){root.hidden=true;if(root.innerHTML)root.innerHTML='';return}
  root.hidden=false;
- const head=`<div class="cch-head"><div><span class="cc-kicker">Контроль бани · закрытие смен</span><h3 class="cch-title" id="closeCheckHistoryTitle">Проверка закрытия смен</h3><p class="cch-sub">Ответы персонала при закрытии смены: огонь, парогенератор, горячая вода, газ, вытяжки, свет и двери.</p></div><button type="button" class="ghost cch-refresh" data-cch-refresh aria-label="Обновить проверки закрытия" ${closeHistory.loading?'disabled':''}>${closeHistory.loading?'…':'↻'}</button></div>`;
+ const head=`<div class="cch-head"><div><h3 class="cch-title" id="closeCheckHistoryTitle">Проверка закрытия смен</h3><p class="cch-sub">Как персонал закрыл баню в последних сменах: огонь, пар, вода, газ, вытяжки, свет и двери.</p></div><button type="button" class="ghost cch-refresh" data-cch-refresh aria-label="Обновить проверки закрытия" ${closeHistory.loading?'disabled':''}>${closeHistory.loading?'…':'↻'}</button></div>`;
  let body;
  if(closeHistory.loading&&!closeHistory.reports)body='<div class="cch-empty">Загружаем отчёты смен…</div>';
  else if(closeHistory.error&&!closeHistory.reports)body=`<div class="cch-empty">Не удалось загрузить отчёты: ${escapeHtml(closeHistory.error)}</div>`;
@@ -3535,16 +3595,28 @@ async function loadCloseCheckHistory(force=false){
  const root=$('#shiftChecklist');
  if(root){
   root.addEventListener('click',e=>{
+   const nb=e.target.closest('[data-cc-note]');
+   if(nb&&root.contains(nb)){
+    if(nb.disabled||!closeCheckShiftKey())return;
+    const k=nb.dataset.ccNote,t=root.querySelector(`[data-cc-comment="${k}"]`);
+    const forced=closeCheckAnswer(k)==='no'||Boolean(closeCheckComment(k).trim());
+    if(!forced){if(closeCheckNotesOpen.has(k))closeCheckNotesOpen.delete(k);else closeCheckNotesOpen.add(k);closeCheckUpdateUi()}
+    if(t&&!t.hidden)setTimeout(()=>t.focus({preventScroll:true}),0);
+    return;
+   }
    const b=e.target.closest('[data-cc-answer]');if(!b||!root.contains(b)||b.disabled)return;
    if(!closeCheckCanEdit()||!closeCheckShiftKey()||reportSubmitting)return;
    const [k,a]=String(b.dataset.ccAnswer||'').split('|');
    if(!CLOSE_CHECK_ITEMS.some(it=>it.key===k)||!['yes','no'].includes(a))return;
    closeCheckSync();closeCheck.answers[k]=a;closeCheckSave();closeCheckUpdateUi();
-   if(a==='no'){const t=root.querySelector(`[data-cc-comment="${k}"]`);if(t&&!t.value.trim())t.focus({preventScroll:true})}
+   if(a==='no'){const t=root.querySelector(`[data-cc-comment="${k}"]`);if(t&&!t.value.trim())setTimeout(()=>t.focus({preventScroll:true}),0)}
   });
   root.addEventListener('input',e=>{
    const t=e.target.closest('[data-cc-comment]');if(!t||!closeCheckShiftKey())return;
-   closeCheckSync();closeCheck.comments[t.dataset.ccComment]=t.value.slice(0,500);closeCheckSave();closeCheckGrow(t);closeCheckUpdateUi();
+   const k=t.dataset.ccComment;
+   closeCheckSync();closeCheck.comments[k]=t.value.slice(0,500);closeCheckSave();
+   if(t.value.trim())closeCheckNotesOpen.add(k);
+   closeCheckGrow(t);closeCheckUpdateUi();
   });
  }
  const hist=$('#closeCheckHistory');
@@ -3557,8 +3629,10 @@ async function loadCloseCheckHistory(force=false){
  const view=$('#reportView');
  if(view){
   let was=view.classList.contains('active');
-  new MutationObserver(()=>{const on=view.classList.contains('active');if(on&&!was){renderShiftChecklist();loadCloseCheckHistory()}was=on}).observe(view,{attributes:true,attributeFilter:['class']});
+  new MutationObserver(()=>{const on=view.classList.contains('active');if(on&&!was){renderShiftChecklist();requestAnimationFrame(closeCheckGrowAll);loadCloseCheckHistory()}was=on}).observe(view,{attributes:true,attributeFilter:['class']});
  }
+ let growT=0;
+ window.addEventListener('resize',()=>{clearTimeout(growT);growT=setTimeout(closeCheckGrowAll,150)});
 })();
 // ------------------ end проверка закрытия смены ------------------
 $('#previewHistoricalReport').onclick=previewHistoricalReport;
@@ -3796,107 +3870,166 @@ html body #addModal #addProductGrid > .add-product-tile > .product-edit-actions 
 }
 </style>
 <style>@import url('./par-ordo-pc-glass-v109.css?v=109');</style>
-<style id="shift-close-checklist-v1">
-/* PAR ORDO PRO — проверка закрытия смены V1: чек-лист перед закрытием смены + просмотр у руководителя. */
-#shiftChecklist[hidden],#closeCheckHistory[hidden]{display:none!important}
+<style id="shift-close-checklist-v2">
+/* PAR ORDO PRO — проверка закрытия смены V2 · «щит обхода»:
+   латунная панель, индикаторные лампы, переключатель Да / Нет, пломба при завершении.
+   Руководитель видит каждую закрытую смену как полосу из 8 ламп. */
+#shiftChecklist[hidden],#closeCheckHistory[hidden],#shiftChecklist [hidden]{display:none!important}
 .manager-readonly #shiftChecklist{display:none!important}
-#shiftChecklist{margin:14px 0 0;padding:16px 14px 14px;border-radius:20px;border:1px solid rgba(226,178,86,.38);background:radial-gradient(ellipse at 0 0,rgba(226,178,86,.10),transparent 55%),linear-gradient(155deg,rgba(22,46,31,.86),rgba(10,17,12,.92));box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 12px 28px rgba(0,0,0,.24);scroll-margin-top:90px}
-#shiftChecklist .cc-head,#closeCheckHistory .cch-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
-#shiftChecklist .cc-head>div:first-child,#closeCheckHistory .cch-head>div:first-child{min-width:0}
-#shiftChecklist .cc-kicker,#closeCheckHistory .cc-kicker{display:block;font-size:9.5px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#e7c27c}
-#shiftChecklist .cc-title,#closeCheckHistory .cch-title{margin:6px 0 4px;font:700 clamp(19px,5vw,23px)/1.15 Georgia,serif;color:#fff1d2;letter-spacing:-.01em}
-#shiftChecklist .cc-sub,#closeCheckHistory .cch-sub{margin:0;color:rgba(240,232,215,.72);font-size:12px;line-height:1.5}
-#shiftChecklist .cc-count{flex:0 0 auto;min-width:62px;padding:8px 10px;border-radius:14px;border:1px solid rgba(226,178,86,.45);background:rgba(8,12,9,.6);text-align:center}
-#shiftChecklist .cc-count b{display:block;font-size:19px;line-height:1;font-weight:800;color:#ffe08a;white-space:nowrap}
-#shiftChecklist .cc-count small{display:block;margin-top:4px;font-size:8.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:rgba(240,232,215,.6)}
-#shiftChecklist.is-complete .cc-count{border-color:rgba(45,240,130,.5)}
-#shiftChecklist.is-complete .cc-count b{color:#8ff5b8}
-#shiftChecklist .cc-progress{height:6px;margin:13px 0 2px;border-radius:99px;background:rgba(255,255,255,.08);overflow:hidden}
-#shiftChecklist .cc-progress i{display:block;width:0;height:100%;border-radius:inherit;background:linear-gradient(90deg,#c88b35,#ffe08a);transition:width .35s ease}
-#shiftChecklist.is-complete .cc-progress i{background:linear-gradient(90deg,#1fae62,#7af0a7)}
-#shiftChecklist.has-problems .cc-progress i{background:linear-gradient(90deg,#c88b35,#ff8a5c)}
-#shiftChecklist .cc-list{list-style:none;margin:12px 0 0;padding:0;display:grid;gap:9px}
-#shiftChecklist .cc-item{position:relative;margin:0;padding:12px 12px 12px 15px;border-radius:16px;border:1px solid rgba(226,178,86,.22);background:rgba(6,10,7,.55);transition:border-color .2s ease,background-color .2s ease,box-shadow .2s ease}
-#shiftChecklist .cc-item::before{content:"";position:absolute;left:0;top:12px;bottom:12px;width:3px;border-radius:0 3px 3px 0;background:rgba(226,178,86,.35)}
-#shiftChecklist .cc-item.is-yes{border-color:rgba(45,240,130,.38);background:rgba(10,36,21,.55)}
-#shiftChecklist .cc-item.is-yes::before{background:#35e88a}
-#shiftChecklist .cc-item.is-no{border-color:rgba(255,95,85,.45);background:rgba(48,14,12,.55)}
-#shiftChecklist .cc-item.is-no::before{background:#ff6157}
-#shiftChecklist .cc-item.is-missing{border-color:#ff8a5c;box-shadow:0 0 0 2px rgba(255,138,92,.28);animation:ccShake .42s ease}
-#shiftChecklist .cc-q{display:flex;align-items:flex-start;gap:9px;min-width:0}
-#shiftChecklist .cc-num{flex:0 0 24px;width:24px;height:24px;display:grid;place-items:center;border-radius:50%;border:1px solid rgba(226,178,86,.55);background:rgba(30,20,8,.6);color:#ffe08a;font-size:11px;font-weight:800;line-height:1}
-#shiftChecklist .cc-item.is-yes .cc-num{border-color:#35e88a;background:rgba(15,70,40,.7);color:#bfffd8}
-#shiftChecklist .cc-item.is-no .cc-num{border-color:#ff6157;background:rgba(90,22,20,.7);color:#ffd0cb}
-#shiftChecklist .cc-q span:last-child{padding-top:2px;font-size:14.5px;font-weight:700;line-height:1.35;color:#fff6e4;overflow-wrap:anywhere}
-#shiftChecklist .cc-seg{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:10px}
-#shiftChecklist .cc-btn{display:flex;align-items:center;justify-content:center;gap:6px;min-width:0;min-height:44px;padding:8px 10px;border-radius:12px;font-size:14px;font-weight:800;letter-spacing:.01em;line-height:1.1;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
-#shiftChecklist .cc-btn::before{font-size:13px;font-weight:900}
-#shiftChecklist .cc-yes{border:1px solid rgba(45,240,130,.4);background:rgba(8,28,16,.7);color:#9fe9bd}
-#shiftChecklist .cc-no{border:1px solid rgba(255,95,85,.42);background:rgba(36,10,9,.7);color:#ffb3ab}
-#shiftChecklist .cc-yes::before{content:"✓"}
-#shiftChecklist .cc-no::before{content:"✕"}
-#shiftChecklist .cc-yes[aria-pressed="true"]{background:linear-gradient(145deg,#1e8a4f,#0f5a33);border-color:#45f094;color:#effff5;box-shadow:0 0 14px rgba(45,240,130,.25),inset 0 1px 0 rgba(255,255,255,.18)}
-#shiftChecklist .cc-no[aria-pressed="true"]{background:linear-gradient(145deg,#9a2f2c,#651d1d);border-color:#ff7a70;color:#fff1ef;box-shadow:0 0 14px rgba(255,85,75,.25),inset 0 1px 0 rgba(255,255,255,.14)}
-#shiftChecklist .cc-btn:disabled{opacity:.55;cursor:not-allowed}
-#shiftChecklist .cc-comment{display:block;width:100%;min-height:42px;max-height:160px;margin:9px 0 0;padding:10px 12px;border-radius:12px;border:1px solid rgba(226,178,86,.26);background:rgba(3,6,4,.62);color:#f7efe0;font:inherit;font-size:13.5px;line-height:1.4;resize:none;overflow:hidden;box-sizing:border-box}
-#shiftChecklist .cc-comment::placeholder{color:rgba(240,232,215,.46);opacity:1}
-#shiftChecklist .cc-comment:focus{outline:none;border-color:#e8bd69;box-shadow:0 0 0 3px rgba(232,189,105,.16)}
+#shiftChecklist,#closeCheckHistory{
+  --cc-brass:#c9a15a;--cc-brass-hi:#f2d58e;--cc-brass-lo:#6b4f22;
+  --cc-on:#3be38c;--cc-off:#ff5d4f;--cc-warn:#f0a14a;--cc-ink:#fff3dc;--cc-mute:#b9ae98;
+  --cc-panel:linear-gradient(165deg,#14261b 0%,#0b1510 58%,#09100c 100%);
+}
+#shiftChecklist{
+  position:relative;margin:14px 0 0;padding:18px 15px 15px;border-radius:22px;
+  border:1px solid rgba(201,161,90,.55);color:var(--cc-ink);
+  background:radial-gradient(120% 60% at 0 0,rgba(242,213,142,.11),transparent 62%),var(--cc-panel);
+  box-shadow:inset 0 1px 0 rgba(255,236,190,.10),inset 0 0 0 1px rgba(0,0,0,.35),0 16px 34px rgba(0,0,0,.38);
+  scroll-margin-top:90px
+}
+/* шапка: кольцо прогресса + заголовок */
+#shiftChecklist .cc-head{display:grid;grid-template-columns:64px minmax(0,1fr);gap:14px;align-items:center}
+#shiftChecklist .cc-ring{position:relative;width:64px;height:64px}
+#shiftChecklist .cc-ring svg{display:block;width:100%;height:100%;transform:rotate(-90deg)}
+#shiftChecklist .cc-ring circle{fill:none;stroke-width:5}
+#shiftChecklist .cc-ring-track{stroke:rgba(255,255,255,.09)}
+#shiftChecklist .cc-ring-bar{stroke:var(--cc-brass);stroke-linecap:round;stroke-dasharray:157.08;stroke-dashoffset:157.08;transition:stroke-dashoffset .5s cubic-bezier(.2,.8,.2,1),stroke .3s ease}
+#shiftChecklist.is-complete .cc-ring-bar{stroke:var(--cc-on)}
+#shiftChecklist.has-problems .cc-ring-bar{stroke:var(--cc-warn)}
+#shiftChecklist .cc-ring-num{position:absolute;inset:0;display:grid;place-items:center;font-variant-numeric:tabular-nums}
+#shiftChecklist .cc-ring-num span{display:flex;align-items:baseline}
+#shiftChecklist .cc-ring-num b{font-size:22px;line-height:1;font-weight:800;color:var(--cc-ink)}
+#shiftChecklist .cc-ring-num small{margin-left:1px;font-size:11.5px;font-weight:700;color:var(--cc-mute)}
+#shiftChecklist .cc-title{margin:0 0 5px;font:700 clamp(20px,5.4vw,24px)/1.12 Georgia,"Times New Roman",serif;letter-spacing:-.01em;color:#fff1d2}
+#shiftChecklist .cc-sub{margin:0;max-width:46ch;font-size:12.5px;line-height:1.45;color:var(--cc-mute)}
+/* строки панели */
+#shiftChecklist .cc-list{list-style:none;margin:16px 0 0;padding:0;border-top:1px solid rgba(201,161,90,.24)}
+#shiftChecklist .cc-item{position:relative;margin:0;padding:13px 0;border-bottom:1px solid rgba(201,161,90,.15);transition:background-color .25s ease}
+#shiftChecklist .cc-item.is-missing{animation:ccShake .42s ease;background:linear-gradient(90deg,rgba(255,138,92,.14),transparent 75%)}
+#shiftChecklist .cc-line{display:grid;grid-template-columns:40px minmax(0,1fr) 14px;gap:12px;align-items:center}
+#shiftChecklist .cc-ico{width:40px;height:40px;display:grid;place-items:center;border-radius:12px;border:1px solid rgba(201,161,90,.45);background:linear-gradient(160deg,#1d2b21,#0b130e);color:var(--cc-brass-hi);box-shadow:inset 0 1px 0 rgba(255,236,190,.08);transition:border-color .25s,color .25s}
+#shiftChecklist .cc-ico svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+#shiftChecklist .cc-item.is-yes .cc-ico{border-color:rgba(59,227,140,.55);color:#c4f8dc}
+#shiftChecklist .cc-item.is-no .cc-ico{border-color:rgba(255,93,79,.6);color:#ffd4ce}
+#shiftChecklist .cc-q{font-size:15px;font-weight:700;line-height:1.3;color:var(--cc-ink);overflow-wrap:anywhere}
+/* индикаторная лампа */
+#shiftChecklist .cc-lamp{width:13px;height:13px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#5d584e,#23211d 72%);box-shadow:inset 0 0 0 1px rgba(0,0,0,.6),0 0 0 2px rgba(201,161,90,.24);transition:background .25s,box-shadow .25s}
+#shiftChecklist .cc-item.is-yes .cc-lamp{background:radial-gradient(circle at 35% 30%,#e3fff0,var(--cc-on) 46%,#138549 100%);box-shadow:0 0 11px rgba(59,227,140,.8),0 0 0 2px rgba(59,227,140,.3)}
+#shiftChecklist .cc-item.is-no .cc-lamp{background:radial-gradient(circle at 35% 30%,#ffe4df,var(--cc-off) 46%,#98221a 100%);box-shadow:0 0 11px rgba(255,93,79,.8),0 0 0 2px rgba(255,93,79,.3)}
+/* переключатель Да / Нет и кнопка комментария */
+#shiftChecklist .cc-ctrl{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;margin-top:11px}
+#shiftChecklist .cc-switch{position:relative;display:grid;grid-template-columns:1fr 1fr;padding:4px;border-radius:15px;border:1px solid rgba(201,161,90,.38);background:linear-gradient(180deg,#060b08,#0d1610);box-shadow:inset 0 2px 7px rgba(0,0,0,.6)}
+#shiftChecklist .cc-thumb{position:absolute;top:4px;bottom:4px;left:4px;width:calc(50% - 4px);border-radius:11px;opacity:0;transform:translateX(0);transition:transform .3s cubic-bezier(.2,.85,.25,1),opacity .2s ease,background .2s ease}
+#shiftChecklist .cc-switch[data-state="yes"] .cc-thumb{opacity:1;background:linear-gradient(160deg,#28aa63,#0e693c);box-shadow:0 0 16px rgba(59,227,140,.35),inset 0 1px 0 rgba(255,255,255,.24)}
+#shiftChecklist .cc-switch[data-state="no"] .cc-thumb{opacity:1;transform:translateX(100%);background:linear-gradient(160deg,#c63c32,#781c18);box-shadow:0 0 16px rgba(255,93,79,.35),inset 0 1px 0 rgba(255,255,255,.18)}
+#shiftChecklist .cc-opt{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;gap:7px;min-width:0;min-height:42px;padding:0 8px;border:0;border-radius:11px;background:transparent;color:var(--cc-mute);font-size:15px;font-weight:800;letter-spacing:.01em;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+#shiftChecklist .cc-opt svg{width:15px;height:15px;flex:none;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+#shiftChecklist .cc-switch[data-state=""] .cc-yes{color:#9fe9bd}
+#shiftChecklist .cc-switch[data-state=""] .cc-no{color:#ffb3ab}
+#shiftChecklist .cc-switch[data-state="yes"] .cc-yes,#shiftChecklist .cc-switch[data-state="no"] .cc-no{color:#fff}
+#shiftChecklist .cc-note-btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:52px;padding:0 13px;border-radius:15px;border:1px solid rgba(201,161,90,.38);background:rgba(10,16,12,.75);color:var(--cc-brass-hi);font-size:13px;font-weight:700;white-space:nowrap;-webkit-tap-highlight-color:transparent}
+#shiftChecklist .cc-note-btn svg{width:17px;height:17px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+#shiftChecklist .cc-note-btn[aria-expanded="true"]{border-color:var(--cc-brass);background:rgba(201,161,90,.14)}
+#shiftChecklist .cc-note-btn.has-note::after{content:"";width:7px;height:7px;flex:none;border-radius:50%;background:var(--cc-brass-hi);box-shadow:0 0 8px rgba(242,213,142,.7)}
+#shiftChecklist .cc-opt:disabled,#shiftChecklist .cc-note-btn:disabled{opacity:.55;cursor:not-allowed}
+#shiftChecklist .cc-comment{display:block;width:100%;min-height:46px;max-height:170px;margin:9px 0 0;padding:12px 13px;border-radius:13px;border:1px solid rgba(201,161,90,.34);background:rgba(4,8,6,.72);color:var(--cc-ink);font:inherit;font-size:14px;line-height:1.45;resize:none;overflow:hidden;box-sizing:border-box}
+#shiftChecklist .cc-comment::placeholder{color:rgba(240,232,215,.45);opacity:1}
+#shiftChecklist .cc-comment:focus{outline:none;border-color:var(--cc-brass-hi);box-shadow:0 0 0 3px rgba(242,213,142,.15)}
 #shiftChecklist .cc-comment.need{border-color:#ff7a70;box-shadow:0 0 0 2px rgba(255,122,112,.18)}
 #shiftChecklist .cc-comment.need::placeholder{color:#ffb3ab}
-#shiftChecklist .cc-status{margin-top:12px;padding:10px 12px;border-radius:12px;border:1px solid rgba(226,178,86,.25);background:rgba(8,12,9,.5);color:rgba(240,232,215,.8);font-size:12px;font-weight:700;line-height:1.45}
-#shiftChecklist .cc-status.ok{border-color:rgba(45,240,130,.42);background:rgba(10,40,24,.55);color:#a6f5c4}
-#shiftChecklist .cc-status.warn{border-color:rgba(255,150,80,.45);background:rgba(90,40,14,.5);color:#ffd2a8}
+/* итог: пломба или подсказка */
+#shiftChecklist .cc-foot{display:flex;align-items:center;gap:14px;min-height:62px;margin-top:15px}
+#shiftChecklist .cc-foot-ico{flex:0 0 46px;width:46px;height:46px;display:grid;place-items:center;border-radius:50%;border:1px dashed rgba(201,161,90,.5);color:var(--cc-brass)}
+#shiftChecklist .cc-foot-ico svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+#shiftChecklist .cc-foot-ico.need{border-color:rgba(255,122,112,.6);color:#ff9d93}
+#shiftChecklist .cc-seal{flex:0 0 76px;width:76px;height:76px;transform:rotate(-8deg);filter:drop-shadow(0 7px 10px rgba(0,0,0,.5))}
+#shiftChecklist .cc-seal.is-stamping{animation:ccStamp .55s cubic-bezier(.2,.9,.3,1)}
+#shiftChecklist .cc-seal .wax-ok{fill:url(#ccWaxOk)}#shiftChecklist .cc-seal .wax-bad{fill:url(#ccWaxBad)}
+#shiftChecklist .cc-seal .ring{fill:none;stroke:rgba(255,255,255,.4);stroke-width:1.1}
+#shiftChecklist .cc-seal .ring.dash{stroke-dasharray:2 2.2}
+#shiftChecklist .cc-seal text{fill:#fbf2dd;font-family:Georgia,"Times New Roman",serif;font-weight:700}
+#shiftChecklist .cc-seal .arc{font-size:8.4px;letter-spacing:.3px}
+#shiftChecklist .cc-seal .mark{font-size:25px}
+#shiftChecklist .cc-seal .time{font-size:10.5px;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-variant-numeric:tabular-nums}
+#shiftChecklist .cc-foot-text{min-width:0}
+#shiftChecklist .cc-foot-text b{display:block;font-size:15px;line-height:1.3;color:var(--cc-ink)}
+#shiftChecklist .cc-foot-text span{display:block;margin-top:3px;font-size:12.5px;line-height:1.45;color:var(--cc-mute);overflow-wrap:anywhere}
+#shiftChecklist .cc-foot.ok .cc-foot-text b{color:#aef6cc}
+#shiftChecklist .cc-foot.bad .cc-foot-text b{color:#ffcaa6}
+#shiftChecklist .cc-foot.need .cc-foot-text b{color:#ff9d93}
 @media(min-width:620px){
- #shiftChecklist{padding:18px}
- #shiftChecklist .cc-row{display:grid;grid-template-columns:minmax(0,1fr) 230px;align-items:center;gap:14px}
- #shiftChecklist .cc-seg{margin-top:0}
+ #shiftChecklist{padding:20px 20px 18px}
+ #shiftChecklist .cc-item{display:grid;grid-template-columns:minmax(0,1fr) minmax(250px,320px);column-gap:16px;align-items:center}
+ #shiftChecklist .cc-ctrl{margin-top:0}
+ #shiftChecklist .cc-comment{grid-column:1/-1}
 }
-@media(min-width:1000px){#shiftChecklist .cc-list{grid-template-columns:repeat(2,minmax(0,1fr))}#shiftChecklist .cc-row{grid-template-columns:minmax(0,1fr) 186px;gap:12px}}
-@media(max-width:380px){#shiftChecklist{padding:14px 11px 12px}#shiftChecklist .cc-item{padding:11px 10px 11px 13px}#shiftChecklist .cc-q span:last-child{font-size:13.5px}}
+@media(min-width:1100px){#shiftChecklist .cc-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:28px}#shiftChecklist .cc-item{grid-template-columns:minmax(0,1fr);align-content:start}#shiftChecklist .cc-ctrl{margin-top:11px}}
+@media(max-width:360px){#shiftChecklist{padding:15px 12px 13px}#shiftChecklist .cc-line{grid-template-columns:36px minmax(0,1fr) 13px;gap:10px}#shiftChecklist .cc-ico{width:36px;height:36px}#shiftChecklist .cc-q{font-size:14px}#shiftChecklist .cc-note-btn{padding:0 10px;font-size:12px}}
 @keyframes ccShake{0%,100%{transform:none}20%{transform:translateX(-6px)}40%{transform:translateX(5px)}60%{transform:translateX(-3px)}80%{transform:translateX(2px)}}
+@keyframes ccStamp{0%{opacity:0;transform:rotate(-26deg) scale(1.75)}68%{opacity:1;transform:rotate(-5deg) scale(.93)}100%{opacity:1;transform:rotate(-8deg) scale(1)}}
+@media(prefers-reduced-motion:reduce){#shiftChecklist .cc-thumb,#shiftChecklist .cc-ring-bar{transition:none}#shiftChecklist .cc-seal.is-stamping,#shiftChecklist .cc-item.is-missing{animation:none}}
 
-/* Окно «Завершить рабочую смену?» — ответы чек-листа над кнопками */
-#confirmModalCard .cc-confirm{margin:12px 0 6px;padding:12px;border-radius:14px;border:1px solid rgba(45,240,130,.38);background:rgba(8,22,14,.72)}
-#confirmModalCard .cc-confirm.bad{border-color:rgba(255,120,90,.5);background:rgba(40,14,10,.6)}
-#confirmModalCard .cc-confirm-head{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#e7c27c}
-#confirmModalCard .cc-confirm-head b{font-size:12px;letter-spacing:0;text-transform:none;color:#fff1d2;white-space:nowrap}
-#confirmModalCard .cc-confirm-list{list-style:none;margin:9px 0 0;padding:0;display:grid;gap:6px}
-#confirmModalCard .cc-confirm-list li{display:grid;grid-template-columns:16px minmax(0,1fr) auto;gap:8px;align-items:start;font-size:12px;line-height:1.4;color:#f1e7d4}
-#confirmModalCard .cc-confirm-list i{font-style:normal;font-weight:900}
-#confirmModalCard .cc-confirm-list li.ok i,#confirmModalCard .cc-confirm-list li.ok b{color:#7cf0ae}
-#confirmModalCard .cc-confirm-list li.bad i,#confirmModalCard .cc-confirm-list li.bad b{color:#ff9d93}
-#confirmModalCard .cc-confirm-list small{display:block;margin-top:2px;color:rgba(255,226,214,.78);font-size:11px;overflow-wrap:anywhere}
-#confirmModalCard .cc-confirm-note{margin-top:9px;color:rgba(240,232,215,.66);font-size:11px;line-height:1.45}
+/* Окно «Завершить рабочую смену?» — второй чек под Z-отчётом */
+#confirmModalCard .cc-slip{margin:14px 12px 8px;filter:drop-shadow(0 10px 18px rgba(0,0,0,.4))}
+#confirmModalCard .cc-slip-paper{position:relative;padding:15px 14px 24px;background:linear-gradient(180deg,#ece0c6,#f6eedc 30%,#efe4cc);color:#2a2118;font-family:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;font-size:11px;line-height:1.55;
+  -webkit-mask:linear-gradient(#000,#000) top/100% calc(100% - 7px) no-repeat,radial-gradient(circle at 6px 7px,transparent 4.5px,#000 5px) bottom/12px 7px repeat-x;
+  mask:linear-gradient(#000,#000) top/100% calc(100% - 7px) no-repeat,radial-gradient(circle at 6px 7px,transparent 4.5px,#000 5px) bottom/12px 7px repeat-x}
+#confirmModalCard .cc-slip-paper::before{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,0,0,.02) 0 1px,transparent 1px 3px)}
+#confirmModalCard .cc-slip-title{font-weight:700;letter-spacing:.14em;text-align:center}
+#confirmModalCard .cc-slip-sub{margin-top:1px;text-align:center;color:#6b5a44;font-size:10px}
+#confirmModalCard .cc-slip-sep{margin:7px 0;border-top:1px dashed rgba(42,33,24,.45)}
+#confirmModalCard .cc-slip-row{display:flex;align-items:baseline;gap:6px}
+#confirmModalCard .cc-slip-row span{flex:0 1 auto;min-width:0;overflow-wrap:anywhere}
+#confirmModalCard .cc-slip-row i{flex:1 1 14px;min-width:14px;border-bottom:1px dotted rgba(42,33,24,.5);transform:translateY(-3px)}
+#confirmModalCard .cc-slip-row b{flex:none;font-weight:700}
+#confirmModalCard .cc-slip-row.bad b{color:#a1251b}
+#confirmModalCard .cc-slip-note{margin:0 0 5px 14px;color:#5e4630;font-size:10.5px;overflow-wrap:anywhere}
+#confirmModalCard .cc-slip-total{display:flex;justify-content:space-between;align-items:baseline;font-size:13px;font-weight:700}
+#confirmModalCard .cc-slip-total.bad b{color:#a1251b}
 
-/* Руководитель / администратор: проверки закрытия последних смен */
-#closeCheckHistory{margin:16px 0 0;padding:16px 14px;border-radius:20px;border:1px solid rgba(226,178,86,.32);background:linear-gradient(155deg,rgba(18,30,22,.86),rgba(8,12,9,.92));box-shadow:inset 0 1px 0 rgba(255,255,255,.04)}
-#closeCheckHistory .cch-refresh{flex:0 0 auto;min-width:44px;min-height:42px;font-size:15px}
-#closeCheckHistory .cch-list{display:grid;gap:9px;margin-top:13px}
-#closeCheckHistory .cch-card{min-width:0;padding:12px;border-radius:15px;border:1px solid rgba(226,178,86,.22);background:rgba(5,9,6,.6)}
-#closeCheckHistory .cch-card.ok{border-color:rgba(45,240,130,.36)}
-#closeCheckHistory .cch-card.bad{border-color:rgba(255,95,85,.48)}
-#closeCheckHistory .cch-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+/* Руководитель / администратор: «Касса и отчёты» → проверки закрытия последних смен */
+#closeCheckHistory{position:relative;margin:16px 0 0;padding:17px 15px 8px;border-radius:22px;border:1px solid rgba(201,161,90,.45);color:var(--cc-ink);background:radial-gradient(120% 60% at 100% 0,rgba(242,213,142,.08),transparent 60%),var(--cc-panel);box-shadow:inset 0 1px 0 rgba(255,236,190,.08),0 14px 30px rgba(0,0,0,.32)}
+#closeCheckHistory .cch-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+#closeCheckHistory .cch-head>div{min-width:0}
+#closeCheckHistory .cch-title{margin:0 0 5px;font:700 clamp(19px,5vw,22px)/1.15 Georgia,"Times New Roman",serif;color:#fff1d2}
+#closeCheckHistory .cch-sub{margin:0;font-size:12.5px;line-height:1.45;color:var(--cc-mute)}
+#closeCheckHistory .cch-refresh{flex:0 0 auto;min-width:44px;min-height:44px;font-size:16px}
+#closeCheckHistory .cch-list{margin-top:13px;border-top:1px solid rgba(201,161,90,.22)}
+#closeCheckHistory .cch-card{padding:14px 0;border-bottom:1px solid rgba(201,161,90,.14)}
+#closeCheckHistory .cch-card:last-child{border-bottom:0}
+#closeCheckHistory .cch-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
 #closeCheckHistory .cch-top>div{min-width:0}
-#closeCheckHistory .cch-top b{display:block;color:#fff3dd;font-size:13.5px;line-height:1.3}
-#closeCheckHistory .cch-top small{display:block;margin-top:3px;color:rgba(240,232,215,.62);font-size:11px;overflow-wrap:anywhere}
-#closeCheckHistory .cch-badge{flex:0 0 auto;padding:6px 9px;border:1px solid;border-radius:999px;font-size:11px;font-weight:800;line-height:1.2;white-space:nowrap}
-#closeCheckHistory .cch-badge.ok{border-color:rgba(45,240,130,.45);background:rgba(10,40,24,.6);color:#a6f5c4}
-#closeCheckHistory .cch-badge.bad{border-color:rgba(255,95,85,.5);background:rgba(60,16,14,.6);color:#ffd0c9}
-#closeCheckHistory .cch-badge.none{border-color:rgba(240,232,215,.2);background:rgba(255,255,255,.03);color:rgba(240,232,215,.62)}
-#closeCheckHistory .cch-problems{list-style:none;margin:10px 0 0;padding:0;display:grid;gap:6px}
-#closeCheckHistory .cch-problems li{padding:8px 10px;border:1px solid rgba(255,95,85,.32);border-radius:10px;background:rgba(70,18,16,.45);color:#ffe2dd;font-size:12px;line-height:1.45;overflow-wrap:anywhere}
-#closeCheckHistory .cch-problems li span{color:rgba(255,226,214,.82)}
-#closeCheckHistory .cch-note,#closeCheckHistory .cch-empty{margin-top:8px;color:rgba(240,232,215,.6);font-size:11.5px;line-height:1.5}
-#closeCheckHistory .cch-empty{margin-top:12px;padding:12px;border:1px dashed rgba(226,178,86,.3);border-radius:12px;text-align:center}
-#closeCheckHistory details{margin-top:8px}
-#closeCheckHistory summary{padding:6px 0;color:#e7c27c;font-size:11.5px;font-weight:800;cursor:pointer}
-#closeCheckHistory .cch-rows{display:grid;gap:6px;margin-top:4px}
-#closeCheckHistory .cch-row{display:grid;grid-template-columns:16px minmax(0,1fr) auto;gap:8px;align-items:start;color:#f1e7d4;font-size:12px;line-height:1.4}
-#closeCheckHistory .cch-row i{font-style:normal;font-weight:900}
-#closeCheckHistory .cch-row.ok i,#closeCheckHistory .cch-row.ok b{color:#7cf0ae}
-#closeCheckHistory .cch-row.bad i,#closeCheckHistory .cch-row.bad b{color:#ff9d93}
-#closeCheckHistory .cch-row small{display:block;margin-top:2px;color:rgba(240,232,215,.62);font-size:11px;overflow-wrap:anywhere}
-@media(min-width:900px){#closeCheckHistory .cch-list{grid-template-columns:repeat(2,minmax(0,1fr));align-items:start}}
+#closeCheckHistory .cch-top b{display:block;font-size:14.5px;line-height:1.3;color:var(--cc-ink)}
+#closeCheckHistory .cch-top small{display:block;margin-top:2px;font-size:12px;color:var(--cc-mute);overflow-wrap:anywhere}
+#closeCheckHistory .cch-score{flex:none;display:inline-flex;align-items:baseline;gap:1px;padding:5px 11px;border:1px solid;border-radius:999px;font-variant-numeric:tabular-nums;font-weight:800;line-height:1.2}
+#closeCheckHistory .cch-score b{font-size:16px}
+#closeCheckHistory .cch-score small{font-size:11.5px;opacity:.85}
+#closeCheckHistory .cch-score.ok{color:#aef6cc;border-color:rgba(59,227,140,.5);background:rgba(16,70,40,.45)}
+#closeCheckHistory .cch-score.bad{color:#ffd0c9;border-color:rgba(255,93,79,.55);background:rgba(80,20,16,.5)}
+#closeCheckHistory .cch-score.none{color:var(--cc-mute);border-color:rgba(185,174,152,.3);background:transparent;font-size:12px;font-weight:700}
+#closeCheckHistory .cch-lamps{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:5px;margin-top:11px}
+#closeCheckHistory .cch-lamp{display:grid;place-items:center;height:32px;border-radius:9px;border:1px solid rgba(201,161,90,.24);background:#09100c;color:#6f6a5e}
+#closeCheckHistory .cch-lamp svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+#closeCheckHistory .cch-lamp.ok{color:#cfffe3;border-color:rgba(59,227,140,.55);background:linear-gradient(180deg,rgba(59,227,140,.3),rgba(18,86,50,.38));box-shadow:0 0 10px rgba(59,227,140,.16)}
+#closeCheckHistory .cch-lamp.bad{color:#ffe2de;border-color:rgba(255,93,79,.7);background:linear-gradient(180deg,rgba(255,93,79,.36),rgba(110,24,20,.45));box-shadow:0 0 12px rgba(255,93,79,.24)}
+#closeCheckHistory .cch-problems{list-style:none;margin:10px 0 0;padding:0;display:grid;gap:7px}
+#closeCheckHistory .cch-problems li{display:grid;grid-template-columns:22px minmax(0,1fr);gap:9px;align-items:start;padding:9px 11px;border:1px solid rgba(255,93,79,.34);border-radius:12px;background:rgba(70,18,14,.48);color:#ffe4de;font-size:12.5px;line-height:1.45}
+#closeCheckHistory .cch-problems li svg{width:18px;height:18px;margin-top:1px;fill:none;stroke:#ff9d93;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+#closeCheckHistory .cch-problems li b{display:block;color:#fff1ee}
+#closeCheckHistory .cch-problems li span{display:block;margin-top:2px;color:rgba(255,226,214,.85);overflow-wrap:anywhere}
+#closeCheckHistory .cch-note{margin-top:7px;color:var(--cc-mute);font-size:12px;line-height:1.5}
+#closeCheckHistory .cch-empty{margin:12px 0 8px;padding:13px;border:1px dashed rgba(201,161,90,.32);border-radius:13px;text-align:center;color:var(--cc-mute);font-size:12.5px;line-height:1.5}
+#closeCheckHistory details{margin-top:9px}
+#closeCheckHistory summary{padding:6px 0;color:var(--cc-brass-hi);font-size:12.5px;font-weight:700;cursor:pointer}
+#closeCheckHistory .cch-rows{display:grid;gap:7px;margin-top:5px}
+#closeCheckHistory .cch-row{display:grid;grid-template-columns:20px minmax(0,1fr) auto;gap:9px;align-items:start;color:#f1e7d4;font-size:12.5px;line-height:1.4}
+#closeCheckHistory .cch-row svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+#closeCheckHistory .cch-row.ok svg,#closeCheckHistory .cch-row.ok b{color:#7cf0ae}
+#closeCheckHistory .cch-row.bad svg,#closeCheckHistory .cch-row.bad b{color:#ff9d93}
+#closeCheckHistory .cch-row b{font-weight:800}
+#closeCheckHistory .cch-row small{display:block;margin-top:2px;color:var(--cc-mute);font-size:11.5px;overflow-wrap:anywhere}
+@media(min-width:900px){#closeCheckHistory .cch-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:26px}#closeCheckHistory .cch-card:nth-last-child(2):nth-child(odd){border-bottom:0}}
 </style>
 <script src="./pwa-init.js?v=1.0.0"></script>
 <script src="./par-ordo-bracelet-rules-v108.js?v=108.1"></script>
@@ -3994,7 +4127,7 @@ html body #addModal #addProductGrid > .add-product-tile > .product-edit-actions 
 <script src="./par-ordo-sections-v1.js?v=1.0.2" defer></script>
 <script src="./par-ordo-expenses-v1.js?v=1.0.0" defer></script>
 <script src="./par-ordo-briefing-v1.js?v=1.0.0" defer></script>
-<script src="./par-ordo-inner-v1.js?v=1.0.1" defer></script>
+<script src="./par-ordo-inner-v1.js?v=1.0.2" defer></script>
 <script src="./par-ordo-bonus-v1.js?v=1.0.1" defer></script>
 <script src="./par-ordo-time-alert-v1.js?v=1.0.0" defer></script>
 </body></html>
