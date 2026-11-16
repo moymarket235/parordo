@@ -1,10 +1,10 @@
-/* PAR ORDO PRO — «Джарвис» V2.0.0: голосовой помощник — браслеты, покупки, вопросы по сайту, разделы, подсказки.
-   Подключение: <script src="./par-ordo-jarvis-v1.js?v=2.0.0" defer></script> — после всех остальных скриптов.
-   Работает через функции приложения (activateRoom, addPurchase, changeQty), Worker не меняется.
+/* PAR ORDO PRO — «Джарвис» V3.0.0: голосовой помощник — браслеты, покупки, вопросы по сайту, сам предупреждает, мужской голос.
+   Подключение: <script src="./par-ordo-jarvis-v1.js?v=3.0.0" defer></script> — после всех остальных скриптов.
+   Работает через функции приложения (activateRoom, addPurchase, changeQty). Живой голос — Worker V10.20 (по желанию).
    Примеры: «3 браслет активный кыл», «Вход взрослый кош», «Бирге жарма кош», «5 номерге 2 кола», «Отмена». */
 (function () {
   'use strict';
-  const VERSION = '2.0.0';
+  const VERSION = '3.0.0';
 
   /* =====================================================================
      ЯДРО: разбор фразы → действия. Чистые функции, без DOM.
@@ -973,7 +973,45 @@
     return scored.filter(x => x.score >= top * 0.82).slice(0, limit || 4).map(x => x.ref);
   }
 
-  const Core = { VERSION, norm, lex, parse, buildIndex, suggest, tokSim, phon, canon, sayName, productTokenLists, latinVariants, matchSpans, spanCandidates, judge };
+  /* =====================================================================
+     СУММЫ ГОЛОСОМ — коротко, как говорит кассир:
+       2345 → «две триста сорок пять», 1200 → «тысяча двести», 2050 → «две тысячи пятьдесят»,
+       24 350 → «двадцать четыре триста пятьдесят» (или «двадцать четыре тысячи» с округлением),
+       169 400 → «сто шестьдесят девять тысяч». Цифры словами: телефон не читает их по одной.
+     ===================================================================== */
+  const ruPlural = (n, one, few, many) => { const a = Math.abs(n) % 100, b = a % 10; return a > 10 && a < 20 ? many : b === 1 ? one : b >= 2 && b <= 4 ? few : many; };
+  const W_ONE_M = ['', 'один', 'два', 'три', 'четыре', 'пять', 'шесть', 'семь', 'восемь', 'девять'];
+  const W_ONE_F = ['', 'одна', 'две', 'три', 'четыре', 'пять', 'шесть', 'семь', 'восемь', 'девять'];
+  const W_TEEN = ['десять', 'одиннадцать', 'двенадцать', 'тринадцать', 'четырнадцать', 'пятнадцать', 'шестнадцать', 'семнадцать', 'восемнадцать', 'девятнадцать'];
+  const W_TEN = ['', '', 'двадцать', 'тридцать', 'сорок', 'пятьдесят', 'шестьдесят', 'семьдесят', 'восемьдесят', 'девяносто'];
+  const W_HUND = ['', 'сто', 'двести', 'триста', 'четыреста', 'пятьсот', 'шестьсот', 'семьсот', 'восемьсот', 'девятьсот'];
+  function words3(n, fem) {
+    const h = Math.floor(n / 100), t = Math.floor(n / 10) % 10, o = n % 10, out = [];
+    if (h) out.push(W_HUND[h]);
+    if (t === 1) out.push(W_TEEN[o]);
+    else { if (t) out.push(W_TEN[t]); if (o) out.push((fem ? W_ONE_F : W_ONE_M)[o]); }
+    return out.join(' ');
+  }
+  const thousandsWords = k => (k === 1 ? 'тысяча' : `${words3(k, true)} ${ruPlural(k, 'тысяча', 'тысячи', 'тысяч')}`);
+  // round: суммы от 10 000 — до тысяч («двадцать четыре тысячи»). От 100 000 — всегда до тысяч.
+  function amountWords(value, round) {
+    const num = Number(value) || 0;
+    let v = Math.round(Math.abs(num));
+    if (v >= 100000 || (round && v >= 10000)) v = Math.round(v / 1000) * 1000;
+    let text;
+    if (v === 0) text = 'ноль';
+    else if (v < 1000) text = words3(v, false);
+    else if (v >= 1000000) {
+      const m = Math.floor(v / 1000000), k = Math.floor((v % 1000000) / 1000);
+      text = `${m === 1 ? 'миллион' : `${words3(m % 1000, false)} ${ruPlural(m, 'миллион', 'миллиона', 'миллионов')}`}${k ? ' ' + thousandsWords(k) : ''}`;
+    } else {
+      const k = Math.floor(v / 1000), r = v % 1000;
+      text = !r ? thousandsWords(k) : r < 100 ? `${thousandsWords(k)} ${words3(r, false)}` : `${k === 1 ? 'тысяча' : words3(k, true)} ${words3(r, false)}`;
+    }
+    return (num < 0 && v ? 'минус ' : '') + text;
+  }
+
+  const Core = { VERSION, norm, lex, parse, buildIndex, suggest, tokSim, phon, canon, sayName, productTokenLists, latinVariants, matchSpans, spanCandidates, judge, amountWords };
 
   if (typeof module === 'object' && module && module.exports) { module.exports = Core; return; }
 
@@ -990,7 +1028,9 @@
 
   const readJSON = (key, fallback) => { try { const v = JSON.parse(localStorage.getItem(key) || 'null'); return v && typeof v === 'object' ? v : fallback; } catch (_) { return fallback; } };
   const writeJSON = (key, value) => { try { localStorage.setItem(key, JSON.stringify(value)); } catch (_) {} };
-  const settings = Object.assign({ lang: 'ru-RU', voice: true, autoListen: false, hintShown: false, greet: true, address: 'sir' }, readJSON(STORE, {}));
+  const settings = Object.assign({ lang: 'ru-RU', voice: true, autoListen: false, hintShown: false, greet: true, address: 'sir',
+    voiceName: '', pitch: 0.85, rate: 1.1, serverVoiceOn: true, serverVoice: 'ru-RU-Chirp3-HD-Charon', roundTotals: true,
+    alertRooms: true, alertStock: true }, readJSON(STORE, {}));
   if (!['sir', 'madam', 'none'].includes(settings.address)) settings.address = 'sir';
   if (!LANGS.some(([code]) => code === settings.lang)) settings.lang = 'ru-RU';
   let learned = readJSON(ALIAS_STORE, {});
@@ -1458,27 +1498,180 @@
   }
 
   /* ---------- голос ---------- */
-  function cancelSpeech() { try { if ('speechSynthesis' in window) window.speechSynthesis.cancel(); } catch (_) {} }
-  let ruVoice = null;
-  function pickVoice() {
-    try {
-      const voices = window.speechSynthesis.getVoices() || [];
-      ruVoice = voices.find(v => /^ru(-|_|$)/i.test(v.lang) && /google/i.test(v.name)) || voices.find(v => /^ru(-|_|$)/i.test(v.lang)) || null;
-    } catch (_) { ruVoice = null; }
+  // 1) Голос сервера (Worker V10.20 → Google Cloud Text-to-Speech): живой мужской голос, одинаковый на всех телефонах.
+  // 2) Голос телефона: мужской русский голос, если он есть в списке, тон чуть ниже. Если сервер не отвечает — тоже он.
+  const SERVER_VOICES = [
+    ['ru-RU-Chirp3-HD-Charon', 'Charon', 'спокойный, деловой'],
+    ['ru-RU-Chirp3-HD-Algieba', 'Algieba', 'мягкий, бархатный'],
+    ['ru-RU-Chirp3-HD-Schedar', 'Schedar', 'ровный, сдержанный'],
+    ['ru-RU-Chirp3-HD-Orus', 'Orus', 'твёрдый, уверенный'],
+    ['ru-RU-Chirp3-HD-Iapetus', 'Iapetus', 'чёткий, ясный'],
+    ['ru-RU-Chirp3-HD-Algenib', 'Algenib', 'низкий, с хрипотцой']
+  ];
+  if (!SERVER_VOICES.some(v => v[0] === settings.serverVoice)) settings.serverVoice = SERVER_VOICES[0][0];
+  const clampNum = (v, lo, hi, d) => { const n = Number(v); return Number.isFinite(n) ? Math.min(hi, Math.max(lo, n)) : d; };
+  const rateOf = () => Math.round(clampNum(settings.rate, 0.8, 1.5, 1.1) * 100) / 100;
+  const pitchOf = () => Math.round(clampNum(settings.pitch, 0.5, 1.3, 0.85) * 100) / 100;
+  const MALE_VOICE = /(male|мужск|pavel|павел|dmitr|дмитр|yuri|юрий|maxim|максим|artem|артём|артем|filipp|филипп)/i;
+  const FEMALE_VOICE = /(female|женск|milena|милена|irina|ирина|svetlana|светлана|katya|катя|alyona|алёна|alena|dari|дари|ekaterina|екатерина|anna|анна)/i;
+  let ruVoices = [];
+  function loadVoices() {
+    try { ruVoices = (window.speechSynthesis.getVoices() || []).filter(v => /^ru(-|_|$)/i.test(String(v.lang || ''))); } catch (_) { ruVoices = []; }
+    return ruVoices;
   }
-  function speak(text) {
-    if (!settings.voice || !text || !('speechSynthesis' in window) || typeof window.SpeechSynthesisUtterance !== 'function') { maybeAutoListen(); return; }
+  const isMaleVoice = v => MALE_VOICE.test(v.name) && !FEMALE_VOICE.test(v.name);
+  function deviceVoice() {
+    if (!ruVoices.length) loadVoices();
+    if (settings.voiceName) { const chosen = ruVoices.find(v => v.name === settings.voiceName); if (chosen) return chosen; }
+    return ruVoices.find(isMaleVoice) || ruVoices.find(v => v.default) || ruVoices[0] || null;
+  }
+
+  let speechSeq = 0, speakingNow = false;
+  function finishSpeech(done) {
+    speakingNow = false;
+    (done || maybeAutoListen)();
+    setTimeout(flushAlerts, 600);
+  }
+  function stopDevice() { try { if ('speechSynthesis' in window) window.speechSynthesis.cancel(); } catch (_) {} }
+  let audioCtx = null, audioSrc = null;
+  function stopAudio() {
+    const src = audioSrc;
+    audioSrc = null;
+    if (src) try { src.stop(0); } catch (_) {}
+  }
+  function cancelSpeech() { speechSeq += 1; speakingNow = false; stopDevice(); stopAudio(); }
+  function deviceSpeak(text, done) {
+    const seq = speechSeq;
+    if (!('speechSynthesis' in window) || typeof window.SpeechSynthesisUtterance !== 'function') { finishSpeech(done); return; }
     try {
-      window.speechSynthesis.cancel();
+      stopDevice();
       const u = new window.SpeechSynthesisUtterance(text);
       u.lang = 'ru-RU';
-      u.rate = 1.07;
-      if (!ruVoice) pickVoice();
-      if (ruVoice) u.voice = ruVoice;
-      u.onend = () => maybeAutoListen();
-      u.onerror = () => maybeAutoListen();
+      u.rate = rateOf();
+      u.pitch = pitchOf();
+      const v = deviceVoice();
+      if (v) u.voice = v;
+      const end = () => { if (seq === speechSeq) finishSpeech(done); };
+      u.onend = end;
+      u.onerror = end;
+      speakingNow = true;
       window.speechSynthesis.speak(u);
-    } catch (_) { maybeAutoListen(); }
+    } catch (_) { finishSpeech(done); }
+  }
+
+  /* ---------- возможности сервера: /api/health → features ---------- */
+  const serverFeatures = new Set();
+  let featuresAt = 0, featuresVersion = '';
+  async function refreshFeatures(force) {
+    if (!force && Date.now() - featuresAt < 10 * 60e3) return serverFeatures;
+    featuresAt = Date.now();
+    try {
+      const h = await window.api('/api/health');
+      serverFeatures.clear();
+      (Array.isArray(h && h.features) ? h.features : []).forEach(f => serverFeatures.add(String(f)));
+      featuresVersion = String(h && h.version || '');
+    } catch (_) { /* нет связи: оставляем прошлый список */ }
+    return serverFeatures;
+  }
+  const serverHas = name => serverFeatures.has(name);
+
+  /* ---------- голос сервера ---------- */
+  function ensureAudioCtx() {
+    if (audioCtx) return audioCtx;
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return null;
+    try { audioCtx = new AC(); } catch (_) { audioCtx = null; }
+    return audioCtx;
+  }
+  // Телефоны разрешают звук только после касания экрана: первое касание «включает» звук Джарвиса.
+  function unlockAudio() {
+    const c = ensureAudioCtx();
+    if (c && c.state === 'suspended') { try { const p = c.resume(); if (p && p.catch) p.catch(() => {}); } catch (_) {} }
+  }
+  const TTS_CACHE = 'po-jarvis-voice-v1';
+  const ttsMem = new Map();
+  let serverBrokenUntil = 0, serverError = '', serverErrorShown = false;
+  function ttsKey(text) {
+    let h1 = 0x811c9dc5, h2 = 0x9e3779b9 ^ text.length;
+    for (let i = 0; i < text.length; i++) { const c = text.charCodeAt(i); h1 = Math.imul(h1 ^ c, 16777619); h2 = Math.imul(h2 ^ c, 2246822519) ^ (h2 >>> 15); }
+    return `${settings.serverVoice}/${rateOf()}/${(h1 >>> 0).toString(36)}${(h2 >>> 0).toString(36)}${text.length}`;
+  }
+  async function ttsBytes(text, key) {
+    const url = 'https://po-jarvis.voice/' + encodeURIComponent(key);
+    let cache = null;
+    try {
+      cache = 'caches' in window ? await window.caches.open(TTS_CACHE) : null;
+      const hit = cache && await cache.match(url);
+      if (hit) return await hit.arrayBuffer();
+    } catch (_) { cache = null; }
+    const ctrl = typeof AbortController === 'function' ? new AbortController() : null;
+    const timer = setTimeout(() => { try { if (ctrl) ctrl.abort(); } catch (_) {} }, 4500);   // медленная сеть — сразу голос телефона
+    let r;
+    try {
+      r = await window.api('/api/admin/jarvis/tts', { method: 'POST', body: JSON.stringify({ text, voice: settings.serverVoice, rate: rateOf() }), signal: ctrl ? ctrl.signal : undefined });
+    } finally { clearTimeout(timer); }
+    if (!r || !r.audio) throw new Error('сервер не вернул звук');
+    const bin = atob(String(r.audio));
+    const bytes = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+    try { if (cache) await cache.put(url, new Response(bytes.slice(0), { headers: { 'Content-Type': 'audio/mpeg' } })); } catch (_) {}
+    return bytes.buffer;
+  }
+  function decodeAudio(c, bytes) {
+    return new Promise((resolve, reject) => {
+      try { const p = c.decodeAudioData(bytes, resolve, reject); if (p && typeof p.then === 'function') p.then(resolve, reject); }
+      catch (e) { reject(e); }
+    });
+  }
+  function serverFailed(e) {
+    serverBrokenUntil = Date.now() + 5 * 60e3;
+    serverError = String(e && e.message || e || 'нет связи').slice(0, 160);
+    if (sheetOpen && !serverErrorShown) {
+      serverErrorShown = true;
+      addRow({ state: 'warn', title: 'Голос Джарвиса временно недоступен', meta: `${serverError}. Пока говорю голосом телефона.` });
+    }
+  }
+  // true — фраза озвучена (или уже не нужна), false — нужен голос телефона.
+  async function serverSpeak(text, done, seq) {
+    const c = ensureAudioCtx();
+    if (!c) return false;
+    const key = ttsKey(text);
+    let buf = ttsMem.get(key);
+    try {
+      if (!buf) {
+        buf = await decodeAudio(c, await ttsBytes(text, key));
+        ttsMem.set(key, buf);
+        if (ttsMem.size > 60) ttsMem.delete(ttsMem.keys().next().value);
+      }
+    } catch (e) {
+      if (seq !== speechSeq) return true;
+      serverFailed(e);
+      return false;
+    }
+    if (seq !== speechSeq) return true;
+    if (c.state === 'suspended') { try { await c.resume(); } catch (_) {} }
+    if (c.state !== 'running' || seq !== speechSeq) return seq !== speechSeq;
+    stopAudio();
+    const src = c.createBufferSource();
+    src.buffer = buf;
+    src.connect(c.destination);
+    audioSrc = src;
+    src.onended = () => { if (audioSrc === src) { audioSrc = null; finishSpeech(done); } };
+    speakingNow = true;
+    src.start(0);
+    return true;
+  }
+  const serverVoiceReady = () => !!settings.serverVoiceOn && serverHas('jarvis-tts') && Date.now() > serverBrokenUntil && hasToken();
+  function speak(text, done) {
+    cancelSpeech();
+    if (!settings.voice || !text) { (done || maybeAutoListen)(); return; }
+    const say = String(text), seq = speechSeq;
+    if (serverVoiceReady()) {
+      speakingNow = true;
+      serverSpeak(say, done, seq).then(ok => { if (!ok && seq === speechSeq) deviceSpeak(say, done); });
+      return;
+    }
+    deviceSpeak(say, done);
   }
   function maybeAutoListen() {
     if (!settings.autoListen || !sheetOpen || recState !== 'idle' || document.hidden) return;
@@ -1619,7 +1812,12 @@
     const mm = `${r} ${plural(r, 'минута', 'минуты', 'минут')}`;
     return h ? `${h} ${plural(h, 'час', 'часа', 'часов')}${r ? ' ' + mm : ''}` : mm;
   };
-  const sayMoney = n => `${Math.round(Number(n || 0))} сом`;
+  // Суммы голосом — коротко, словами («две триста сорок пять сом»). На карточке всегда точная сумма цифрами.
+  const amt = n => Core.amountWords(n, false);
+  const amtTotal = n => Core.amountWords(n, !!settings.roundTotals);
+  const sayMoney = n => `${amt(n)} сом`;
+  const sayTotal = n => `${amtTotal(n)} сом`;
+  const hmSay = iso => hm(iso).replace(/^0(\d)/, '$1');
   const pcs = n => `${n} ${plural(n, 'штука', 'штуки', 'штук')}`;
   const products_ = () => { const d = appDb(); return d && Array.isArray(d.products) ? d.products : []; };
   const productById = id => products_().find(p => Number(p.id) === Number(id)) || null;
@@ -1699,7 +1897,7 @@
     low.slice(0, 4).forEach(p => card.row(p.name, `${availOf(p)} шт.`, 'заканчивается', 'warn'));
     if (sh.isOpen) card.button('Касса смены', runText('касса смены')); else if (canWrite()) card.button('Открыть смену', runText('открой смену'), true);
     card.button('Активные браслеты', runText('активные браслеты'));
-    let say = sh.isOpen ? `смена открыта. Активных браслетов: ${s.active}. Получено ${sayMoney(s.paid)}${s.pending ? `, не оплачено ${sayMoney(s.pending)}` : ''}.` : 'смена закрыта.';
+    let say = sh.isOpen ? `активных ${s.active}. Касса ${sayTotal(s.paid)}${s.pending ? `, не оплачено ${amtTotal(s.pending)}` : ''}.` : 'смена закрыта.';
     if (over.length) say += ` Больше трёх часов: ${over.map(x => x.room).join(', ')}.`;
     if (low.length) say += ` Заканчивается: ${low.slice(0, 3).map(p => itemSay(p)).join(', ')}.`;
     return result(card, leadSir(say));
@@ -1714,7 +1912,7 @@
     card.stat('Наличные', money(s.cash)).stat('Перевод', money(s.transfer)).stat('Не оплачено', money(s.pending), s.pending ? 'warn' : '')
       .stat('Общий чек', money(s.total)).stat('Средний чек', money(s.avg)).stat('Клиентов', s.clients);
     card.button('Открыть «Итог»', goSection('reportView'), true);
-    const say = sh.isOpen ? `Получено ${sayMoney(s.paid)}: наличными ${sayMoney(s.cash)}, переводом ${sayMoney(s.transfer)}.${s.pending ? ` Не оплачено ${sayMoney(s.pending)}.` : ''}` : 'Смена закрыта, касса текущей смены пуста.';
+    const say = sh.isOpen ? `Касса ${sayTotal(s.paid)}: наличные ${amtTotal(s.cash)}, перевод ${amtTotal(s.transfer)}.${s.pending ? ` Не оплачено ${amtTotal(s.pending)}.` : ''}` : 'Смена закрыта, касса пуста.';
     return result(card, say);
   }
 
@@ -1755,7 +1953,7 @@
       if (cl && cl.summary) card.row('Проверка закрытия', cl.summary.allOk ? 'всё в порядке' : `замечаний: ${cl.summary.problemCount}`, '', cl.summary.allOk ? '' : 'warn');
     }
     if (document.getElementById('openDailyManagerReport')) card.button('Ежедневный отчёт', () => { closeSheet(); try { document.getElementById('openDailyManagerReport').click(); } catch (_) {} }, true);
-    return result(card, `${label[0].toUpperCase()}${label.slice(1)}: получено ${sayMoney(paid)}, клиентов ${clients}.`);
+    return result(card, `${label[0].toUpperCase()}${label.slice(1)}: ${sayTotal(paid)}, ${clients} ${plural(clients, 'клиент', 'клиента', 'клиентов')}.`);
   }
 
   function ansClients() {
@@ -1778,7 +1976,7 @@
       card.row(`№${x.room} · Клиент ${clientNo(x.c)}${x.c.customerBaseName ? ' · ' + x.c.customerBaseName : ''}`, dur(x.ms),
         `${(x.c.items || []).length} поз. · ${money(totalOf(x.c))}${p.pending ? ' · не оплачено ' + money(p.pending) : ''}`, x.room !== 3 && x.ms >= 3 * 3600e3 ? 'err' : '', openClientCard(x.c));
     });
-    const say = tm.length ? `Активных браслетов ${tm.length}: ${tm.map(x => x.room).join(', ')}.` : 'Активных браслетов нет.';
+    const say = !tm.length ? 'Активных браслетов нет.' : tm.length <= 8 ? `Активных ${tm.length}: ${tm.map(x => x.room).join(', ')}.` : `Активных браслетов ${tm.length}.`;
     return result(card, say);
   }
 
@@ -1788,7 +1986,7 @@
     card.big = String(free.length);
     card.bigNote = canWrite() ? 'нажмите номер, чтобы выдать браслет' : 'из 36';
     free.forEach(n => card.chip(String(n), () => { if (!canWrite()) return; const batch = newBatch(''); enqueue(batch, b => doActivate(n, b)); closeBatch(batch); }, 'num'));
-    return result(card, `Свободно ${free.length} ${plural(free.length, 'браслет', 'браслета', 'браслетов')}${free.length && free.length <= 8 ? ': ' + free.join(', ') : ''}.`);
+    return result(card, `Свободно ${free.length}${free.length && free.length <= 6 ? ': ' + free.join(', ') : ''}.`);
   }
 
   function ansRoom(a) {
@@ -1815,7 +2013,8 @@
         i.method === 'cash' ? 'оплачено наличными' : i.method === 'transfer' ? 'оплачено переводом' : 'ожидает оплаты', i.method === 'pending' ? 'warn' : ''));
       card.button('Открыть чек', openClientCard(c), true);
       if (canWrite()) card.button('Добавить покупку', () => { closeSheet(); try { window.openAdd(c.id); } catch (_) {} });
-      says.push(`Браслет ${n}: ${(c.items || []).length} ${plural((c.items || []).length, 'позиция', 'позиции', 'позиций')} на ${sayMoney(sum)}${p.pending ? `, не оплачено ${sayMoney(p.pending)}` : ''}. Время ${Number.isFinite(ms) ? durSay(ms) : 'неизвестно'}${c.customerBaseName ? '. Гость ' + c.customerBaseName : ''}`);
+      const unpaid = !p.pending ? '' : p.pending >= sum ? '. Не оплачено' : `. Не оплачено ${amt(p.pending)}`;
+      says.push(`Браслет ${n}: ${sayMoney(sum)}${Number.isFinite(ms) ? ', ' + durSay(ms) : ''}${unpaid}${c.customerBaseName ? '. Гость ' + String(c.customerBaseName).trim().split(/\s+/)[0] : ''}`);
       return card;
     });
     return { cards, say: says.join('. ') + '.' };
@@ -1829,7 +2028,7 @@
     card.bigNote = over.length ? 'больше 3 часов' : near.length ? 'но скоро истекает у некоторых' : 'лимит не превышен';
     over.forEach(x => card.row(`№${x.room} · Клиент ${clientNo(x.c)}`, dur(x.ms), 'больше 3 часов', 'err', openClientCard(x.c)));
     near.forEach(x => card.row(`№${x.room} · Клиент ${clientNo(x.c)}`, dur(x.ms), 'скоро 3 часа', 'warn', openClientCard(x.c)));
-    const say = over.length ? `Больше трёх часов: ${over.map(x => x.room).join(', ')}.` : near.length ? `Пока никто не превысил три часа. Скоро истекает: ${near.map(x => x.room).join(', ')}.` : 'Все браслеты в пределах трёх часов.';
+    const say = over.length ? `Больше трёх часов: ${over.map(x => x.room).join(', ')}.` : near.length ? `Скоро три часа: ${near.map(x => x.room).join(', ')}.` : 'Все в пределах трёх часов.';
     return result(card, say);
   }
 
@@ -1840,7 +2039,7 @@
     card.bigNote = plural(s.adult + s.child, 'вход', 'входа', 'входов');
     card.stat('Взрослых', `${s.adult} · ${money(s.adultSum)}`).stat('Детских', `${s.child} · ${money(s.childSum)}`);
     const onlyChild = a.entries.length === 1 && a.entries[0] === 'entry:child';
-    return result(card, onlyChild ? `Детских входов за смену: ${s.child}.` : `Входов за смену: взрослых ${s.adult}, детских ${s.child}.`);
+    return result(card, onlyChild ? `Детских входов: ${s.child}.` : `Входы: взрослых ${s.adult}, детских ${s.child}.`);
   }
 
   function ansShift() {
@@ -1853,13 +2052,13 @@
       card.stat('Идёт', dur(Date.now() - Date.parse(sh.openedAt))).stat('Активных браслетов', shiftStats().active);
       card.button('Как закрыть смену', runText('как закрыть смену'));
     } else if (canWrite() && !sh.isClosing) card.button('Открыть смену', runText('открой смену'), true);
-    const say = sh.isOpen ? `Смена открыта с ${hm(sh.openedAt)}${sh.openedBy ? ', открыл ' + sh.openedBy : ''}.` : sh.isClosing ? 'Смена сейчас закрывается.' : 'Смена закрыта.';
+    const say = sh.isOpen ? `Смена открыта с ${hmSay(sh.openedAt)}.` : sh.isClosing ? 'Смена закрывается.' : 'Смена закрыта.';
     return result(card, say);
   }
 
   function ansOpenShift() {
     const sh = shift();
-    if (sh.isOpen) { const card = newCard('Смена уже открыта'); card.bigNote = `с ${hm(sh.openedAt)}`; return result(card, `Смена уже открыта с ${hm(sh.openedAt)}.`); }
+    if (sh.isOpen) { const card = newCard('Смена уже открыта'); card.bigNote = `с ${hm(sh.openedAt)}`; return result(card, `Смена уже открыта с ${hmSay(sh.openedAt)}.`); }
     if (!canWrite()) return readonlyResult();
     askPending({ kind: 'openShift' });
     return result(null, 'Открыть новую смену?');
@@ -1894,9 +2093,9 @@
     }
     card.button('Открыть «Товары»', goSection('productsView'), true);
     const listSay = l => l.slice(0, 5).map(p => itemSay(p) + (availOf(p) > 0 ? ` ${availOf(p)}` : '')).join(', ');
-    const say = a.out ? (out.length ? `Закончились: ${listSay(out)}.` : 'Ничего не закончилось.')
-      : a.low ? (low.length ? `Заканчиваются: ${listSay(low)}.` : 'Все товары в достатке.')
-        : `На складе ${prods.length} товаров. Мало: ${low.length}, закончилось: ${out.length}.`;
+    const say = a.out ? (out.length ? `Нет в наличии: ${listSay(out)}.` : 'Всё есть в наличии.')
+      : a.low ? (low.length ? `Заканчиваются: ${listSay(low)}.` : 'Всего хватает.')
+        : `Товаров ${prods.length}. Мало: ${low.length}, нет: ${out.length}.`;
     return result(card, say);
   }
 
@@ -1907,7 +2106,7 @@
       const pr = await entryPrices();
       card.row('Вход взрослый', money(pr.adult), pricing.active ? 'утренний тариф 10:00–15:00 действует' : '');
       card.row('Вход детский', money(pr.child));
-      says.push(`Вход взрослый ${sayMoney(pr.adult)}, детский ${sayMoney(pr.child)}`);
+      says.push(`Вход: взрослый ${amt(pr.adult)}, детский ${sayMoney(pr.child)}`);
     }
     a.refs.map(ref => productById(ref.slice(2))).filter(Boolean).forEach(p => {
       card.row(p.name, p.price == null ? 'нет цены' : money(p.price), `остаток ${availOf(p)} шт.`);
@@ -1925,7 +2124,7 @@
       card.bigNote = 'рейтинг продаж по оплаченным покупкам';
       rows.forEach((p, i) => card.row(`${i + 1}. ${p.name}`, `${p.soldQty} шт.`, `выручка ${money(p.revenue)}`));
       if (document.getElementById('openDailyManagerReport') || portalOn()) card.button('Статистика товаров', goSection('stats'));
-      return result(card, rows.length ? `Лидеры продаж: ${rows.slice(0, 3).map(p => `${p.name} ${p.soldQty}`).join(', ')}.` : 'Продаж пока нет.');
+      return result(card, rows.length ? `Лидеры: ${rows.slice(0, 3).map(p => `${p.name} ${p.soldQty}`).join(', ')}.` : 'Продаж пока нет.');
     }
     const s = shiftStats();
     const all = [...s.sales.values()].sort((x, y) => y.qty - x.qty || y.sum - x.sum);
@@ -1936,12 +2135,12 @@
       if (rows.length === 1) { card.title = rows[0].name; card.big = `${rows[0].qty} шт.`; card.bigNote = `продано за смену · ${money(rows[0].sum)}`; }
       else rows.forEach(x => card.row(x.name, `${x.qty} шт.`, money(x.sum)));
       void ids;
-      return result(card, rows.map(x => `${itemSay(productById(x.id) || x)}: продано ${pcs(x.qty)}`).join('. ') + '.');
+      return result(card, rows.map(x => `${itemSay(productById(x.id) || x)}: продано ${x.qty}`).join('. ') + '.');
     }
     card.bigNote = all.length ? 'по количеству за текущую смену' : 'продаж в этой смене пока нет';
     all.slice(0, 8).forEach((x, i) => card.row(`${i + 1}. ${x.name}`, `${x.qty} шт.`, money(x.sum)));
     if (canFinance()) card.button('За всё время', runText('топ товаров за месяц'));
-    return result(card, all.length ? `Больше всего продали: ${all.slice(0, 3).map(x => `${itemSay(productById(x.id) || x)} ${x.qty}`).join(', ')}.` : 'В этой смене продаж пока нет.');
+    return result(card, all.length ? `Хиты смены: ${all.slice(0, 3).map(x => `${itemSay(productById(x.id) || x)} ${x.qty}`).join(', ')}.` : 'Продаж пока нет.');
   }
 
   async function customerList() {
@@ -2004,7 +2203,8 @@
     }
     card.button('Открыть базу клиентов', goSection('customers'));
     const c = found[0], b = bonus(c);
-    const say = `${c.name}${c.phone ? ', телефон ' + String(c.phone).replace(/\D+/g, ' ').trim() : ''}. Визитов ${Number(c.visitsTotal || 0)}${b ? `, бонус ${sayMoney(b.available)}` : ''}.`;
+    const visits = Number(c.visitsTotal || 0);
+    const say = `${c.name}: ${visits} ${plural(visits, 'визит', 'визита', 'визитов')}${b && b.available ? `, бонус ${sayMoney(b.available)}` : ''}${c.bonusAvailable ? '. Пятый визит бесплатно' : ''}.`;
     return result(card, found.length > 1 ? `Нашёл ${found.length}. ${say}` : say);
   }
   async function ansCustomerCount() {
@@ -2030,7 +2230,7 @@
     Object.entries(s.byCategory || {}).sort((x, y) => y[1] - x[1]).slice(0, 4).forEach(([cat, sum]) => card.stat(cat, money(sum)));
     list.slice(0, 4).forEach(e => card.row(e.title || e.category, money(e.amount), `${e.spentAt || ''} · ${e.category || ''}`));
     card.button('Открыть «Расходы»', goSection('expensesView'), true);
-    const say = a.period === 'month' ? `Расходы за месяц ${sayMoney(s.monthTotal)}, сегодня ${sayMoney(s.todayTotal)}.` : `Расходы сегодня ${sayMoney(s.todayTotal)}, за месяц ${sayMoney(s.monthTotal)}.`;
+    const say = a.period === 'month' ? `Расходы за месяц ${sayTotal(s.monthTotal)}, сегодня ${amtTotal(s.todayTotal)}.` : `Расходы сегодня ${sayTotal(s.todayTotal)}, за месяц ${amtTotal(s.monthTotal)}.`;
     return result(card, say);
   }
 
@@ -2047,8 +2247,8 @@
       .stat('Закупка проданных товаров', complete ? money(s.productCost) : 'не указана').stat('Расходы за месяц', money(s.expenses));
     if (complete) card.stat('Прибыль от товаров', money(s.productGrossProfit), 'ok');
     card.button(portalOn() ? 'Показать на панели' : 'Панель руководителя', goSection(portalOn() ? 'profit' : 'manager'), true);
-    const say = complete ? `Чистая прибыль за месяц ${sayMoney(s.netProfit)}. Доход от входов ${sayMoney(s.entryRevenue)}, товары ${sayMoney(s.productRevenue)}, расходы ${sayMoney(s.expenses)}.`
-      : `Выручка за месяц ${sayMoney(Number(s.entryRevenue || 0) + Number(s.productRevenue || 0))}. Чистую прибыль посчитаю, когда у всех товаров будет закупочная цена.`;
+    const say = complete ? `Чистая прибыль за месяц ${sayTotal(s.netProfit)}. Расходы ${amtTotal(s.expenses)}.`
+      : `Выручка за месяц ${sayTotal(Number(s.entryRevenue || 0) + Number(s.productRevenue || 0))}. Для чистой прибыли нужны закупочные цены.`;
     return result(card, say);
   }
 
@@ -2063,7 +2263,8 @@
     card.bigNote = todays.length ? plural(todays.length, 'бронь сегодня', 'брони сегодня', 'броней сегодня') : list.length ? 'сегодня броней нет' : 'броней нет';
     show.forEach(b => card.row(`${String(b.appointmentAt).slice(11, 16)} · ${b.name}`, b.phone || '', `${String(b.appointmentAt).slice(0, 10) === today ? 'сегодня' : String(b.appointmentAt).slice(8, 10) + '.' + String(b.appointmentAt).slice(5, 7)}${b.note ? ' · ' + b.note : ''}`));
     card.button('Открыть базу клиентов', goSection('customers'));
-    const say = todays.length ? `Сегодня ${todays.length} ${plural(todays.length, 'бронь', 'брони', 'броней')}: ${todays.slice(0, 3).map(b => `в ${String(b.appointmentAt).slice(11, 16)} ${b.name}`).join(', ')}.` : list.length ? `Сегодня броней нет. Ближайшая: ${String(list[0].appointmentAt).slice(8, 10)}.${String(list[0].appointmentAt).slice(5, 7)} в ${String(list[0].appointmentAt).slice(11, 16)}, ${list[0].name}.` : 'Броней нет.';
+    const at = b => String(b.appointmentAt).slice(11, 16).replace(/^0(\d)/, '$1');
+    const say = todays.length ? `Сегодня ${todays.length} ${plural(todays.length, 'бронь', 'брони', 'броней')}: ${todays.slice(0, 3).map(b => `в ${at(b)} ${b.name}`).join(', ')}.` : list.length ? `Сегодня броней нет. Ближайшая ${dayMonth(String(list[0].appointmentAt).slice(0, 10) + 'T12:00:00')} в ${at(list[0])}.` : 'Броней нет.';
     return result(card, say);
   }
 
@@ -2075,7 +2276,7 @@
     const card = newCard(a.topic === 'date' ? 'Сегодня' : 'Время');
     card.big = a.topic === 'date' ? date : time;
     card.bigNote = a.topic === 'date' ? time : date;
-    return result(card, a.topic === 'date' ? `Сегодня ${date}.` : `Сейчас ${time}.`);
+    return result(card, a.topic === 'date' ? `Сегодня ${date}.` : `Сейчас ${time.replace(/^0(\d)/, '$1')}.`);
   }
 
   function ansHelp() {
@@ -2092,7 +2293,7 @@
     if (canFinance()) card.row('Руководителю', '', '«отчёт за вчера» · «прибыль за месяц» · «топ товаров за месяц» · «расходы за месяц»');
     card.row('Подсказки', '', '«как закрыть смену» · «как добавить товар» · «как работает бонус»');
     ['Сводка', 'Касса смены', 'Сколько активных', 'Что заканчивается', 'Как закрыть смену'].forEach(t => card.chip(t, runText(t.toLowerCase())));
-    return result(card, withSir('Я отвечаю на вопросы по сайту, открываю разделы и веду браслеты голосом. Нажмите любой вопрос'));
+    return result(card, withSir('Спросите про смену, браслеты, склад или клиентов'));
   }
 
   const FAQ_TEXT = {
@@ -2133,7 +2334,7 @@
     const card = newCard('Пока не знаю ответа', 'warn');
     card.note = 'Спросите иначе или выберите вопрос:';
     ['Сводка', 'Касса смены', 'Сколько активных', 'Что заканчивается', 'Что ты умеешь'].forEach(t => card.chip(t, runText(t.toLowerCase())));
-    return result(card, leadSir('Пока не знаю ответа на этот вопрос. Выберите вопрос на экране.'));
+    return result(card, leadSir('Пока не знаю ответа. Выберите вопрос на экране.'));
   }
   function managerOnlyResult(what) {
     const card = newCard(what, 'warn');
@@ -2217,7 +2418,7 @@
     const sh = shift(), s = shiftStats(), sir = sirWord();
     const head = mode === 'manager' ? `Добро пожаловать в панель руководителя${sir ? ', ' + sir : ''}.` : `Добро пожаловать в Пар Ордо Про${sir ? ', ' + sir : ''}.`;
     if (!sh.loaded) return head;
-    return `${head} ${sh.isOpen ? `Смена открыта, активных браслетов: ${s.active}.` : 'Смена закрыта.'}`;
+    return `${head} ${sh.isOpen ? `Активных браслетов: ${s.active}.` : 'Смена закрыта.'}`;
   }
   function showGreetBanner(mode) {
     let el = document.getElementById('poJvGreet');
@@ -2258,6 +2459,152 @@
     if (visible && !appWasVisible) scheduleGreeting(portalOn() ? 'manager' : 'app');
     appWasVisible = visible;
     if (visible && portalOn() && document.querySelector('#managerView.active')) scheduleGreeting('manager');
+  }
+
+  /* ---------- оповещения Джарвиса: браслеты 2:50 и 3:00, склад ---------- */
+  // Говорит сам, без вопроса: персонал и администратор (не панель руководителя), только при открытой смене.
+  // Каждое оповещение — один раз (помнится на этом телефоне 36 часов, повторов после обновления страницы нет).
+  const ALERT_STORE = 'parordo_jarvis_alerts_v1';
+  const ROOM_WARN_MIN = 170, ROOM_LIMIT_MIN = 180;
+  let alertSeen = readJSON(ALERT_STORE, {});
+  const alertQueue = [];
+  let lastAlertAt = 0, stockSnap = null, alertRetry = 0, alertGestureWait = false;
+  function markAlert(key) {
+    alertSeen[key] = Date.now();
+    const cut = Date.now() - 36 * 3600e3;
+    Object.keys(alertSeen).forEach(k => { if (!(alertSeen[k] >= cut)) delete alertSeen[k]; });
+    writeJSON(ALERT_STORE, alertSeen);
+  }
+  const appOpen = () => { const app = document.getElementById('appView'); return !!app && !app.classList.contains('hidden') && hasToken(); };
+  const alertsAllowed = () => canWrite() && !portalOn() && appOpen() && !!shift().isOpen;
+  const roomsSay = rooms => (rooms.length === 1 ? `Браслет ${rooms[0]}` : `Браслеты ${rooms.slice(0, -1).join(', ')} и ${rooms[rooms.length - 1]}`);
+  const roomsTitle = rooms => rooms.map(n => '№' + n).join(', ');
+  function checkRooms() {
+    const now = Date.now(), warn = [], over = [];
+    shiftList().forEach(c => {
+      if (!c || c.status !== 'active' || Number(c.room) === 3) return;
+      const t = Date.parse(c.startedAt);
+      if (!Number.isFinite(t)) return;
+      const min = (now - t) / 60000, kw = `r${c.id}:w`, ko = `r${c.id}:o`;
+      if (min >= ROOM_LIMIT_MIN + 0.2) {
+        // 3:00:12 — к этому времени time-alert уже добавил «Вход» 300 сом. Старые (больше 15 минут) — без голоса.
+        if (!alertSeen[ko]) { markAlert(kw); markAlert(ko); if (min < ROOM_LIMIT_MIN + 15) over.push(c); }
+      } else if (min >= ROOM_WARN_MIN && !alertSeen[kw]) {
+        markAlert(kw);
+        warn.push({ c, left: Math.max(1, Math.ceil(ROOM_LIMIT_MIN - min)) });
+      }
+    });
+    if (over.length) {
+      const rooms = over.map(c => Number(c.room)).sort((a, b) => a - b);
+      const fee = over.every(c => (c.items || []).some(i => i && i.autoTimeFee === 'over3h'));
+      queueAlert({
+        tone: 'err', title: `${roomsTitle(rooms)} · прошло 3 часа`,
+        sub: fee ? '«Вход» 300 сом добавлен автоматически' : 'Время браслета истекло',
+        say: `${roomsSay(rooms)}: три часа прошло${fee ? ', добавлен вход триста сом' : ''}.`,
+        open: over.length === 1 ? over[0] : null
+      });
+    }
+    if (warn.length) {
+      const rooms = warn.map(x => Number(x.c.room)).sort((a, b) => a - b);
+      const left = Math.min(...warn.map(x => x.left));
+      queueAlert({
+        tone: 'warn', title: `${roomsTitle(rooms)} · скоро 3 часа`,
+        sub: `Осталось ${left} ${plural(left, 'минута', 'минуты', 'минут')}`,
+        say: `${roomsSay(rooms)}: через ${left} ${plural(left, 'минуту', 'минуты', 'минут')} три часа.`,
+        open: warn.length === 1 ? warn[0].c : null
+      });
+    }
+  }
+  function checkStock() {
+    const list = products_().filter(p => p && p.price != null && p.active !== false);
+    const snap = new Map(list.map(p => [Number(p.id), availOf(p)]));
+    const prev = stockSnap;
+    stockSnap = snap;
+    if (!prev) return;   // первый снимок после входа — только запоминаем
+    const low = [], out = [];
+    snap.forEach((v, id) => {
+      const was = prev.get(id);
+      if (was == null || v === was) return;
+      const kl = `s${id}:l`, ko = `s${id}:o`;
+      if (v > was) {       // поступление: дальше снова можно предупреждать
+        if (v > 2 && (alertSeen[kl] || alertSeen[ko])) { delete alertSeen[kl]; delete alertSeen[ko]; writeJSON(ALERT_STORE, alertSeen); }
+        return;
+      }
+      if (v <= 0) { if (!alertSeen[ko]) { markAlert(kl); markAlert(ko); out.push(id); } }
+      else if (v <= 2 && !alertSeen[kl]) { markAlert(kl); low.push(id); }
+    });
+    if (!low.length && !out.length) return;
+    const nameOf = id => (productById(id) || {}).name || '';
+    const sayOf = id => { const p = productById(id); return p ? itemSay(p) : ''; };
+    const parts = [];
+    if (out.length) parts.push(`Нет в наличии: ${out.map(sayOf).join(', ')}.`);
+    if (low.length) parts.push(low.length === 1 ? `${sayOf(low[0])}: осталось ${snap.get(low[0])}.` : `Заканчиваются: ${low.map(id => `${sayOf(id)} ${snap.get(id)}`).join(', ')}.`);
+    queueAlert({
+      tone: out.length ? 'err' : 'warn',
+      title: out.length ? 'Склад: товар закончился' : 'Склад: товар заканчивается',
+      sub: out.map(id => `${nameOf(id)} — нет`).concat(low.map(id => `${nameOf(id)} — ${snap.get(id)} шт.`)).join(' · '),
+      say: parts.join(' '),
+      nav: 'productsView'
+    });
+  }
+  function queueAlert(a) {
+    a.at = Date.now();
+    showAlertBanner(a);
+    if (sheetOpen) addRow({ state: a.tone === 'err' ? 'err' : 'warn', title: a.title, meta: a.sub });
+    alertQueue.push(a);
+    flushAlerts();
+  }
+  function flushAlerts() {
+    clearTimeout(alertRetry);
+    if (!alertQueue.length) return;
+    if (!settings.voice || document.hidden) { alertQueue.length = 0; return; }
+    if (navigator.userActivation && !navigator.userActivation.hasBeenActive) {
+      // Телефон не даёт говорить, пока экран ни разу не трогали: скажем после первого касания.
+      if (!alertGestureWait) {
+        alertGestureWait = true;
+        document.addEventListener('pointerdown', () => { alertGestureWait = false; setTimeout(flushAlerts, 350); }, { once: true, capture: true });
+      }
+      return;
+    }
+    const wait = speakingNow || recState !== 'idle' ? 1500 : Math.max(0, 6000 - (Date.now() - lastAlertAt));
+    if (wait > 0) { alertRetry = setTimeout(flushAlerts, wait); return; }
+    const items = alertQueue.splice(0).filter(a => Date.now() - a.at < 5 * 60e3);
+    if (!items.length) return;
+    lastAlertAt = Date.now();
+    speak(leadSir(items.map(a => a.say).join(' ')), () => {});
+  }
+  function showAlertBanner(a) {
+    let el = document.getElementById('poJvAlert');
+    if (!el) {
+      el = document.createElement('div');
+      el.id = 'poJvAlert';
+      el.setAttribute('role', 'alert');
+      document.body.appendChild(el);
+      el.addEventListener('click', e => {
+        const cur = showAlertBanner.cur, btn = e.target.closest('button');
+        el.hidden = true;
+        if (!btn || !cur) return;
+        if (cur.open) { try { window.openClient(cur.open.id); } catch (_) {} }
+        else if (cur.nav) { try { window.navigate(cur.nav); } catch (_) {} }
+      });
+    }
+    showAlertBanner.cur = a;
+    // Приветствие на том же месте экрана: оповещение встаёт под него.
+    const greetEl = document.getElementById('poJvGreet');
+    const greetBox = greetEl && !greetEl.hidden ? greetEl.getBoundingClientRect() : null;
+    el.style.top = greetBox && greetBox.height ? `${Math.round(greetBox.bottom + 8)}px` : '';
+    const action = a.open ? 'Открыть' : a.nav ? 'Склад' : '';
+    el.dataset.tone = a.tone;
+    el.innerHTML = `<span class="jv-alert-ic" aria-hidden="true">${a.tone === 'err' ? I.err : I.warn}</span><div><b>${esc(a.title)}</b>${a.sub ? `<small>${esc(a.sub)}</small>` : ''}</div>${action ? `<button type="button">${action}</button>` : ''}`;
+    el.hidden = false;
+    el.classList.remove('jv-alert-in'); void el.offsetWidth; el.classList.add('jv-alert-in');
+    clearTimeout(showAlertBanner.t);
+    showAlertBanner.t = setTimeout(() => { el.hidden = true; }, 9000);
+  }
+  function alertTick() {
+    if (!alertsAllowed() || (!settings.alertRooms && !settings.alertStock)) { stockSnap = null; return; }
+    try { if (settings.alertRooms) checkRooms(); } catch (_) { /* оповещения не должны мешать работе */ }
+    try { if (settings.alertStock) checkStock(); else stockSnap = null; } catch (_) {}
   }
 
   /* ---------- интерфейс ---------- */
@@ -2400,11 +2747,32 @@ body.po-jv-on #homeView .rooms{margin-bottom:84px}
 .jv-greet-orb svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 #poJvGreet.jv-greet-in{animation:jvGreet .5s cubic-bezier(.16,1,.3,1)}
 @keyframes jvGreet{from{opacity:0;transform:translate(-50%,-10px)}to{opacity:1;transform:translate(-50%,0)}}
+.jv-chip[aria-checked="true"]{border-color:#e4b64f;background:linear-gradient(135deg,rgba(168,109,21,.5),rgba(255,218,110,.16));color:#fff1cf;box-shadow:inset 0 0 0 1px rgba(255,218,110,.3)}
+.jv-tag{display:inline-block;margin-left:6px;padding:1px 6px;border:1px solid rgba(45,240,130,.45);border-radius:999px;color:#a5f4bf;font-size:10px;font-weight:800;vertical-align:1px}
+.jv-vstat{margin:0 0 10px;padding:10px 12px;border:1px solid #4d351e;border-radius:13px;background:#120c07;font-size:12.5px;line-height:1.45;color:#d9cba9}
+.jv-vstat.ok{border-color:rgba(45,240,130,.45);background:rgba(10,42,26,.55);color:#c9f7da}
+.jv-vstat b{display:block;margin-bottom:2px;font-size:13px;color:#fff1cf}
+.jv-field>span em{font-style:normal;color:#fff1cf;font-weight:900;margin-left:4px}
+.jv-range{display:block;width:100%;height:30px;margin:0;accent-color:#f6bd47}
+.jv-preview{display:flex;align-items:center;gap:8px;margin:0 0 16px}
+.jv-preview svg{width:16px;height:16px}
+#poJvAlert{position:fixed;left:50%;top:calc(78px + env(safe-area-inset-top));transform:translateX(-50%);z-index:61;display:flex;align-items:center;gap:11px;width:min(92vw,470px);padding:11px 12px 11px 11px;border:1px solid rgba(246,189,71,.72);border-radius:18px;background:linear-gradient(150deg,#2f210b,#100b06);color:#f9f2e6;box-shadow:0 18px 44px rgba(0,0,0,.62),inset 0 1px 0 rgba(255,229,161,.08)}
+#poJvAlert[data-tone="err"]{border-color:rgba(255,85,75,.75);background:linear-gradient(150deg,#3a130f,#120806)}
+#poJvAlert[hidden]{display:none!important}
+#poJvAlert>div{flex:1;min-width:0}
+#poJvAlert b{display:block;font-size:14.5px;font-weight:850;line-height:1.25;color:#ffe5a1;overflow-wrap:anywhere}
+#poJvAlert[data-tone="err"] b{color:#ffc2bb}
+#poJvAlert small{display:block;margin-top:2px;font-size:12px;font-weight:650;line-height:1.35;color:#d6c6a5;overflow-wrap:anywhere}
+#poJvAlert button{flex:0 0 auto;min-height:40px;padding:6px 12px;border:1px solid #e4b64f;border-radius:12px;background:linear-gradient(135deg,#a86d15,#ffda6e);color:#251807;font:inherit;font-size:13px;font-weight:900;cursor:pointer}
+.jv-alert-ic{flex:0 0 auto;display:grid;place-items:center;width:38px;height:38px;border:1px solid #f6bd47;border-radius:50%;background:#2f220b;color:#f6bd47}
+#poJvAlert[data-tone="err"] .jv-alert-ic{border-color:#ff554b;background:#311210;color:#ff7d74}
+.jv-alert-ic svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+#poJvAlert.jv-alert-in{animation:jvGreet .45s cubic-bezier(.16,1,.3,1)}
 #roomsGrid .room.po-jv-flash{box-shadow:0 0 0 2px #2df082,0 0 26px rgba(45,240,130,.42)!important;transition:box-shadow .2s ease}
 @keyframes jvSpin{to{transform:rotate(360deg)}}
 @keyframes jvIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 @keyframes jvPulse{0%{box-shadow:0 0 0 0 rgba(45,240,130,.55),0 8px 20px rgba(0,0,0,.35)}100%{box-shadow:0 0 0 14px rgba(45,240,130,0),0 8px 20px rgba(0,0,0,.35)}}
-@media (prefers-reduced-motion:reduce){#poJvSheet *,#poJvGreet{animation:none!important;transition:none!important}.jv-row[data-state="wait"] .jv-ic{border-top-color:#f6bd47}}
+@media (prefers-reduced-motion:reduce){#poJvSheet *,#poJvGreet,#poJvAlert{animation:none!important;transition:none!important}.jv-row[data-state="wait"] .jv-ic{border-top-color:#f6bd47}}
 body.po-jv-nonav #poJvOrb{bottom:28px;right:28px}
 body.po-jv-nonav #poJvHint{bottom:40px;right:104px}
 body.po-jv-nonav #poJvSheet{left:auto;right:24px;bottom:24px;width:min(520px,calc(100vw - 48px));margin:0;max-height:min(78dvh,640px)}
@@ -2485,7 +2853,7 @@ body.po-jv-nonav #poJvSheet{left:auto;right:24px;bottom:24px;width:min(520px,cal
     sheet.addEventListener('click', onSheetClick);
     document.addEventListener('keydown', e => { if (e.key === 'Escape' && sheetOpen) closeSheet(); });
     document.addEventListener('visibilitychange', () => { if (document.hidden) { abortListening(); cancelSpeech(); } });
-    try { if ('speechSynthesis' in window) { pickVoice(); window.speechSynthesis.onvoiceschanged = pickVoice; } } catch (_) {}
+    try { if ('speechSynthesis' in window) { loadVoices(); window.speechSynthesis.onvoiceschanged = () => { loadVoices(); if (!$settings.hidden) renderSettings(); }; } } catch (_) {}
   }
 
   function onSheetClick(e) {
@@ -2510,6 +2878,9 @@ body.po-jv-nonav #poJvSheet{left:auto;right:24px;bottom:24px;width:min(520px,cal
     if (t.dataset.jvLang) { settings.lang = t.dataset.jvLang; saveSettings(); renderSettings(); return; }
     if (t.dataset.jvAddress) { settings.address = t.dataset.jvAddress; saveSettings(); renderSettings(); return; }
     if (t.dataset.jvForget) { delete learned[t.dataset.jvForget]; saveLearned(); indexCache.sig = ''; renderSettings(); return; }
+    if (t.dataset.jvSv) { settings.serverVoice = t.dataset.jvSv; settings.serverVoiceOn = true; serverBrokenUntil = 0; saveSettings(); renderSettings(); previewVoice(false); return; }
+    if (t.dataset.jvDv != null) { settings.voiceName = t.dataset.jvDv; saveSettings(); renderSettings(); previewVoice(true); return; }
+    if (t.dataset.jvPreview != null) { previewVoice(false); return; }
     if (t.dataset.jvBack != null) { toggleSettings(false); return; }
   }
 
@@ -2535,7 +2906,10 @@ body.po-jv-nonav #poJvSheet{left:auto;right:24px;bottom:24px;width:min(520px,cal
     $settings.hidden = !show;
     q('[data-jv-body]').hidden = show;
     sheet.classList.toggle('jv-in-settings', show);
-    if (show) renderSettings();
+    if (show) {
+      renderSettings();
+      refreshFeatures(true).then(() => { if (!$settings.hidden) renderSettings(); });
+    }
   }
   function showText(show) {
     $text.hidden = !show;
@@ -2671,16 +3045,56 @@ body.po-jv-nonav #poJvSheet{left:auto;right:24px;bottom:24px;width:min(520px,cal
     renderRows();
   }
 
+  const voiceLabel = v => String(v.name || '').replace(/^Microsoft\s+/i, '').replace(/\s*Online\s*\(Natural\)/i, '').replace(/\s*[-–]\s*Russian.*$/i, '').trim() || 'Голос';
+  const previewText = () => `${withSir('Слушаю')} Браслет пять: ${sayMoney(2345)}.`;
+  function previewVoice(device) {
+    if (device) { cancelSpeech(); deviceSpeak(previewText(), () => {}); return; }
+    speak(previewText(), () => {});
+  }
   function renderSettings() {
     if (!$settings) return;
     const entries = Object.entries(learned);
+    if (!ruVoices.length) loadVoices();
+    const live = serverHas('jarvis-tts');
+    const broken = Date.now() <= serverBrokenUntil;
+    const status = live && settings.serverVoiceOn && !broken
+      ? '<div class="jv-vstat ok"><b>Живой голос Джарвиса подключён</b>Мужской голос с сервера — одинаковый на всех телефонах.</div>'
+      : live && broken ? `<div class="jv-vstat"><b>Живой голос временно недоступен</b>${esc(serverError)}. Пока говорит голос телефона.</div>`
+        : live ? '<div class="jv-vstat"><b>Живой голос выключен</b>Сейчас говорит голос телефона.</div>'
+          : '<div class="jv-vstat"><b>Сейчас говорит голос телефона</b>Живой мужской голос включается на сервере: дополнение Worker V10.20 и ключ Google. Смотрите инструкцию.</div>';
+    const devList = ruVoices.slice(0, 12);
     $settings.innerHTML = `
       <h3>Настройки Джарвиса</h3>
+      <label class="jv-switch"><input type="checkbox" data-jv-voice ${settings.voice ? 'checked' : ''}><span>Отвечать голосом</span></label>
+      <div class="jv-field"><span>Голос Джарвиса</span>
+        ${status}
+        ${live ? `<label class="jv-switch"><input type="checkbox" data-jv-server ${settings.serverVoiceOn ? 'checked' : ''}><span>Живой голос с сервера</span></label>
+        <div class="jv-chips" role="radiogroup" aria-label="Живой голос">${SERVER_VOICES.map(([id, name, note]) => `<button type="button" class="jv-chip" role="radio" aria-checked="${settings.serverVoice === id}" data-jv-sv="${esc(id)}">${esc(name)}<small>${esc(note)}</small></button>`).join('')}</div>` : ''}
+      </div>
+      <div class="jv-field"><span>Голос телефона${live && settings.serverVoiceOn ? ' · запасной' : ''}</span>
+        ${devList.length > 1 ? `<div class="jv-chips" role="radiogroup" aria-label="Голос телефона">
+          <button type="button" class="jv-chip" role="radio" aria-checked="${!settings.voiceName}" data-jv-dv="">Авто<small>мужской, если есть</small></button>
+          ${devList.map(v => `<button type="button" class="jv-chip" role="radio" aria-checked="${settings.voiceName === v.name}" data-jv-dv="${esc(v.name)}">${esc(voiceLabel(v))}${isMaleVoice(v) ? '<span class="jv-tag">муж.</span>' : ''}</button>`).join('')}</div>` : ''}
+        <small>Android: мужской голос выбирается в телефоне — Настройки → «Синтез речи» (Text-to-speech) → Google → ⚙ → «Установка голосовых данных» → Русский → выберите мужской голос.</small>
+      </div>
+      <div class="jv-field"><span>Скорость речи <em data-jv-rate-v>${rateOf().toFixed(2)}</em></span>
+        <input class="jv-range" type="range" min="0.8" max="1.5" step="0.05" value="${rateOf()}" data-jv-rate aria-label="Скорость речи">
+      </div>
+      <div class="jv-field"><span>Тон голоса телефона <em data-jv-pitch-v>${pitchOf().toFixed(2)}</em></span>
+        <input class="jv-range" type="range" min="0.5" max="1.3" step="0.05" value="${pitchOf()}" data-jv-pitch aria-label="Тон голоса телефона">
+        <small>Меньше — ниже и глубже голос.</small>
+      </div>
+      <div class="jv-preview"><button type="button" class="jv-chip jv-go" data-jv-preview>${I.mic}Прослушать</button><small>«${esc(previewText())}»</small></div>
+      <label class="jv-switch"><input type="checkbox" data-jv-round ${settings.roundTotals ? 'checked' : ''}><span>Итоги от 10 000 — до тысяч («двадцать четыре тысячи»)</span></label>
+      <div class="jv-field"><span>Джарвис предупреждает сам</span>
+        <label class="jv-switch"><input type="checkbox" data-jv-al-rooms ${settings.alertRooms ? 'checked' : ''}><span>Браслет: 2:50 — скоро 3 часа, 3:00 — время вышло</span></label>
+        <label class="jv-switch"><input type="checkbox" data-jv-al-stock ${settings.alertStock ? 'checked' : ''}><span>Склад: осталось 2 шт. и товар закончился</span></label>
+        <small>Только у персонала и администратора, при открытой смене. Браслет №3 руководителя не объявляется.</small>
+      </div>
       <div class="jv-field"><span>Язык распознавания</span>
         <div class="jv-seg" role="radiogroup" aria-label="Язык распознавания">${LANGS.map(([code, name]) => `<button type="button" role="radio" aria-checked="${settings.lang === code}" data-jv-lang="${code}">${name}</button>`).join('')}</div>
         <small>Если кыргызский не распознаётся на телефоне, выберите русский: Джарвис понимает «кош», «бир», «эки», «биринчи» и в русском режиме. Казахский близок к кыргызскому.</small>
       </div>
-      <label class="jv-switch"><input type="checkbox" data-jv-voice ${settings.voice ? 'checked' : ''}><span>Отвечать голосом</span></label>
       <label class="jv-switch"><input type="checkbox" data-jv-greet ${settings.greet ? 'checked' : ''}><span>Приветствие при входе на сайт</span></label>
       <div class="jv-field"><span>Обращение</span>
         <div class="jv-seg" role="radiogroup" aria-label="Обращение">${[['sir', 'Сэр'], ['madam', 'Госпожа'], ['none', 'Без обращения']].map(([code, name]) => `<button type="button" role="radio" aria-checked="${settings.address === code}" data-jv-address="${code}">${name}</button>`).join('')}</div>
@@ -2691,10 +3105,23 @@ body.po-jv-nonav #poJvSheet{left:auto;right:24px;bottom:24px;width:min(520px,cal
           : '<small>Если Джарвис не понял слово, выберите товар с галочкой «Запомнить» — в следующий раз он поймёт сразу. Слова хранятся на этом телефоне.</small>'}
       </div>
       <button type="button" class="jv-chip jv-go" data-jv-back>Готово</button>`;
-    const voice = $settings.querySelector('[data-jv-voice]'), auto = $settings.querySelector('[data-jv-auto]'), greetBox = $settings.querySelector('[data-jv-greet]');
-    greetBox.addEventListener('change', () => { settings.greet = greetBox.checked; saveSettings(); });
-    voice.addEventListener('change', () => { settings.voice = voice.checked; saveSettings(); if (!voice.checked) cancelSpeech(); });
-    auto.addEventListener('change', () => { settings.autoListen = auto.checked; saveSettings(); });
+    const box = sel => $settings.querySelector(sel);
+    const bind = (sel, key, after) => { const el = box(sel); if (el) el.addEventListener('change', () => { settings[key] = el.checked; saveSettings(); if (after) after(el.checked); }); };
+    bind('[data-jv-voice]', 'voice', on => { if (!on) cancelSpeech(); });
+    bind('[data-jv-greet]', 'greet');
+    bind('[data-jv-auto]', 'autoListen');
+    bind('[data-jv-server]', 'serverVoiceOn', () => renderSettings());
+    bind('[data-jv-round]', 'roundTotals');
+    bind('[data-jv-al-rooms]', 'alertRooms');
+    bind('[data-jv-al-stock]', 'alertStock', on => { if (!on) stockSnap = null; });
+    const range = (sel, label, key, read, device) => {
+      const el = box(sel), out = box(label);
+      if (!el) return;
+      el.addEventListener('input', () => { settings[key] = Number(el.value); out.textContent = read().toFixed(2); });
+      el.addEventListener('change', () => { settings[key] = Number(el.value); saveSettings(); previewVoice(device); });
+    };
+    range('[data-jv-rate]', '[data-jv-rate-v]', 'rate', rateOf, false);
+    range('[data-jv-pitch]', '[data-jv-pitch-v]', 'pitch', pitchOf, true);
   }
 
   function flash(n) {
@@ -2744,6 +3171,11 @@ body.po-jv-nonav #poJvSheet{left:auto;right:24px;bottom:24px;width:min(520px,cal
     buildUi();
     updateVisibility();
     setInterval(updateVisibility, 600);
+    refreshFeatures(true);
+    setInterval(() => { refreshFeatures(false); }, 10 * 60e3 + 5000);
+    document.addEventListener('pointerdown', () => { if (settings.serverVoiceOn && serverHas('jarvis-tts')) unlockAudio(); }, true);
+    setTimeout(alertTick, 4000);
+    setInterval(alertTick, 10000);
     window.PARORDOJarvis = Object.freeze({
       version: VERSION,
       open: () => { openSheet(); },
@@ -2752,6 +3184,9 @@ body.po-jv-nonav #poJvSheet{left:auto;right:24px;bottom:24px;width:min(520px,cal
       parse: text => Core.parse(text, getIndex(), { room: ctxRoom() }),
       context: () => ctxRoom(),
       learned: () => Object.assign({}, learned),
+      say: text => speak(String(text || ''), () => {}),
+      alerts: () => alertTick(),
+      voice: () => ({ server: serverVoiceReady(), serverVoice: settings.serverVoice, device: (deviceVoice() || {}).name || '', features: [...serverFeatures] }),
       core: Core
     });
     return true;
