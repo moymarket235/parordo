@@ -15,7 +15,7 @@
   'use strict';
   if (window.PARORDOSections) return;
 
-  const VERSION = '1.0.2';
+  const VERSION = '1.0.3';
   const root = document.documentElement;
   const reduced = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
   const canAnimate = typeof Element !== 'undefined' && typeof Element.prototype.animate === 'function';
@@ -123,6 +123,7 @@
     'Все товары': I.grid,
     'Напитки': '<path d="M7 8h10l-1.2 12H8.2z"/><path d="M12.5 8l2-5h2.5"/><path d="M7.6 12h8.8"/>',
     'Чай': '<path d="M5 10h11v4a5 5 0 0 1-5 5h-1a5 5 0 0 1-5-5z"/><path d="M16 11h1.5a2.5 2.5 0 0 1 0 5H16"/><path d="M9 3.5c-1 1.2 1 2 0 3.2M12.5 3.5c-1 1.2 1 2 0 3.2"/>',
+    'Еда': '<path d="M4.5 19L12 8l7.5 11z"/><path d="M3 21.5h18"/><path d="M9 3c-.9 1 .9 1.6 0 2.6M15 3c-.9 1 .9 1.6 0 2.6"/><circle cx="10.6" cy="15.6" r=".8" fill="currentColor"/><circle cx="13.2" cy="14" r=".8" fill="currentColor"/><circle cx="13.6" cy="16.9" r=".8" fill="currentColor"/>',
     'Шорты': '<path d="M5 5h14l1 14h-6l-2-7-2 7H4z"/><path d="M5 8h14"/>',
     'Одежда': '<path d="M8 4l-4.5 3 2 4L8 10v10h8V10l2.5 1 2-4L16 4c-.8 1.3-2.2 2-4 2s-3.2-.7-4-2z"/>',
     'Снеки': '<circle cx="12" cy="12" r="8.5"/><circle cx="9" cy="9.5" r="1" fill="currentColor"/><circle cx="14.6" cy="8.8" r="1" fill="currentColor"/><circle cx="9.6" cy="14.6" r="1" fill="currentColor"/><circle cx="15" cy="14" r="1" fill="currentColor"/>',
