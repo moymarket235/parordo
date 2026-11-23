@@ -1970,6 +1970,9 @@ body.manager-portal .view>.mgr-back{display:inline-flex;align-items:center;gap:6
 .mgr-back svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
 .mgr-back:hover{border-color:#f1c35f;color:#ffe3a3}
 .mgr-back:focus-visible{outline:2px solid #ffd77a;outline-offset:2px}
+/* История клиентов: «Архив» справа от «Назад» */
+#historyView>.mgr-back{vertical-align:top}
+body.manager-portal #historyView>.mgr-archive{margin-left:8px}
 @media(prefers-reduced-motion:reduce){#homeView>.hero .hero-refresh.busy svg{animation:none}}
 </style>
 </head>
@@ -2051,7 +2054,7 @@ body.manager-portal .view>.mgr-back{display:inline-flex;align-items:center;gap:6
    <div class="kpis" id="inventoryKpis"></div><button id="seedNewProducts" class="primary" type="button" style="width:100%;margin:0 0 11px" hidden>＋ Добавить новые товары из списка</button><div id="productsGrid" class="inventory"></div>
   </section>
   <section id="historyView" class="view">
-    <button type="button" class="mgr-back" data-manager-back title="Панель руководителя"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg><span>Назад</span></button>
+    <button type="button" class="mgr-back" data-manager-back title="Панель руководителя"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg><span>Назад</span></button><button type="button" class="mgr-back mgr-archive" data-manager-archive title="Архив"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16v13H4zM3 4h18v3H3z"/><path d="M9 11h6"/></svg><span>Архив</span></button>
    <div class="section-head"><div><div class="eyebrow">ЗАВЕРШЁННЫЕ СЕАНСЫ</div><h2>История</h2></div><button id="archiveAll" class="primary">Архивировать всё</button></div>
    <div id="historyList" class="list"></div>
   </section>
@@ -3432,7 +3435,12 @@ $('#seedNewProducts').onclick=seedNewCatalogFromControl;
 $('#refreshProducts').onclick=async()=>{await loadProducts();renderInventory();toast('Товары обновлены')};
 $('#refreshArchive').onclick=renderArchive;$('#refreshReport').onclick=renderReport;
 $('#refreshHome').onclick=refreshHomeData;
-document.addEventListener('click',e=>{if(e.target.closest('[data-manager-back]'))navigate(managerPortalActive()?'managerView':'homeView')});
+let archiveBackTo='';
+new MutationObserver(()=>{if(!$('#archiveView').classList.contains('active'))archiveBackTo=''}).observe($('#archiveView'),{attributes:true,attributeFilter:['class']});
+document.addEventListener('click',e=>{
+ if(e.target.closest('[data-manager-archive]')){archiveBackTo='historyView';navigate('archiveView');return}
+ if(e.target.closest('[data-manager-back]')){const to=currentView==='archiveView'&&archiveBackTo?archiveBackTo:'managerView';archiveBackTo='';navigate(managerPortalActive()?to:'homeView')}
+});
 $('#archiveAll').onclick=()=>confirmAction('Архивировать историю за сегодня?','Завершённые клиенты сегодняшнего дня будут перенесены в архив. Данные и суммы сохранятся.','Архивировать',archiveToday);
 let reportSubmitting=false;
 async function openShift(){
