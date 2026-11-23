@@ -1919,6 +1919,42 @@ main{padding-top:16px;padding-bottom:22px}
 <link rel="preload" as="image" href="./assets/par-ordo-deal-logo.webp">
 <link rel="preload" as="image" href="./assets/vault-marble.webp">
 <link rel="preload" as="image" href="./assets/vault-logo.webp">
+<link rel="preload" as="image" href="./assets/par-ordo-kpi-banner.webp">
+<style id="v123-kpi-lock">
+/* V123: показатели дня скрыты за баннером ПАР ОРДО; открываются по логину и паролю */
+#homeKpis>.kpi-lock{
+ grid-column:1/-1;position:relative;display:block;width:100%;min-width:0;margin:0;padding:0;overflow:hidden;
+ aspect-ratio:2/1;border:1px solid rgba(246,189,71,.55);border-radius:21px;
+ background:radial-gradient(ellipse at 50% 30%,#3a240c,#0c0805 72%);color:#ffe5a1;text-align:center;cursor:pointer;
+ box-shadow:0 12px 30px rgba(0,0,0,.34),inset 0 1px 0 rgba(255,236,190,.08);
+ -webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none;
+ transition:transform .16s ease,filter .16s ease;
+}
+#homeKpis>.kpi-lock:active{transform:scale(.99);filter:brightness(1.06)}
+#homeKpis>.kpi-lock:focus-visible{outline:3px solid rgba(255,220,145,.85);outline-offset:3px}
+#homeKpis .kpi-lock-banner{position:absolute;inset:0;width:100%;height:100%;display:block;object-fit:cover;border-radius:inherit;pointer-events:none}
+#homeKpis .kpi-lock-fallback{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:16px;font:700 clamp(22px,6vw,34px)/1.1 Georgia,serif;letter-spacing:.08em;color:#ffd879}
+#homeKpis .kpi-lock-fallback small{font:800 11px/1.35 system-ui,-apple-system,Segoe UI,sans-serif;letter-spacing:.04em;color:#e6cfaa}
+#homeKpis .kpi-lock-badge{position:absolute;top:9px;right:9px;z-index:1;width:32px;height:32px;display:grid;place-items:center;border-radius:50%;background:rgba(8,6,4,.74);border:1px solid rgba(246,189,71,.75);color:#ffd879;box-shadow:0 4px 14px rgba(0,0,0,.45)}
+#homeKpis .kpi-lock-badge svg,#homeKpis>.kpi-lock-hide svg{width:16px;height:16px;flex:0 0 16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+#homeKpis>.kpi-lock-hide{
+ grid-column:1/-1;display:flex;align-items:center;justify-content:center;gap:8px;min-width:0;min-height:42px;margin:0;padding:8px 14px;
+ border:1px solid #5f4322;border-radius:14px;background:linear-gradient(145deg,#1a1109,#0c0805);color:#f3ddb0;
+ font-size:12px;font-weight:850;letter-spacing:.02em;-webkit-tap-highlight-color:transparent;
+}
+#homeKpis>.kpi-lock-hide:active{transform:scale(.99);filter:brightness(1.1)}
+#homeKpis>.kpi-lock-hide:focus-visible{outline:3px solid rgba(255,220,145,.85);outline-offset:3px}
+#homeKpis>.kpi-lock-hide b{min-width:34px;color:#ffd879;font-weight:900;font-variant-numeric:tabular-nums;text-align:left}
+/* Широкий экран (ПК): баннер не растягивается на полэкрана — картинка целиком по центру, края заполнены её размытой копией */
+@media(min-width:900px){
+ #homeKpis>.kpi-lock{aspect-ratio:auto;height:clamp(240px,25vw,330px)}
+ #homeKpis>.kpi-lock::before{content:"";position:absolute;inset:-24px;background:url("./assets/par-ordo-kpi-banner.webp") center/cover no-repeat;filter:blur(16px) brightness(.72) saturate(1.2);pointer-events:none}
+ #homeKpis .kpi-lock-banner{object-fit:contain;-webkit-mask-image:linear-gradient(90deg,transparent,#000 9%,#000 91%,transparent);mask-image:linear-gradient(90deg,transparent,#000 9%,#000 91%,transparent)}
+}
+#kpiUnlockModal .kpi-unlock-card{padding:18px}
+#kpiUnlockModal .primary{min-height:48px;font-size:13px}
+@media(prefers-reduced-motion:reduce){#homeKpis>.kpi-lock,#homeKpis>.kpi-lock-hide{transition:none}}
+</style>
 </head>
 <body>
 <div id="loginView" class="login-view">
@@ -2077,6 +2113,7 @@ main{padding-top:16px;padding-bottom:22px}
 </div>
 <div id="confirmModal" class="modal"><div id="confirmModalCard" class="modal-card"></div></div>
 <div id="managerLoginModal" class="modal"><form id="managerLoginForm" class="modal-card manager-login-card" style="padding:18px"><div class="modal-head"><div><div class="eyebrow">ПАР ОРДО · БЕЗОПАСНЫЙ ВХОД</div><h2>Руководитель панели</h2><div class="history-meta">Введите логин и пароль руководителя</div></div><button class="close" id="closeManagerLogin" type="button">×</button></div><div class="customer-base-form"><div class="customer-base-field"><label for="managerLoginUser">ЛОГИН</label><input id="managerLoginUser" autocomplete="username" value="admin1" required></div><div class="customer-base-field"><label for="managerLoginPass">ПАРОЛЬ</label><input id="managerLoginPass" type="password" autocomplete="current-password" required></div><div id="managerLoginError" class="login-error"></div><button id="managerLoginSubmit" class="primary" type="submit">Войти в панель руководителя →</button></div></form></div>
+<div id="kpiUnlockModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="kpiUnlockTitle"><form id="kpiUnlockForm" class="modal-card manager-login-card kpi-unlock-card" novalidate><div class="modal-head"><div><div class="eyebrow">ПАР ОРДО · БЕЗОПАСНЫЙ ВХОД</div><h2 id="kpiUnlockTitle">Показатели смены</h2><div class="history-meta">Клиенты, наличные, перевод и итого. Введите свой логин и пароль — администратора или сотрудника.</div></div><button class="close" id="closeKpiUnlock" type="button" aria-label="Закрыть">×</button></div><div class="customer-base-form"><div class="customer-base-field"><label for="kpiUnlockUser">ЛОГИН</label><input id="kpiUnlockUser" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" required></div><div class="customer-base-field"><label for="kpiUnlockPass">ПАРОЛЬ</label><input id="kpiUnlockPass" type="password" autocomplete="current-password" required></div><div id="kpiUnlockError" class="login-error" role="alert"></div><button id="kpiUnlockSubmit" class="primary" type="submit">Показать показатели →</button></div></form></div>
 
 <script>
 'use strict';
@@ -2519,6 +2556,31 @@ function renderHome(){
  renderShiftControl();
  const active=activeClients().length,all=allTodayClients(),done=completedToday();
  $('#activeCount').textContent=active;
+ renderHomeKpis(all);
+ renderRooms();
+}
+/* V123: показатели дня (Клиентов сегодня · Наличные · Перевод · Итого оплачено) скрыты за баннером ПАР ОРДО.
+   Нажатие на баннер → логин и пароль (свой аккаунт администратора или сотрудника, проверка как при входе: /api/admin/login).
+   После входа показатели видны KPI_UNLOCK_MS, затем снова скрываются; «Скрыть» — сразу. Выход, другой вход или
+   перезагрузка страницы — снова скрыто. Пока скрыто, суммы вообще не выводятся на страницу. */
+const KPI_UNLOCK_MS=60000;
+let kpiUnlock={until:0,token:''},kpiUnlockTimer=0,kpiUnlockBusy=false;
+function kpiUnlocked(){return kpiUnlock.until>Date.now()&&!!kpiUnlock.token&&kpiUnlock.token===token()}
+function kpiLeftText(){const s=Math.max(0,Math.ceil((kpiUnlock.until-Date.now())/1000));return `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`}
+function lockHomeKpis(){kpiUnlock={until:0,token:''};renderHomeKpis()}
+function renderHomeKpis(all){
+ const root=$('#homeKpis');if(!root)return;
+ if(!kpiUnlocked()){
+  clearInterval(kpiUnlockTimer);kpiUnlockTimer=0;kpiUnlock={until:0,token:''};
+  if(root.querySelector('.kpi-lock'))return;
+  root.innerHTML=`<button type="button" class="kpi kpi-lock" data-kpi-unlock aria-label="Показатели смены скрыты. Нажмите и введите логин и пароль" title="Показатели смены · вход по логину и паролю">
+  <span class="kpi-lock-fallback" aria-hidden="true">ПАР ОРДО<small>Показатели скрыты · нажмите, чтобы открыть</small></span>
+  <img class="kpi-lock-banner" src="./assets/par-ordo-kpi-banner.webp" alt="" width="1400" height="700" decoding="async" draggable="false" onerror="this.remove()">
+  <span class="kpi-lock-badge" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="5" y="10.5" width="14" height="10" rx="2.2"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3M12 14.5v2.5"/></svg></span>
+ </button>`;
+  return;
+ }
+ if(!Array.isArray(all))all=allTodayClients();
  const ps=all.reduce((sum,c)=>{const p=payments(c);sum.cash+=p.cash;sum.transfer+=p.transfer;return sum},{cash:0,transfer:0});
  $('#homeKpis').innerHTML=`
  <div class="kpi kpi-v3 kpi-clients">
@@ -2540,8 +2602,38 @@ function renderHome(){
   <span class="kpi-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v4c0 1.66 3.58 3 8 3s8-1.34 8-3V5M4 9v4c0 1.66 3.58 3 8 3 1.6 0 3.1-.2 4.5-.65M4 13v4c0 1.66 3.58 3 8 3"/></svg></span>
   <div class="kpi-copy"><small>Итого оплачено</small><strong>${money(ps.cash+ps.transfer)}</strong></div>
   <span class="kpi-graph" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
- </div>`;
- renderRooms();
+ </div>
+ <button type="button" class="kpi-lock-hide" data-kpi-lock><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10.5" width="14" height="10" rx="2.2"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3M12 14.5v2.5"/></svg><span>Скрыть показатели</span><b data-kpi-left>${kpiLeftText()}</b></button>`;
+ if(!kpiUnlockTimer)kpiUnlockTimer=setInterval(()=>{
+  if(!kpiUnlocked()){lockHomeKpis();return}
+  const left=$('#homeKpis [data-kpi-left]');if(left)left.textContent=kpiLeftText();
+ },1000);
+}
+function openKpiUnlock(){
+ if(kpiUnlockBusy)return;
+ const user=$('#kpiUnlockUser'),pass=$('#kpiUnlockPass');if(!user||!pass)return;
+ $('#kpiUnlockError').textContent='';pass.value='';
+ user.value=sessionStorage.getItem(USER_KEY)||'';
+ openModal('#kpiUnlockModal');
+ (user.value?pass:user).focus({preventScroll:true});
+}
+async function kpiUnlockSubmit(event){
+ event.preventDefault();if(kpiUnlockBusy)return;
+ const user=$('#kpiUnlockUser'),pass=$('#kpiUnlockPass'),error=$('#kpiUnlockError'),button=$('#kpiUnlockSubmit');
+ const username=user.value.trim().toLowerCase(),password=pass.value;
+ if(!username||!password){error.textContent='Введите логин и пароль.';return}
+ error.textContent='';kpiUnlockBusy=true;button.disabled=true;
+ try{
+  const d=await api('/api/admin/login',{method:'POST',body:JSON.stringify({username,password})});
+  const role=String(d?.role||'');
+  if(!['admin','staff','manager'].includes(role))throw new Error('У этого аккаунта нет доступа к показателям.');
+  // Тот же аккаунт, что и открытая сессия: работаем дальше с новым токеном (на случай, если сервер держит одну сессию на аккаунт).
+  if(d.token&&username===String(sessionStorage.getItem(USER_KEY)||'').toLowerCase()&&role===currentRole())sessionStorage.setItem(TOKEN_KEY,d.token);
+  pass.value='';closeModal('#kpiUnlockModal');
+  kpiUnlock={until:Date.now()+KPI_UNLOCK_MS,token:token()};
+  renderHomeKpis();toast('Показатели открыты ✅');
+ }catch(e){error.textContent=e instanceof TypeError?'Нет связи с сервером. Проверьте интернет и попробуйте снова.':(e?.message||'Неверный логин или пароль.')}
+ finally{kpiUnlockBusy=false;button.disabled=false}
 }
 function renderRooms(){
  let nums=Array.from({length:36},(_,i)=>i+1);
@@ -3254,6 +3346,11 @@ $('#openManagerLogin').onclick=()=>{ $('#drawer').classList.remove('open');$('#m
 $('#closeManagerLogin').onclick=()=>closeModal('#managerLoginModal');
 $('#managerLoginModal').addEventListener('click',e=>{if(e.target.id==='managerLoginModal')closeModal('#managerLoginModal')});
 $('#managerLoginForm').addEventListener('submit',managerPanelLogin);
+$('#kpiUnlockForm').addEventListener('submit',kpiUnlockSubmit);
+$('#closeKpiUnlock').onclick=()=>closeModal('#kpiUnlockModal');
+$('#kpiUnlockModal').addEventListener('click',e=>{if(e.target.id==='kpiUnlockModal')closeModal('#kpiUnlockModal')});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('#kpiUnlockModal').classList.contains('open'))closeModal('#kpiUnlockModal')});
+document.addEventListener('click',e=>{const t=e.target instanceof Element?e.target:null;if(!t)return;if(t.closest('[data-kpi-unlock]')){e.preventDefault();openKpiUnlock();return}if(t.closest('[data-kpi-lock]')){e.preventDefault();lockHomeKpis();toast('Показатели скрыты 🔒')}});
 $('#expenseForm').addEventListener('submit',saveExpenseEntry);
 $('#refreshExpenses').onclick=loadExpenses;
 
@@ -4124,7 +4221,7 @@ html body #addModal #addProductGrid > .add-product-tile > .product-edit-actions 
 })();
 </script>
 <script src="./po-daily-report-two-days-v1.js?v=3"></script>
-<script src="./par-ordo-sections-v1.js?v=1.0.3" defer></script>
+<script src="./par-ordo-sections-v1.js?v=1.0.4" defer></script>
 <script src="./par-ordo-expenses-v1.js?v=1.0.0" defer></script>
 <script src="./par-ordo-briefing-v1.js?v=1.0.0" defer></script>
 <script src="./par-ordo-inner-v1.js?v=1.0.2" defer></script>

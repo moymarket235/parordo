@@ -15,7 +15,7 @@
   'use strict';
   if (window.PARORDOSections) return;
 
-  const VERSION = '1.0.3';
+  const VERSION = '1.0.4';
   const root = document.documentElement;
   const reduced = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
   const canAnimate = typeof Element !== 'undefined' && typeof Element.prototype.animate === 'function';
@@ -847,13 +847,14 @@
     if (box) {
       box.classList.toggle('is-closed', !open);
       box.innerHTML = open
-        ? `<div><b>Смена открыта</b><small>с ${hhmm(s.openedAt)} · ${durText(minutesBetween(s.openedAt, new Date()))}</small></div><strong>${sum(m.paid)}</strong>`
+        ? `<div><b>Смена открыта</b><small>с ${hhmm(s.openedAt)} · ${durText(minutesBetween(s.openedAt, new Date()))}</small></div>`
         : `<div><b>${s.isClosing ? 'Смена закрывается' : 'Смена закрыта'}</b><small>${s.isClosing ? 'Отчёт сохраняется на сервере' : 'Откройте смену на главном экране'}</small></div>`;
     }
     badge(drawer, '[data-drawer-view="homeView"]', m && m.active ? `${m.active} акт.` : '', 'green');
     const h = completedClients(false).length;
     badge(drawer, '[data-drawer-view="historyView"]', h ? num(h) : '', 'muted');
-    badge(drawer, '[data-drawer-view="reportView"]', m && m.paid ? sum(m.paid) : '', 'gold');
+    /* v1.0.4: суммы в меню не показываются («Смена открыта» и «Отчёт и завершение смены» — без суммы). */
+    badge(drawer, '[data-drawer-view="reportView"]', '', 'gold');
   }
   let drawerQueued = false;
   function refreshDrawer() {
