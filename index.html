@@ -1912,7 +1912,7 @@ main{padding-top:16px;padding-bottom:22px}
 <link rel="stylesheet" href="./par-ordo-sections-v1.css?v=1.0.0">
 <link rel="stylesheet" href="./par-ordo-expenses-v1.css?v=1.0.0">
 <link rel="stylesheet" href="./par-ordo-briefing-v1.css?v=1.0.0">
-<link rel="stylesheet" href="./par-ordo-inner-v1.css?v=1.0.2">
+<link rel="stylesheet" href="./par-ordo-inner-v1.css?v=1.0.3">
 <link rel="stylesheet" href="./par-ordo-bonus-v1.css?v=1.0.0">
 <link rel="stylesheet" href="./par-ordo-product-icons-v1.css?v=1.0.0">
 <link rel="stylesheet" href="./par-ordo-twin-v1.css?v=1.0.0">
@@ -1954,6 +1954,23 @@ main{padding-top:16px;padding-bottom:22px}
 #kpiUnlockModal .kpi-unlock-card{padding:18px}
 #kpiUnlockModal .primary{min-height:48px;font-size:13px}
 @media(prefers-reduced-motion:reduce){#homeKpis>.kpi-lock,#homeKpis>.kpi-lock-hide{transition:none}}
+</style>
+<style id="v124-home-refresh-back">
+/* «Номера и клиенты»: Обновить */
+#homeView>.hero .hero-refresh{display:inline-flex;align-items:center;gap:7px;height:36px;margin-top:11px;padding:0 14px 0 11px;border-radius:12px;border:1px solid rgba(226,178,86,.55);background:rgba(10,8,5,.55);color:#f1d79c;font-size:12.5px;font-weight:700;line-height:1;white-space:nowrap;cursor:pointer;-webkit-tap-highlight-color:transparent}
+#homeView>.hero .hero-refresh svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+#homeView>.hero .hero-refresh:hover{border-color:#f1c35f;color:#ffe3a3}
+#homeView>.hero .hero-refresh:focus-visible{outline:2px solid #ffd77a;outline-offset:2px}
+#homeView>.hero .hero-refresh.busy{cursor:progress}
+#homeView>.hero .hero-refresh.busy svg{animation:po-home-spin .8s linear infinite}
+@keyframes po-home-spin{to{transform:rotate(360deg)}}
+/* screens opened from «Панель руководителя»: Назад */
+.mgr-back{display:none}
+body.manager-portal .view>.mgr-back{display:inline-flex;align-items:center;gap:6px;height:42px;margin:0 0 12px;padding:0 15px 0 10px;border-radius:13px;border:1px solid rgba(226,178,86,.45);background:rgba(10,8,5,.62);color:#f1d79c;font-size:13px;font-weight:600;line-height:1;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.mgr-back svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.mgr-back:hover{border-color:#f1c35f;color:#ffe3a3}
+.mgr-back:focus-visible{outline:2px solid #ffd77a;outline-offset:2px}
+@media(prefers-reduced-motion:reduce){#homeView>.hero .hero-refresh.busy svg{animation:none}}
 </style>
 </head>
 <body>
@@ -2007,7 +2024,7 @@ main{padding-top:16px;padding-bottom:22px}
    </section>
   </section>
   <section id="homeView" class="view active">
-   <div class="hero"><div><div class="eyebrow">УПРАВЛЕНИЕ СЕГОДНЯ</div><h1>Номера и клиенты</h1><p>Быстро выдавайте браслет, добавляйте покупки и отмечайте оплату.</p></div><div class="live-badge"><strong id="activeCount">0</strong><span>активных</span></div></div>
+   <div class="hero"><div><div class="eyebrow">УПРАВЛЕНИЕ СЕГОДНЯ</div><h1>Номера и клиенты</h1><p>Быстро выдавайте браслет, добавляйте покупки и отмечайте оплату.</p><button id="refreshHome" class="hero-refresh" type="button" title="Обновить номера и клиентов"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.34-5.66"/><path d="M20 4.5V9h-4.5"/></svg><span>Обновить</span></button></div><div class="live-badge"><strong id="activeCount">0</strong><span>активных</span></div></div>
    <div id="shiftControl" class="shift-control-slot" aria-live="polite"></div>
    <div id="goScannerQuickWrap" class="go-scanner-quick-wrap" hidden>
     <button id="openGoScannerQuick" type="button" class="go-scanner-quick" aria-label="Открыть QR-сканер PAR ORDO GO">
@@ -2029,18 +2046,22 @@ main{padding-top:16px;padding-bottom:22px}
    <div id="roomsGrid" class="rooms"></div>
   </section>
   <section id="productsView" class="view">
+    <button type="button" class="mgr-back" data-manager-back title="Панель руководителя"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg><span>Назад</span></button>
    <div class="section-head"><div><div class="eyebrow">СКЛАД</div><h2>В наличии · Поступило</h2></div><button id="refreshProducts" class="ghost">↻ Обновить</button></div>
    <div class="kpis" id="inventoryKpis"></div><button id="seedNewProducts" class="primary" type="button" style="width:100%;margin:0 0 11px" hidden>＋ Добавить новые товары из списка</button><div id="productsGrid" class="inventory"></div>
   </section>
   <section id="historyView" class="view">
+    <button type="button" class="mgr-back" data-manager-back title="Панель руководителя"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg><span>Назад</span></button>
    <div class="section-head"><div><div class="eyebrow">ЗАВЕРШЁННЫЕ СЕАНСЫ</div><h2>История</h2></div><button id="archiveAll" class="primary">Архивировать всё</button></div>
    <div id="historyList" class="list"></div>
   </section>
   <section id="archiveView" class="view">
+    <button type="button" class="mgr-back" data-manager-back title="Панель руководителя"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg><span>Назад</span></button>
    <div class="section-head"><div><div class="eyebrow">СОХРАНЁННЫЕ ДАННЫЕ</div><h2>Архив</h2></div><button id="refreshArchive" class="ghost">↻</button></div>
    <div id="archiveList" class="list"></div>
   </section>
   <section id="reportView" class="view">
+    <button type="button" class="mgr-back" data-manager-back title="Панель руководителя"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg><span>Назад</span></button>
    <div class="report-panel"><div class="eyebrow">КАССА · ЗАВЕРШЕНИЕ СМЕНЫ</div><div class="section-head" style="margin-top:5px"><h2>Итог текущей смены</h2><button id="refreshReport" class="ghost">↻</button></div><div id="reportContent"></div><section id="shiftChecklist" class="close-check" hidden aria-labelledby="closeCheckTitle"></section><button id="finishWork" class="primary finish">✓ Завершить смену и отправить отчёт руководителю</button>
     <section id="historicalReportAdmin" class="historical-report-admin" hidden aria-label="Добавление отчёта за прошедшую дату">
      <div class="eyebrow">ADMIN ONLY · ТОЛЬКО АДМИНИСТРАТОР</div><h3>Добавить отчёт за прошлую дату</h3>
@@ -2052,6 +2073,7 @@ main{padding-top:16px;padding-bottom:22px}
    </div>
   </section>
   <section id="expensesView" class="view">
+    <button type="button" class="mgr-back" data-manager-back title="Панель руководителя"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg><span>Назад</span></button>
    <div class="section-head"><div><div class="eyebrow">УПРАВЛЕНИЕ БАНЕЙ</div><h2>Расходы</h2></div><button id="refreshExpenses" class="ghost" type="button">↻ Обновить</button></div>
    <div class="expense-layout">
     <section class="expense-form-card"><div class="eyebrow">РАСХОДЫ БАНИ</div><h2>Добавить расход</h2><div id="expenseReadOnlyHint" class="expense-view-only hidden">Режим руководителя: можно просматривать расходы и статистику, но нельзя создавать записи.</div>
@@ -2483,6 +2505,20 @@ async function loadManagerDashboard(){
  syncManagerPortalChrome();
 }
 
+let homeRefreshBusy=false;
+async function refreshHomeData(){
+ // «Номера и клиенты» → Обновить: смена, клиенты/браслеты и товары с сервера, затем экран заново
+ if(homeRefreshBusy||!token())return;
+ homeRefreshBusy=true;
+ const btn=$('#refreshHome');if(btn){btn.classList.add('busy');btn.setAttribute('aria-busy','true')}
+ try{
+  const r=await Promise.allSettled([syncShiftState(),syncControlData(),loadProducts()]);
+  renderHome();renderInventory();renderHistory();renderArchive();renderReport();
+  const bad=r.find(x=>x.status==='rejected');
+  toast(bad?'Не удалось обновить: '+((bad.reason&&bad.reason.message)||'нет связи'):'Номера и клиенты обновлены ✅');
+ }catch(e){toast('Не удалось обновить: '+e.message)}
+ finally{homeRefreshBusy=false;if(btn){btn.classList.remove('busy');btn.removeAttribute('aria-busy')}}
+}
 async function bootApp(){
  loadLocal();$('#loggedUser').textContent=`${sessionStorage.getItem(USER_KEY)||'admin'} · доступ персонала`;
  await loadProducts();
@@ -3395,6 +3431,8 @@ async function seedNewCatalogFromControl(){
 $('#seedNewProducts').onclick=seedNewCatalogFromControl;
 $('#refreshProducts').onclick=async()=>{await loadProducts();renderInventory();toast('Товары обновлены')};
 $('#refreshArchive').onclick=renderArchive;$('#refreshReport').onclick=renderReport;
+$('#refreshHome').onclick=refreshHomeData;
+document.addEventListener('click',e=>{if(e.target.closest('[data-manager-back]'))navigate(managerPortalActive()?'managerView':'homeView')});
 $('#archiveAll').onclick=()=>confirmAction('Архивировать историю за сегодня?','Завершённые клиенты сегодняшнего дня будут перенесены в архив. Данные и суммы сохранятся.','Архивировать',archiveToday);
 let reportSubmitting=false;
 async function openShift(){
@@ -4224,7 +4262,7 @@ html body #addModal #addProductGrid > .add-product-tile > .product-edit-actions 
 <script src="./par-ordo-sections-v1.js?v=1.0.4" defer></script>
 <script src="./par-ordo-expenses-v1.js?v=1.0.0" defer></script>
 <script src="./par-ordo-briefing-v1.js?v=1.0.0" defer></script>
-<script src="./par-ordo-inner-v1.js?v=1.0.2" defer></script>
+<script src="./par-ordo-inner-v1.js?v=1.0.3" defer></script>
 <script src="./par-ordo-bonus-v1.js?v=1.0.1" defer></script>
 <script src="./par-ordo-time-alert-v1.js?v=1.0.0" defer></script>
 <script src="./par-ordo-jarvis-v1.js?v=3.0.0" defer></script>

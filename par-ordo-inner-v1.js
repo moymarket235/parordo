@@ -4,6 +4,8 @@
        margin by product, stock receipts and shifts.
        1.0.2: «Проверка закрытия» — the shift-closing checklist (report.closingChecklist:
        Да / Нет + comments) per closed shift; a chip on each day's column opens that day.
+       1.0.3: the date chip opens the calendar on a computer too (showPicker); «По товарам»
+       gets a filter: по количеству (most sold first) or по марже (most profit first).
    2 · База клиентов «Клуб · бонус 3%» — the club card, the 3% rule and every guest's bonus
        account in som (3% of all paid purchases).
    3 · Статистика товаров «Гонка + прибыль» — purchase / sale price / net profit per product,
@@ -26,7 +28,7 @@
   'use strict';
   if (window.PARORDOInner) return;
 
-  const VERSION = '1.0.2';
+  const VERSION = '1.0.3';
   const HOST = 'https://par-ordo-api.moimarketjibekjolu.workers.dev';
   const BONUS_RATE = 0.03;
   const reduced = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
@@ -49,7 +51,8 @@
     search: '<circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/>',
     refresh: '<path d="M20 12a8 8 0 1 1-2.34-5.66"/><path d="M20 4.5V9h-4.5"/>',
     plus: '<path d="M12 5v14M5 12h14"/>',
-    edit: '<path d="M4 20h4L19 9l-4-4L4 16z"/>'
+    edit: '<path d="M4 20h4L19 9l-4-4L4 16z"/>',
+    filter: '<path d="M4 7h16M7 12h10M10 17h4"/>'
   };
   const svg = body => `<svg viewBox="0 0 24 24" aria-hidden="true">${body}</svg>`;
   const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -292,7 +295,10 @@
   /* =====================================================================
      1 · ЕЖЕДНЕВНЫЙ ОТЧЁТ · «Касса-маржа»
      ===================================================================== */
-  const RP = { modal: null, panel: null, open: false, day: '', tog: '', openedAt: 0, rendered: false, fallbackT: 0, busyT: 0, model: null };
+  const RP = { modal: null, panel: null, open: false, day: '', tog: '', openedAt: 0, rendered: false, fallbackT: 0, busyT: 0, model: null, sort: 'q' };
+  /* «По товарам» filter: q — по количеству, m — по марже (прибыль, сом); the choice is remembered */
+  const RP_SORT_KEY = 'po_rp_goods_sort';
+  try { if (localStorage.getItem(RP_SORT_KEY) === 'm') RP.sort = 'm'; } catch (_) {}
 
   /* проверка закрытия смены: report.closingChecklist (index.html, чек-лист перед закрытием) —
      ответы «Да / Нет» и комментарии. Только чтение; текст всегда экранируется при выводе. */
@@ -417,7 +423,19 @@
       if (close) close.click();
       else if (RP.modal) { RP.modal.classList.remove('is-open'); document.body.style.overflow = ''; }
     });
-    $('[data-rp=date]', el).addEventListener('change', e => {
+    /* the date field is invisible over the chip: a phone opens its calendar on a tap, a computer
+       only from the small calendar icon — so the click opens it with showPicker(); a browser
+       without showPicker() shows the field itself over the chip */
+    const dateIn = $('[data-rp=date]', el);
+    const pickDate = () => {
+      try { if (typeof dateIn.showPicker === 'function') { dateIn.showPicker(); return; } } catch (_) {}
+      dateIn.closest('.rp-date').classList.add('rp-typing');
+      try { dateIn.focus(); } catch (_) {}
+    };
+    dateIn.addEventListener('click', pickDate);
+    dateIn.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pickDate(); } });
+    dateIn.addEventListener('blur', () => dateIn.closest('.rp-date').classList.remove('rp-typing'));
+    dateIn.addEventListener('change', e => {
       const v = e.target.value;
       if (!/^\d{4}-\d{2}-\d{2}$/.test(v)) return;
       RP.day = v;
@@ -502,6 +520,56 @@
     const list = [...miss.entries()].sort((x, y) => y[1] - x[1]).slice(0, 6).map(([n, q]) => `<li>${esc(n)} — ${q} шт.</li>`).join('');
     return `<div class="in-warn" data-in="4"><b>* Без закупочной цены: ${total} шт.</b> Эти продажи не входят в закуп и прибыль.<ul>${list}</ul><div style="margin-top:6px">${hint}</div></div>`;
   }
+  /* «По товарам»: profit of a line in som; null when none of it has a purchase price */
+  const rpRowProfit = r => (r.missQty && !r.costRev && r.qty === r.missQty) ? null : r.costRev - r.cost;
+  function rpSortRows(rows) {
+    const byName = (a, b) => String(a.name).localeCompare(String(b.name), 'ru');
+    const list = rows.slice();
+    if (RP.sort === 'm') {
+      // по марже: the most profit first, the least last; lines without a purchase price go to the end
+      list.sort((a, b) => {
+        const pa = rpRowProfit(a), pb = rpRowProfit(b);
+        if (pa == null || pb == null) return (pa == null) - (pb == null) || b.qty - a.qty || byName(a, b);
+        return pb - pa || b.qty - a.qty || byName(a, b);
+      });
+    } else list.sort((a, b) => b.qty - a.qty || b.rev - a.rev || byName(a, b)); // по количеству: most sold first
+    return list;
+  }
+  function rpSortBar() {
+    const chip = (k, t, title) => `<button type="button" class="in-chip${RP.sort === k ? ' on' : ''}" data-rp-sort="${k}" aria-pressed="${RP.sort === k}" title="${title}">${t}</button>`;
+    return `<div class="rp-sort" data-in="9" role="group" aria-label="Фильтр товаров"><span>${svg(ICON.filter)}Фильтр</span>${chip('q', 'По количеству', 'Сначала то, что продано больше всего')}${chip('m', 'По марже', 'Сначала то, что принесло больше всего прибыли')}</div>`;
+  }
+  function rpSetSort(k) {
+    if ((k !== 'q' && k !== 'm') || k === RP.sort) return;
+    RP.sort = k;
+    try { localStorage.setItem(RP_SORT_KEY, k); } catch (_) {}
+    const part = RP.panel && $('[data-rp=dayp]', RP.panel);
+    if (!part || !RP.model) return;
+    $$('[data-rp-sort]', part).forEach(b => { const on = b.dataset.rpSort === k; b.classList.toggle('on', on); b.setAttribute('aria-pressed', String(on)); });
+    const box = $('[data-rp=goods]', part);
+    if (!box) return;
+    box.innerHTML = rpGoods(RP.tog === 'a' ? RP.model.a : RP.model.b);
+    $$('.rp-it', box).slice(0, 8).forEach((it, i) => A(it, [{ opacity: 0, transform: 'translateY(12px)' }, { opacity: 1, transform: 'none' }], { duration: 340, delay: i * 40, easing: EASE.out }, 'rp'));
+  }
+  function rpGoods(m) {
+    if (!m.rows.length) return `<div class="in-empty">Товаров за этот день не продано.</div>`;
+    return '<div class="rp-mg">' + rpSortRows(m.rows).map(r => {
+      const unit = r.qty ? Math.round(r.rev / r.qty) : 0;
+      const bn = r.bonus ? ` · 🎁 бонус ${num(r.bonus)}` : '';
+      if (r.missQty && !r.costRev && r.qty === r.missQty) {
+        return `<div class="rp-it"><div class="rp-itop"><b>${esc(r.name)} × ${r.qty}</b><em class="na">нет закупа</em></div><div class="rp-mbar"><i class="na">закупочная цена не указана</i></div><div class="rp-meta"><span>цена ${num(unit)} сом · выручка ${num(r.rev)}${bn}</span><span>прибыль <b class="na">—</b></span></div></div>`;
+      }
+      const costUnit = r.qty - r.missQty > 0 ? r.cost / (r.qty - r.missQty) : 0;
+      const pr = r.costRev - r.cost;
+      if (r.rev <= 0 && r.bonus) {
+        // all of it went for bonus: no money, only the purchase price
+        return `<div class="rp-it rp-itb"><div class="rp-itop"><b>${esc(r.name)} × ${r.qty}</b><em class="bn">за бонус</em></div><div class="rp-mbar"><i class="b" style="width:100%">🎁 оплачено бонусом ${num(r.bonus)} сом</i></div><div class="rp-meta"><span>выручка 0 · закуп ${num(r.cost)}</span><span>прибыль <b class="neg">${sgn(pr)}</b></span></div></div>`;
+      }
+      const cw = Math.max(8, Math.min(92, r.costRev > 0 ? pct(r.cost, r.costRev) : 92));
+      const star = r.missQty ? `<em class="na">${r.missQty} шт. без закупа</em>` : `<em${pr < 0 ? ' class="neg"' : ''}>${pct(pr, r.costRev)}%</em>`;
+      return `<div class="rp-it"><div class="rp-itop"><b>${esc(r.name)} × ${r.qty}</b>${star}</div><div class="rp-mbar"><i class="c" style="width:${cw}%">закуп ${num(costUnit)}</i><i class="p${unit - costUnit < 0 ? ' neg' : ''}" style="width:${100 - cw}%">${sgn(unit - costUnit)}</i></div><div class="rp-meta"><span>цена ${num(unit)} сом · выручка ${num(r.rev)}${bn}</span><span>прибыль <b${pr < 0 ? ' class="neg"' : ''}>${sgn(pr)}</b></span></div></div>`;
+    }).join('') + '</div>';
+  }
   function rpDayParts(S) {
     const m = RP.tog === 'a' ? S.a : S.b;
     const label = m.label.toLowerCase();
@@ -531,26 +599,9 @@
         <div class="rp-x"><span>Продажа</span><span>Закуп</span><span>Прибыль</span></div>${basis}${bonusNote}
       </section>`;
     }
-    // по товарам
-    let goods = '';
-    if (m.rows.length) {
-      goods = '<div class="rp-mg">' + m.rows.map(r => {
-        const unit = r.qty ? Math.round(r.rev / r.qty) : 0;
-        const bn = r.bonus ? ` · 🎁 бонус ${num(r.bonus)}` : '';
-        if (r.missQty && !r.costRev && r.qty === r.missQty) {
-          return `<div class="rp-it"><div class="rp-itop"><b>${esc(r.name)} × ${r.qty}</b><em class="na">нет закупа</em></div><div class="rp-mbar"><i class="na">закупочная цена не указана</i></div><div class="rp-meta"><span>цена ${num(unit)} сом · выручка ${num(r.rev)}${bn}</span><span>прибыль <b class="na">—</b></span></div></div>`;
-        }
-        const costUnit = r.qty - r.missQty > 0 ? r.cost / (r.qty - r.missQty) : 0;
-        const pr = r.costRev - r.cost;
-        if (r.rev <= 0 && r.bonus) {
-          // all of it went for bonus: no money, only the purchase price
-          return `<div class="rp-it rp-itb"><div class="rp-itop"><b>${esc(r.name)} × ${r.qty}</b><em class="bn">за бонус</em></div><div class="rp-mbar"><i class="b" style="width:100%">🎁 оплачено бонусом ${num(r.bonus)} сом</i></div><div class="rp-meta"><span>выручка 0 · закуп ${num(r.cost)}</span><span>прибыль <b class="neg">${sgn(pr)}</b></span></div></div>`;
-        }
-        const cw = Math.max(8, Math.min(92, r.costRev > 0 ? pct(r.cost, r.costRev) : 92));
-        const star = r.missQty ? `<em class="na">${r.missQty} шт. без закупа</em>` : `<em${pr < 0 ? ' class="neg"' : ''}>${pct(pr, r.costRev)}%</em>`;
-        return `<div class="rp-it"><div class="rp-itop"><b>${esc(r.name)} × ${r.qty}</b>${star}</div><div class="rp-mbar"><i class="c" style="width:${cw}%">закуп ${num(costUnit)}</i><i class="p${unit - costUnit < 0 ? ' neg' : ''}" style="width:${100 - cw}%">${sgn(unit - costUnit)}</i></div><div class="rp-meta"><span>цена ${num(unit)} сом · выручка ${num(r.rev)}${bn}</span><span>прибыль <b${pr < 0 ? ' class="neg"' : ''}>${sgn(pr)}</b></span></div></div>`;
-      }).join('') + '</div>';
-    } else goods = `<div class="in-empty">Товаров за этот день не продано.</div>`;
+    // по товарам · фильтр: по количеству / по марже
+    const goods = rpGoods(m);
+    const sortBar = m.rows.length > 1 ? rpSortBar() : '';
     // поступления
     let rc;
     if (!S.auditOk) rc = '<div class="in-empty">Поступления загружаются…</div>';
@@ -576,7 +627,8 @@
         <div class="in-tog" data-in="7" role="group" aria-label="День"><button type="button" class="in-chip${RP.tog === 'a' ? ' on' : ''}" data-rp-tog="a" aria-pressed="${RP.tog === 'a'}">${esc(S.a.chip)}</button><button type="button" class="in-chip${RP.tog === 'b' ? ' on' : ''}" data-rp-tog="b" aria-pressed="${RP.tog === 'b'}">${esc(S.b.chip)}</button></div>
         <div data-in="8">${wf}</div>
         <div class="in-sec" data-in="9"><h2>По товарам</h2><i data-grow></i><em>закуп | цена | прибыль</em></div>
-        <div data-in="10">${goods}</div>
+        ${sortBar}
+        <div data-in="10" data-rp="goods">${goods}</div>
         <div class="in-sec" data-in="11"><h2>Поступления</h2><i data-grow></i><em>${m.receipts.length ? `+${rcQty} шт. на склад` : 'товары на склад'}</em></div>
         <div data-in="12">${rc}</div>
         ${shifts ? `<div class="in-sec" data-in="13"><h2>Смены</h2><i data-grow></i><em>${esc(dayShort(m.day))}</em></div><div data-in="14">${shifts}</div>` : ''}
@@ -626,6 +678,7 @@
   }
   function rpBind(scope) {
     $$('[data-rp-tog]', scope).forEach(btn => btn.addEventListener('click', () => rpSwitchDay(btn.dataset.rpTog)));
+    $$('[data-rp-sort]', scope).forEach(btn => btn.addEventListener('click', () => rpSetSort(btn.dataset.rpSort)));
     // проверка закрытия: чип дня открывает этот день и прокручивает к ответам
     $$('[data-rp-cc]', scope).forEach(btn => btn.addEventListener('click', () => {
       rpSwitchDay(btn.dataset.rpCc);
