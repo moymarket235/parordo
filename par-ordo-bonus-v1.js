@@ -17,9 +17,9 @@
   'use strict';
   if (window.PARORDOBonus) return;
 
-  const VERSION = '1.0.1';
+  const VERSION = '1.0.2';
   const RATE = 0.03;
-  const MANAGER_ROOM = 3;                        // браслет руководителя: всё бесплатно, бонус не нужен
+  const MANAGER_ROOM = Number(window.PAR_ORDO_MANAGER_ROOM) || 25; // браслет руководителя (№25): всё бесплатно, бонус не нужен
   const MARK = /\s*·\s*бонус\s+(\d+)\s*$/u;      // «Чай · бонус 45»
   const STALE = 60000;
   const FIELDS = ['bonusPaid', 'bonusBasePrice', 'bonusBaseName', 'bonusCustomerId', 'bonusAt', 'bonusBy', 'bonusRate'];
@@ -361,7 +361,7 @@
     if (!c || !it) return 'Позиция не найдена. Обновите экран.';
     if (!canEdit()) return 'Списывать бонус может администратор или сотрудник смены.';
     if (c.status !== 'active') return 'Визит уже завершён.';
-    if (Number(c.room) === MANAGER_ROOM) return 'Браслет №3 — всё бесплатно, бонус не нужен.';
+    if (Number(c.room) === MANAGER_ROOM) return `Браслет №${MANAGER_ROOM} — всё бесплатно, бонус не нужен.`;
     if (!c.customerBaseId) return 'Сначала привяжите клиента из базы — бонус списывается с его счёта.';
     if (isBonus(it)) return 'Эта позиция уже оплачена бонусом.';
     if (it.isLoyaltyBonus || it.isManagerFree) return 'Позиция и так бесплатная.';

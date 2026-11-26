@@ -1,10 +1,15 @@
-/* PAR ORDO PRO — time alert v1.0.0
+/* PAR ORDO PRO — time alert v1.1.1
    Все активные браслеты (1–36), отсчёт от времени выдачи (c.startedAt):
      2:50:00 — браслет загорается ЖЁЛТЫМ (предупреждение)
      3:00:00 — браслет загорается КРАСНЫМ
-     3:00:01 — автоматически добавляется «Вход» 300 сом (один раз на клиента, как кнопка «Вход 300 сом»,
-               статус «не оплачено» — кассир отмечает оплату как обычно)
-   Подключение: <script src="./par-ordo-time-alert-v1.js?v=1.0.0" defer></script> в конце index.html.
+     3:00:01 — автоматически добавляется «Доп. час» 100 сом
+     4:00:01 — ещё 100 сом (всего 200), 5:00:01 — ещё 100 сом (всего 300) и так далее:
+               100 сом за каждый начатый час сверх 3 часов. Каждая позиция — статус «не оплачено»,
+               кассир отмечает оплату как обычно.
+   v1.1.0: вместо одного «Вход» 300 сом после 3 часов — почасовая доплата 100 сом.
+   v1.1.1: браслет руководителя (window.PAR_ORDO_MANAGER_ROOM, сейчас №25) — без лимита времени:
+           не подсвечивается и доплата за время не начисляется.
+   Подключение: <script src="./par-ordo-time-alert-v1.js?v=1.1.1" defer></script> в конце index.html.
    Старые файлы (в т.ч. par-ordo-bracelet-rules-v108.js) не трогаются. */
 (function () {
   'use strict';
@@ -13,12 +18,14 @@
   /* ---------- настройки ---------- */
   var WARN_SEC = 2 * 3600 + 50 * 60;   // 2:50:00 — жёлтый
   var LIMIT_SEC = 3 * 3600;            // 3:00:00 — красный
-  var FEE_SEC = LIMIT_SEC + 1;         // 3:00:01 — добавить «Вход»
-  var FEE_NAME = 'Вход';
-  var FEE_PRICE = 300;
-  var FEE_MARK = 'over3h';             // метка на позиции чека, чтобы 300 сом не добавилось дважды
-  // Авто-вход добавляется только браслетам, выданным ПОСЛЕ этого момента (UTC). Так при обновлении сайта
-  // клиентам, которые уже сидят дольше 3 часов, 300 сом не спишется задним числом (цвет у них всё равно меняется).
+  var FEE_SEC = LIMIT_SEC + 1;         // 3:00:01 — первая доплата
+  var HOUR_SEC = 3600;                 // дальше — за каждый начатый час
+  var FEE_NAME = 'Доп. час';
+  var FEE_PRICE = 100;                 // сом за каждый начатый час сверх 3 часов
+  var FEE_MARK = 'over3h-hour';        // метка почасовой доплаты на позиции чека
+  var LEGACY_MARK = 'over3h';          // метка старого правила («Вход» 300 сом) — второй раз не начисляем
+  // Доплата добавляется только браслетам, выданным ПОСЛЕ этого момента (UTC). Так при обновлении сайта
+  // клиентам, которые уже сидят дольше 3 часов, доплата не спишется задним числом (цвет у них всё равно меняется).
   var AUTO_FEE_FROM = Date.parse('2026-11-15T06:30:00Z');
   var RETRY_BASE_MS = 30000, RETRY_MAX_MS = 300000;
 
@@ -62,6 +69,12 @@
     } catch (e) { return false; }
   }
 
+  /* ---------- браслет руководителя: всё бесплатно, без лимита времени ---------- */
+  function isManagerRoom(c) {
+    var n = Number(window.PAR_ORDO_MANAGER_ROOM) || 25;
+    return !!c && Number(c.room) === n;
+  }
+
   /* ---------- время ---------- */
   function elapsedSec(c, now) {
     var t = Date.parse(c && c.startedAt);
@@ -93,7 +106,8 @@
       holder.appendChild(chip);
     }
     chip.setAttribute('data-s', st);
-    chip.textContent = '⏱ ' + fmt(sec) + (hasFee(c) ? ' · +' + FEE_PRICE + ' сом' : '');
+    var fee = feeTotal(c);
+    chip.textContent = '⏱ ' + fmt(sec) + (fee > 0 ? ' · +' + fee + ' сом' : '');
   }
 
   function paint(now) {
@@ -104,7 +118,7 @@
     grid.querySelectorAll('article.room').forEach(function (card) {
       var btn = card.querySelector('[data-open-client]');
       var c = btn ? byId.get(String(btn.getAttribute('data-open-client'))) : null;
-      var sec = c ? elapsedSec(c, now) : null;
+      var sec = c && !isManagerRoom(c) ? elapsedSec(c, now) : null;
       var st = sec == null ? '' : stateOf(sec);
       card.classList.toggle('po-t-warn', st === 'warn');
       card.classList.toggle('po-t-over', st === 'over');
@@ -112,16 +126,27 @@
     });
   }
 
-  /* ---------- автоматический «Вход» 300 сом ---------- */
-  var charged = new Set();   // клиенты, у которых «Вход» уже добавлен (или не нужен)
+  /* ---------- почасовая доплата: 100 сом за каждый начатый час после 3:00:00 ---------- */
+  var settled = new Map();   // id -> сколько часов уже начислено (проверено) на этом устройстве
+  var legacy = new Set();    // клиенты, которых больше не проверяем (старая доплата «Вход» 300 сом или клиент завершён)
   var busy = new Set();      // клиенты, которые обрабатываются прямо сейчас
   var retry = new Map();     // id -> {n, at} — повтор после ошибки сети/сервера
   var queue = Promise.resolve();
 
-  function hasFee(c) {
-    return !!c && Array.isArray(c.items) && c.items.some(function (i) { return i && i.autoTimeFee === FEE_MARK; });
+  // 3:00:01 → 1 час, 4:00:00 → 1, 4:00:01 → 2, 5:00:01 → 3 …
+  function dueHours(sec) {
+    return sec != null && sec > LIMIT_SEC ? Math.ceil((sec - LIMIT_SEC) / HOUR_SEC) : 0;
   }
-  // если сотрудник уже сам добавил «Вход» после 3-го часа — второй раз не добавляем
+  function feeTotal(c) {
+    if (!c || !Array.isArray(c.items)) return 0;
+    return c.items.reduce(function (sum, i) {
+      return i && (i.autoTimeFee === FEE_MARK || i.autoTimeFee === LEGACY_MARK) ? sum + Number(i.price || 0) * Number(i.qty || 0) : sum;
+    }, 0);
+  }
+  function hasLegacyFee(c) {
+    return !!c && Array.isArray(c.items) && c.items.some(function (i) { return i && i.autoTimeFee === LEGACY_MARK; });
+  }
+  // если сотрудник уже сам добавил «Вход» после 3-го часа — доплату не начисляем, чтобы не взять дважды
   function hasManualOvertimeEntry(c) {
     var t = Date.parse(c && c.startedAt);
     if (!Number.isFinite(t)) return false;
@@ -130,16 +155,32 @@
       return i && !i.isLoyaltyBonus && /^вход$/iu.test(String(i.name || '').trim()) && Date.parse(i.createdAt) >= from;
     });
   }
+  function isLegacy(c) { return hasLegacyFee(c) || hasManualOvertimeEntry(c); }
   function eligible(c, now) {
-    if (!c || c.status !== 'active') return false;
+    if (!c || c.status !== 'active' || isManagerRoom(c)) return false;
     var t = Date.parse(c.startedAt);
     if (!Number.isFinite(t) || t < AUTO_FEE_FROM) return false;
     return Math.floor((now - t) / 1000) >= FEE_SEC;
   }
-  // постоянный id позиции: даже если два устройства сработают одновременно, дубля не будет
-  function feeItemId(clientId) {
+  // постоянный id позиции для каждого часа: даже если два устройства сработают одновременно, дубля не будет
+  function feeItemId(clientId, hour) {
     var id = String(clientId);
-    return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id) ? 'a3a3a3a3' + id.slice(8) : 'auto3h-' + id;
+    var hex = ('0000' + Number(hour).toString(16)).slice(-4);
+    return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id) ? 'a3a3' + hex + id.slice(8) : 'auto3h-' + id + '-h' + hour;
+  }
+  // часы, за которые доплата уже есть в чеке (по метке часа или по постоянному id позиции)
+  function missingHours(c, due) {
+    var items = Array.isArray(c && c.items) ? c.items : [];
+    var ids = new Set(), hours = new Set(), list = [];
+    items.forEach(function (i) {
+      if (!i) return;
+      ids.add(String(i.id));
+      if (i.autoTimeFee === FEE_MARK && Number(i.autoTimeHour) > 0) hours.add(Number(i.autoTimeHour));
+    });
+    for (var h = 1; h <= due; h++) {
+      if (!hours.has(h) && !ids.has(feeItemId(c.id, h))) list.push(h);
+    }
+    return list;
   }
   function roomOf(id) {
     var c = hasData() ? db.clients.find(function (x) { return String(x.id) === String(id); }) : null;
@@ -150,51 +191,60 @@
     if (i >= 0) db.clients[i] = c; else db.clients.push(c);
     try { saveLocal(); } catch (e) {}
   }
-  function done(id) { charged.add(id); retry.delete(id); }
+  function retire(id) { legacy.add(id); retry.delete(id); }
+  function settle(id, due) { settled.set(id, Math.max(settled.get(id) || 0, due)); retry.delete(id); }
   function fail(id, e) {
     var r = retry.get(id) || { n: 0, at: 0 };
     r.n += 1;
     r.at = Date.now() + Math.min(RETRY_BASE_MS * Math.pow(2, r.n - 1), RETRY_MAX_MS);
     retry.set(id, r);
-    try { console.warn('PAR ORDO time alert: не удалось добавить «Вход»', e); } catch (_) {}
+    try { console.warn('PAR ORDO time alert: не удалось добавить доплату за время', e); } catch (_) {}
     if (r.n === 1) {
-      try { toast('№' + roomOf(id) + ': не удалось автоматически добавить «Вход» ' + FEE_PRICE + ' сом. Добавьте вручную.'); } catch (_) {}
+      try { toast('№' + roomOf(id) + ': не удалось добавить доплату за время (' + FEE_PRICE + ' сом/час). Повторим автоматически.'); } catch (_) {}
     }
   }
-  function refreshUi(c, announce) {
+  function refreshUi(c, added, due) {
     try { renderHome(); } catch (e) {}
     try {
       var m = document.getElementById('clientModal');
       if (m && m.classList.contains('open') && typeof currentClientId !== 'undefined' && String(currentClientId) === String(c.id)) renderClientModal();
     } catch (e) {}
-    if (announce) {
-      try { toast('№' + c.room + ': прошло 3 часа — «Вход» ' + FEE_PRICE + ' сом добавлен автоматически'); } catch (e) {}
+    if (added && added.length) {
+      try { toast('№' + c.room + ': идёт ' + (3 + due) + '-й час — «' + FEE_NAME + '» +' + (FEE_PRICE * added.length) + ' сом добавлено автоматически'); } catch (e) {}
     }
   }
 
   async function charge(id) {
-    // 1) берём свежую запись клиента с сервера (вдруг «Вход» уже добавили на другом устройстве)
+    // 1) берём свежую запись клиента с сервера (вдруг доплату уже добавили на другом устройстве)
     var fresh = null;
     try {
       var remote = await api('/api/admin/control/clients');
       fresh = (remote.clients || []).find(function (x) { return String(x.id) === String(id); }) || null;
     } catch (e) { return fail(id, e); }
     if (!fresh) return fail(id, new Error('клиент не найден на сервере'));
-    if (fresh.status !== 'active') { done(id); return; }               // клиента уже завершили
-    if (hasFee(fresh) || hasManualOvertimeEntry(fresh)) {              // уже добавлено
-      adopt(fresh); done(id); refreshUi(fresh, false); return;
+    if (fresh.status !== 'active') { retire(id); return; }             // клиента уже завершили
+    if (isLegacy(fresh)) {                                             // уже начислено по старому правилу (300 сом)
+      adopt(fresh); retire(id); refreshUi(fresh); return;
+    }
+    var due = dueHours(elapsedSec(fresh, Date.now()));
+    var missing = missingHours(fresh, due);
+    if (!missing.length) {                                             // все часы уже в чеке
+      adopt(fresh); settle(id, due); refreshUi(fresh); return;
     }
     if (!canWrite()) return;
-    // 2) добавляем «Вход» так же, как кнопка «Вход 300 сом» (статус «не оплачено»)
-    var item = {
-      id: feeItemId(fresh.id), productId: null, name: FEE_NAME, price: FEE_PRICE, qty: 1,
-      method: 'pending', createdAt: new Date().toISOString(), stockHeldV41: false, autoTimeFee: FEE_MARK
-    };
-    fresh.items = (Array.isArray(fresh.items) ? fresh.items : []).concat([item]);
+    // 2) добавляем по 100 сом за каждый недостающий час (статус «не оплачено»)
+    var at = new Date().toISOString();
+    var items = missing.map(function (h) {
+      return {
+        id: feeItemId(fresh.id, h), productId: null, name: FEE_NAME, price: FEE_PRICE, qty: 1,
+        method: 'pending', createdAt: at, stockHeldV41: false, autoTimeFee: FEE_MARK, autoTimeHour: h
+      };
+    });
+    fresh.items = (Array.isArray(fresh.items) ? fresh.items : []).concat(items);
     var saved;
     try { saved = await persistClient(fresh); } catch (e) { return fail(id, e); }
     var result = saved && saved.id != null ? saved : fresh;
-    adopt(result); done(id); refreshUi(result, true);
+    adopt(result); settle(id, due); refreshUi(result, missing, due);
   }
 
   /* ---------- главный цикл (каждую секунду) ---------- */
@@ -205,8 +255,11 @@
       paint(now);
       if (!canWrite()) return;
       activeList().forEach(function (c) {
-        if (!c || charged.has(c.id) || busy.has(c.id) || !eligible(c, now)) return;
-        if (hasFee(c) || hasManualOvertimeEntry(c)) { charged.add(c.id); return; }
+        if (!c || legacy.has(c.id) || busy.has(c.id) || !eligible(c, now)) return;
+        var due = dueHours(elapsedSec(c, now));
+        if (due < 1 || (settled.get(c.id) || 0) >= due) return;       // этот час уже проверен
+        if (isLegacy(c)) { legacy.add(c.id); return; }
+        if (!missingHours(c, due).length) { settled.set(c.id, due); return; }
         var r = retry.get(c.id);
         if (r && now < r.at) return;
         busy.add(c.id);
@@ -228,6 +281,6 @@
     tick();
   }
 
-  window.PAR_ORDO_TIME_ALERT = { version: '1.0.0', tick: tick, WARN_SEC: WARN_SEC, LIMIT_SEC: LIMIT_SEC, FEE_SEC: FEE_SEC, AUTO_FEE_FROM: AUTO_FEE_FROM };
+  window.PAR_ORDO_TIME_ALERT = { version: '1.1.1', tick: tick, WARN_SEC: WARN_SEC, LIMIT_SEC: LIMIT_SEC, FEE_SEC: FEE_SEC, HOUR_SEC: HOUR_SEC, FEE_PRICE: FEE_PRICE, AUTO_FEE_FROM: AUTO_FEE_FROM, dueHours: dueHours };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
 })();

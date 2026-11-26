@@ -1,4 +1,7 @@
-/* PAR ORDO PRO V108 — bracelet duration alerts + free manager bracelet №3.
+/* PAR ORDO PRO V108 — bracelet duration alerts + free manager bracelet (MANAGER_ROOM, сейчас №25).
+   108.2: браслет руководителя перенесён с №3 на №25; №3 теперь обычный браслет.
+   Завершённые визиты в истории определяются по отметке isManagerFree у позиций, поэтому
+   прошлые визиты №3 остаются «бесплатно», а прошлые обычные визиты №25 — обычными.
    Install this classic script AFTER the main inline application script.
    Does not alter bracelet photos or printed numbers. */
 (() => {
@@ -6,9 +9,9 @@
   if (window.__PAR_ORDO_BRACELET_RULES_V108__) return;
   window.__PAR_ORDO_BRACELET_RULES_V108__ = true;
 
-  const MANAGER_ROOM = 3;
+  const MANAGER_ROOM = 25;
   const ALERT_AFTER_MS = 3 * 60 * 60 * 1000;
-  const FREE_REASON = 'Бесплатно — браслет руководителя №3';
+  const FREE_REASON = `Бесплатно — браслет руководителя №${MANAGER_ROOM}`;
   const style = document.createElement('style');
   style.id = 'par-ordo-bracelet-rules-v108-style';
   style.textContent = `
@@ -57,7 +60,14 @@
   `;
   (document.head || document.documentElement).appendChild(style);
 
-  const isManagerFreeVisit = c => Number(c && c.room) === MANAGER_ROOM;
+  window.PAR_ORDO_MANAGER_ROOM = MANAGER_ROOM; // другие скрипты (time-alert) берут номер отсюда
+  const isManagerFreeVisit = c => {
+    if (!c) return false;
+    if (c.status === 'active') return Number(c.room) === MANAGER_ROOM;
+    // Завершённый визит: смотрим, как он был записан (при завершении все позиции руководителя помечаются isManagerFree).
+    const items = Array.isArray(c.items) ? c.items : [];
+    return items.length > 0 && items.every(i => i && i.isManagerFree === true);
+  };
   const formatElapsed = ms => {
     const seconds = Math.max(0, Math.floor(ms / 1000));
     const hh = String(Math.floor(seconds / 3600)).padStart(2, '0');
@@ -70,7 +80,7 @@
     catch (_) { return null; }
   };
 
-  /* Bracelet №3 is always a manager visit: total and revenue are zero. */
+  /* The manager bracelet is always a free visit: total and revenue are zero. */
   const originalTotal = total;
   total = function(c) { return isManagerFreeVisit(c) ? 0 : originalTotal(c); };
   const originalPayments = payments;
@@ -78,7 +88,7 @@
     return isManagerFreeVisit(c) ? { cash: 0, transfer: 0, pending: 0 } : originalPayments(c);
   };
 
-  /* While adding through room №3, normalize the changed item before the API save.
+  /* While adding through the manager bracelet, normalize the changed item before the API save.
      Regular catalogue price is retained only as metadata; charged price is zero. */
   const originalPersistClient = persistClient;
   let freePurchaseContext = null;
@@ -102,7 +112,7 @@
   addPurchase = async function(payload) {
     const c = (db.clients || []).find(x => String(x.id) === String(currentClientId));
     if (!isManagerFreeVisit(c)) return originalAddPurchase.apply(this, arguments);
-    if (freePurchaseBusy) { toast('Браслет №3: предыдущая операция сохраняется. Подождите.'); return; }
+    if (freePurchaseBusy) { toast(`Браслет №${MANAGER_ROOM}: предыдущая операция сохраняется. Подождите.`); return; }
     freePurchaseBusy = true;
     const context = {
       clientId: c.id,
@@ -120,21 +130,21 @@
     }
   };
 
-  /* Don't let room №3 be charged via the normal payment or price-edit controls. */
+  /* Don't let the manager bracelet be charged via the normal payment or price-edit controls. */
   const originalItemPayment = itemPayment;
   itemPayment = function(id, method) {
     const c = (db.clients || []).find(x => String(x.id) === String(currentClientId));
-    if (isManagerFreeVisit(c)) { toast('Браслет №3 — всё бесплатно. Оплата не взимается.'); return; }
+    if (isManagerFreeVisit(c)) { toast(`Браслет №${MANAGER_ROOM} — всё бесплатно. Оплата не взимается.`); return; }
     return originalItemPayment.apply(this, arguments);
   };
   const originalEditPrice = editPrice;
   editPrice = function(id) {
     const c = (db.clients || []).find(x => String(x.id) === String(currentClientId));
-    if (isManagerFreeVisit(c)) { toast('Браслет №3 — цена фиксированно 0 сом.'); return; }
+    if (isManagerFreeVisit(c)) { toast(`Браслет №${MANAGER_ROOM} — цена фиксированно 0 сом.`); return; }
     return originalEditPrice.apply(this, arguments);
   };
 
-  /* Convert every line on room №3 to free before completion so an old pending line
+  /* Convert every line on the manager bracelet to free before completion so an old pending line
      cannot block closing the manager's visit. Inventory quantity changes still run normally. */
   const originalCompleteClient = completeClient;
   completeClient = async function() {
@@ -162,7 +172,7 @@
     return originalCompleteClient.apply(this, arguments);
   };
 
-  /* Show elapsed time in every active bracelet except №3. Red indicator activates at 3 hours. */
+  /* Show elapsed time in every active bracelet except the manager bracelet. Red indicator activates at 3 hours. */
   function decorateRooms() {
     const rooms = document.querySelectorAll('#roomsGrid .room');
     rooms.forEach(room => {
@@ -228,7 +238,7 @@
           const eyebrow = head.querySelector('.eyebrow');
           const title = head.querySelector('h2');
           const meta = head.querySelector('.history-meta');
-          if (eyebrow) eyebrow.textContent = 'РУКОВОДИТЕЛЬ · БРАСЛЕТ №3';
+          if (eyebrow) eyebrow.textContent = `РУКОВОДИТЕЛЬ · БРАСЛЕТ №${MANAGER_ROOM}`;
           if (title) title.textContent = 'Руководитель · Бесплатно';
           if (meta) meta.textContent = `Без ограничения времени · Клиент №${typeof shiftClientNo === 'function' ? shiftClientNo(client) : client.clientNo}`;
           const banner = document.createElement('div');
@@ -266,7 +276,7 @@
         if (head) {
           const banner = document.createElement('div');
           banner.className = 'par-ordo-manager-free-banner';
-          banner.innerHTML = '<span aria-hidden="true">✦</span><span>БРАСЛЕТ РУКОВОДИТЕЛЯ №3<small>Вход и все товары — бесплатно. Остаток склада учитывается, деньги в кассу не добавляются.</small></span>';
+          banner.innerHTML = '<span aria-hidden="true">✦</span><span>БРАСЛЕТ РУКОВОДИТЕЛЯ №' + MANAGER_ROOM + '<small>Вход и все товары — бесплатно. Остаток склада учитывается, деньги в кассу не добавляются.</small></span>';
           head.insertAdjacentElement('afterend', banner);
         }
         addCard.querySelectorAll('.entry-add span').forEach(span => { span.textContent = 'БЕСПЛАТНО　＋'; });
@@ -313,12 +323,12 @@
     };
   }
 
-  /* Completed history clearly says free, never cash/transfer, for room №3. */
+  /* Completed history clearly says free, never cash/transfer, for manager visits. */
   const originalRecordCard = recordCard;
   recordCard = function(c, isArchive) {
     if (!isManagerFreeVisit(c)) return originalRecordCard.apply(this, arguments);
     const itemRows = (c.items || []).map(i => `<div class="history-line"><span>${escapeHtml(i.name)} ×${Number(i.qty || 0)}</span><span><em class="pay-tag free">Бесплатно</em></span></div>`).join('') || '<div class="history-meta">Покупок пока нет</div>';
-    return `<article class="history-card manager-free-history-card"><div class="history-top"><div><b>Руководитель · Браслет №3</b><div class="history-meta">${escapeHtml(fmtDate(c.startedAt))}${c.endedAt?' — '+escapeHtml(fmtDate(c.endedAt)):''}</div></div><strong>БЕСПЛАТНО</strong></div><div class="history-lines">${itemRows}</div><div class="history-bottom"><span>Доход: ${money(0)}</span><span>${isArchive?'📦 Архив':'✓ Завершён'}</span></div></article>`;
+    return `<article class="history-card manager-free-history-card"><div class="history-top"><div><b>Руководитель · Браслет №${escapeHtml(c.room)}</b><div class="history-meta">${escapeHtml(fmtDate(c.startedAt))}${c.endedAt?' — '+escapeHtml(fmtDate(c.endedAt)):''}</div></div><strong>БЕСПЛАТНО</strong></div><div class="history-lines">${itemRows}</div><div class="history-bottom"><span>Доход: ${money(0)}</span><span>${isArchive?'📦 Архив':'✓ Завершён'}</span></div></article>`;
   };
 
   function updateLiveRoomClocks() {
@@ -343,5 +353,5 @@
   updateLiveRoomClocks();
   window.setInterval(updateLiveRoomClocks, 1000);
   document.addEventListener('visibilitychange', updateLiveRoomClocks);
-  console.info('[PAR ORDO] V108 bracelet timers and manager-free bracelet #3 loaded');
+  console.info(`[PAR ORDO] V108.2 bracelet timers and manager-free bracelet #${MANAGER_ROOM} loaded`);
 })();

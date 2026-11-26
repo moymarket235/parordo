@@ -4,7 +4,8 @@
    Примеры: «3 браслет активный кыл», «Вход взрослый кош», «Бирге жарма кош», «5 номерге 2 кола», «Отмена». */
 (function () {
   'use strict';
-  const VERSION = '3.0.0';
+  const VERSION = '3.0.1';
+  const MANAGER_ROOM = Number(window.PAR_ORDO_MANAGER_ROOM) || 25; // браслет руководителя: без лимита времени, не объявляется
 
   /* =====================================================================
      ЯДРО: разбор фразы → действия. Чистые функции, без DOM.
@@ -1084,7 +1085,7 @@
   // addPurchase/activateRoom/changeQty открывают окна и показывают тосты. Во время голосовой команды
   // окно клиента не открываем, а сообщения забираем в панель Джарвиса.
   const silent = { depth: 0, captured: [], expectClient: false };
-  const SILENT_RE = /^(Добавлено|Покупка добавлена|Товар не найден|Подождите|Клиент не сохранён|Браслет №3|Внимание: проверьте|Недостаточно|«.+» закончился|Позиция удалена|Количество обновлено|Не удалось сохранить количество|Не удалось подтвердить резерв|№\d+ · Клиент|Не удалось выдать браслет|Проверяем статус смены|Смена закрыта|Позиция оплачена бонусом)/;
+  const SILENT_RE = /^(Добавлено|Покупка добавлена|Товар не найден|Подождите|Клиент не сохранён|Браслет №25|Внимание: проверьте|Недостаточно|«.+» закончился|Позиция удалена|Количество обновлено|Не удалось сохранить количество|Не удалось подтвердить резерв|№\d+ · Клиент|Не удалось выдать браслет|Проверяем статус смены|Смена закрыта|Позиция оплачена бонусом)/;
   function wrapGlobal(name, make) {
     const original = window[name];
     if (typeof original !== 'function' || original.__poJv) return;
@@ -1884,7 +1885,7 @@
 
   /* ---------- ответы ---------- */
   function ansSummary() {
-    const sh = shift(), s = shiftStats(), tm = activeTimers().filter(x => x.room !== 3);
+    const sh = shift(), s = shiftStats(), tm = activeTimers().filter(x => x.room !== MANAGER_ROOM);
     const over = tm.filter(x => x.ms >= 3 * 3600e3), near = tm.filter(x => x.ms >= 170 * 60e3 && x.ms < 3 * 3600e3);
     const prods = products_(), low = prods.filter(p => { const a = availOf(p); return a > 0 && a <= 5; }), out = prods.filter(p => availOf(p) <= 0);
     const card = newCard('Сводка');
@@ -1974,7 +1975,7 @@
     tm.forEach(x => {
       const p = payOf(x.c);
       card.row(`№${x.room} · Клиент ${clientNo(x.c)}${x.c.customerBaseName ? ' · ' + x.c.customerBaseName : ''}`, dur(x.ms),
-        `${(x.c.items || []).length} поз. · ${money(totalOf(x.c))}${p.pending ? ' · не оплачено ' + money(p.pending) : ''}`, x.room !== 3 && x.ms >= 3 * 3600e3 ? 'err' : '', openClientCard(x.c));
+        `${(x.c.items || []).length} поз. · ${money(totalOf(x.c))}${p.pending ? ' · не оплачено ' + money(p.pending) : ''}`, x.room !== MANAGER_ROOM && x.ms >= 3 * 3600e3 ? 'err' : '', openClientCard(x.c));
     });
     const say = !tm.length ? 'Активных браслетов нет.' : tm.length <= 8 ? `Активных ${tm.length}: ${tm.map(x => x.room).join(', ')}.` : `Активных браслетов ${tm.length}.`;
     return result(card, say);
@@ -2021,7 +2022,7 @@
   }
 
   function ansOvertime() {
-    const tm = activeTimers().filter(x => x.room !== 3);
+    const tm = activeTimers().filter(x => x.room !== MANAGER_ROOM);
     const over = tm.filter(x => x.ms >= 3 * 3600e3), near = tm.filter(x => x.ms >= 170 * 60e3 && x.ms < 3 * 3600e3);
     const card = newCard('Время браслетов', over.length ? 'warn' : 'info');
     card.big = over.length ? `${over.length} ${plural(over.length, 'браслет', 'браслета', 'браслетов')}` : 'Все в пределах 3 часов';
@@ -2482,7 +2483,7 @@
   function checkRooms() {
     const now = Date.now(), warn = [], over = [];
     shiftList().forEach(c => {
-      if (!c || c.status !== 'active' || Number(c.room) === 3) return;
+      if (!c || c.status !== 'active' || Number(c.room) === MANAGER_ROOM) return;
       const t = Date.parse(c.startedAt);
       if (!Number.isFinite(t)) return;
       const min = (now - t) / 60000, kw = `r${c.id}:w`, ko = `r${c.id}:o`;
@@ -3089,7 +3090,7 @@ body.po-jv-nonav #poJvSheet{left:auto;right:24px;bottom:24px;width:min(520px,cal
       <div class="jv-field"><span>Джарвис предупреждает сам</span>
         <label class="jv-switch"><input type="checkbox" data-jv-al-rooms ${settings.alertRooms ? 'checked' : ''}><span>Браслет: 2:50 — скоро 3 часа, 3:00 — время вышло</span></label>
         <label class="jv-switch"><input type="checkbox" data-jv-al-stock ${settings.alertStock ? 'checked' : ''}><span>Склад: осталось 2 шт. и товар закончился</span></label>
-        <small>Только у персонала и администратора, при открытой смене. Браслет №3 руководителя не объявляется.</small>
+        <small>Только у персонала и администратора, при открытой смене. Браслет №25 руководителя не объявляется.</small>
       </div>
       <div class="jv-field"><span>Язык распознавания</span>
         <div class="jv-seg" role="radiogroup" aria-label="Язык распознавания">${LANGS.map(([code, name]) => `<button type="button" role="radio" aria-checked="${settings.lang === code}" data-jv-lang="${code}">${name}</button>`).join('')}</div>
